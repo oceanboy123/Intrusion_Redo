@@ -73,9 +73,9 @@ def normalize_length_data(data,upress):
         unique_data = []
 
         for row in data_frame.values.tolist():
-            row_tuple = tuple(row)
-            if row_tuple not in seen:
-                seen.add(row_tuple)
+            value = row[column_index]
+            if value not in seen:
+                seen.add(value)
                 unique_data.append(row)
 
 
@@ -99,17 +99,31 @@ def separate_target_variables(string_name, data):
 
     column_num = labels.get(string_name)
 
-    for key, values in data.items():
-        next_column = pd.DataFrame(values).iloc(column_num)
+    for key, values in normalized_data.items():
+        next_column = pd.DataFrame(values).iloc[:,column_num]
+        all_columns.append(next_column)
 
-    return all_columns
+    return np.transpose(all_columns)
 
-# Found out there are timestamps that are different and therefore
-# have multiple measuerements for the same day. Making some profiles
-# have a lot of repited depths. 
-sizess = []
-for key, values in normalized_data.items():
-    sizess.append(len(pd.DataFrame(values)))
+temperature_matrix = separate_target_variables('temperature', normalized_data)
+salinity_matrix = separate_target_variables('salinity', normalized_data)
 
-not_good_indices = [index for index, value in enumerate(sizess) if value != 276]
-wrong_data_length = pd.DataFrame(normalized_data.keys()).iloc[not_good_indices]
+t_m = pd.DataFrame(temperature_matrix)
+s_m = pd.DataFrame(salinity_matrix)
+
+t_m_inter_1 = t_m.interpolate(axis=1)
+t_m_inter_12 = t_m_inter_1.interpolate(axis=0)
+
+s_m_inter_1 = s_m.interpolate(axis=1)
+s_m_inter_12 = s_m_inter_1.interpolate(axis=0)
+
+#    Found out there are timestamps that are different and therefore
+#    have multiple measuerements for the same day. Making some profiles
+#    have a lot of repited depths. 
+#
+#sizess = []
+#for key, values in normalized_data.items():
+#    sizess.append(len(pd.DataFrame(values)))
+#
+#not_good_indices = [index for index, value in enumerate(sizess) if value != 276]
+#wrong_data_length = pd.DataFrame(normalized_data.keys()).iloc[not_good_indices]
