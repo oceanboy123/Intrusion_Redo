@@ -28,12 +28,15 @@ date_format = "%Y-%m-%d %H:%M:%S"
 dates_type_datetime = pd.to_datetime(target_data.iloc[:,0], format=date_format)
 target_data['time_string'] = dates_type_datetime
 
-reference_dates = datetime(1970,1, 1)
-days_from_reference = (dates_type_datetime - reference_dates).dt.days
+dates_type_int = []
+for days in dates_type_datetime:
+
+    int_ = days.timestamp()
+    dates_type_int.append(int_ )
 
 # Updating target data and grouping by day
-target_data['date_from_1970'] = days_from_reference
-grouped_by_date = target_data.groupby('date_from_1970')
+target_data['Timestamp'] = dates_type_int
+grouped_by_date = target_data.groupby('Timestamp')
 
 
 unique_dates = list(grouped_by_date.groups.keys())
@@ -63,7 +66,20 @@ def normalize_length_data(data,upress):
                 data_frame = pd.concat([data_frame, new_df_row.T], ignore_index=True)
         
         data_frame = data_frame.sort_values(by=1).reset_index(drop=True)
-        
+
+        # Check for duplicated data
+        column_index = 1
+        seen = set()
+        unique_data = []
+
+        for row in data_frame.values.tolist():
+            row_tuple = tuple(row)
+            if row_tuple not in seen:
+                seen.add(row_tuple)
+                unique_data.append(row)
+
+
+        data_frame = pd.DataFrame(unique_data)
         data[key] = data_frame.values.tolist()
 
     return data
@@ -84,7 +100,7 @@ def separate_target_variables(string_name, data):
     column_num = labels.get(string_name)
 
     for key, values in data.items():
-        next_column = pd.DataFrame(values).iloc(:,column_num)
+        next_column = pd.DataFrame(values).iloc(column_num)
 
     return all_columns
 
