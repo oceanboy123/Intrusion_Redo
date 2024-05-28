@@ -14,6 +14,7 @@
 import pandas as pd
 from datetime import datetime
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Reading data file from BBMP BIO
 raw_bbmp_data = 'bbmp_aggregated_profiles.csv'
@@ -108,14 +109,29 @@ def separate_target_variables(string_name, data):
 temperature_matrix = separate_target_variables('temperature', normalized_data)
 salinity_matrix = separate_target_variables('salinity', normalized_data)
 
-t_m = pd.DataFrame(temperature_matrix)
-s_m = pd.DataFrame(salinity_matrix)
+temperature_m = pd.DataFrame(temperature_matrix)
+salinity_m = pd.DataFrame(salinity_matrix)
 
-t_m_inter_1 = t_m.interpolate(axis=1)
-t_m_inter_12 = t_m_inter_1.interpolate(axis=0)
+temperature_m_inter_1 = temperature_m.interpolate(axis=1).replace(0,np.nan)
+temperature_m_inter_12 = temperature_m_inter_1.interpolate(axis=0).replace(0,np.nan)
 
-s_m_inter_1 = s_m.interpolate(axis=1)
-s_m_inter_12 = s_m_inter_1.interpolate(axis=0)
+salinity_m_inter_1 = salinity_m.interpolate(axis=1).replace(0,np.nan)
+salinity_m_inter_12 = salinity_m_inter_1.interpolate(axis=0).replace(0,np.nan)
+
+temperature_m_diff = pd.DataFrame(np.diff(temperature_m_inter_12, axis=1)).replace(0,np.nan)
+salinity_m_diff = pd.DataFrame(np.diff(salinity_m_inter_12, axis=1)).replace(0,np.nan)
+
+temperature_avg_60 = temperature_m_diff.iloc[list(np.where(final_depths > 60)[0]),:].mean(axis=0)
+salinity_avg_60 = salinity_m_diff.iloc[list(np.where(final_depths > 60)[0]),:].mean(axis=0)
+
+temperature_intrusion_dates = pd.DataFrame(interger_dates_final).iloc[list(np.where(temperature_avg_60 > 0.26)[0])]
+salinity_intrusion_dates = pd.DataFrame(interger_dates_final).iloc[list(np.where(salinity_avg_60 > 0.07)[0])]
+
+Both_intrusion_dates = [value for value in temperature_intrusion_dates.values.tolist() if value in salinity_intrusion_dates.values.tolist()]
+
+#plt.imshow(temperature_m_inter_12.to_numpy(), cmap = 'jet')
+#plt.colorbar()
+#plt.show()
 
 #    Found out there are timestamps that are different and therefore
 #    have multiple measuerements for the same day. Making some profiles
