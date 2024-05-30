@@ -124,8 +124,8 @@ salinity_m_diff = pd.DataFrame(np.diff(salinity_m_inter_12, axis=1)).replace(0,n
 temperature_avg_60 = temperature_m_diff.iloc[list(np.where(final_depths > 60)[0]),:].mean(axis=0)
 salinity_avg_60 = salinity_m_diff.iloc[list(np.where(final_depths > 60)[0]),:].mean(axis=0)
 
-temperature_intrusion_dates = pd.DataFrame(interger_dates_final).iloc[list(np.where(temperature_avg_60 > 0.26)[0])]
-salinity_intrusion_dates = pd.DataFrame(interger_dates_final).iloc[list(np.where(salinity_avg_60 > 0.07)[0])]
+temperature_intrusion_dates = pd.DataFrame(interger_dates_final).iloc[list(np.where(temperature_avg_60 > 0.26)[0]-1)]
+salinity_intrusion_dates = pd.DataFrame(interger_dates_final).iloc[list(np.where(salinity_avg_60 > 0.07)[0]-1)]
 
 Both_intrusion_dates = [value for value in temperature_intrusion_dates.values.tolist() if value in salinity_intrusion_dates.values.tolist()]
 
