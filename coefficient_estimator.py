@@ -15,6 +15,7 @@ import numpy as np
 import datetime
 import random
 import pandas as pd
+from scipy.optimize import minimize
 
 number_days = 48
 number_depths = 294
@@ -52,7 +53,7 @@ def make_sample_data(number_days,number_depths,low_temp,high_temp, low_salt,high
         #sample_timestamp_global = sample_timestamp_create
         
     sample_timestamps = sample_timestamp_create(init_year,1,1,end_year,1,1,number_days)
-    sample_intrusion_timestamps = random.choices(sample_timestamps[1:], k=num_intrusions)
+    sample_intrusion_timestamps = list(set(random.choices(sample_timestamps[1:], k=num_intrusions)))
     intrusion_indices = np.array([index for index, value in enumerate(sample_timestamps) if value in sample_intrusion_timestamps])
 
     sample_rowtemp_diff[intrusion_indices-1] = temp_diff_intrusion + random.uniform(0,np.percentile(sample_rowsalt_diff,60))
@@ -66,3 +67,36 @@ def make_sample_data(number_days,number_depths,low_temp,high_temp, low_salt,high
 
 sample_data = make_sample_data(number_days,number_depths,low_temp,high_temp, low_salt,high_salt,num_intrusions, init_year,end_year)
 
+def intrusion_ID_performance(lst,sample_data):
+    temp_intrusion_coeff, salt_intrusion_coeff = lst
+
+    temp_intrusion_dates = pd.DataFrame(sample_data['sample_timestamps']).iloc[list(np.where(sample_data['sample_diff_row_temp'] > temp_intrusion_coeff)[0]+1)]
+    salt_intrusion_dates = pd.DataFrame(sample_data['sample_timestamps']).iloc[list(np.where(sample_data['sample_diff_row_salt'] > salt_intrusion_coeff)[0]+1)]
+
+    estimated_intrusion_dates = [value for value in temp_intrusion_dates.values.tolist() if value in salt_intrusion_dates.values.tolist()]
+    estimated_intrusion_dates = [item for sublist in estimated_intrusion_dates for item in sublist]
+    real_intrusion_dates = sample_data['sample_intrusion_timestamps']
+    extra_id = [x for x in estimated_intrusion_dates if x not in real_intrusion_dates]
+    missed_id = [x for x in real_intrusion_dates if x not in estimated_intrusion_dates]
+
+    if len(estimated_intrusion_dates) != 0:
+        missed_id_parameter = len(missed_id)/len(real_intrusion_dates)
+        extra_id_parameter = len(extra_id)/len(estimated_intrusion_dates)
+
+        performance_parameter = (missed_id_parameter + extra_id_parameter)/2
+    else:
+        performance_parameter = 1
+
+    return performance_parameter
+
+temp_range = np.arange(0,1,0.01)
+salt_range = np.arange(0,1,0.01)
+result_final = []
+
+for temp_guess in temp_range:
+    for salt_guess in salt_range:
+        initial_guess = [temp_guess, salt_guess]
+        result = minimize(intrusion_ID_performance, initial_guess, args=(sample_data,))
+        result_final.append((result.x, result.fun))
+
+best_coefficients = min(result_final, key= lambda x: x[1])
