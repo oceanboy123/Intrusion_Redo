@@ -1,8 +1,5 @@
 # Importing relevant modules
-import pandas as pd
-from datetime import datetime
-import numpy as np
-import matplotlib.pyplot as plt
+import pickle
 import BBMP_data_tunnel as BBMP
 
 raw_bbmp_data = 'bbmp_aggregated_profiles.csv'
@@ -36,3 +33,7 @@ selected_data = {
     'temperature_coeff':[],
     'sallinity_coeff':[]
 }
+
+file_name = 'BBMP_salected_data.pkl'
+
+with open(file_name, 'wb') as file:pickle.dump(selected_data, file)
