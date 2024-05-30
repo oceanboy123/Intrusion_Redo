@@ -18,3 +18,21 @@ for names in target_variables[2:]:
     variables_matrices.append(matrix)
 
 transformed_data = BBMP.data_transformations(variables_matrices,target_variables[2:],normalized_data['Normalized Depths'])
+
+selected_data = {
+    'sample_row_temp': [],
+    'sample_diff_row_temp': transformed_data['temperature_avg_diff1_inter10'],
+    'sample_matrix_temp': transformed_data['temperature_interpolated_axis10'],
+
+    'sample_row_salt': [],
+    'sample_diff_row_salt': transformed_data['salinity_avg_diff1_inter10'],
+    'sample_matrix_salt': transformed_data['salinity_interpolated_axis10'],
+    
+    'sample_timestamps': normalized_data['Normalized Dates'],
+    'sample_depth': normalized_data['Normalized Depths'],
+
+    'sample_intrusion_timestamps':[],
+    'intrusion_indice':[],
+    'temperature_coeff':[],
+    'sallinity_coeff':[]
+}
