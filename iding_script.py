@@ -100,7 +100,7 @@ def separate_target_variables(string_name, data):
 
     column_num = labels.get(string_name)
 
-    for key, values in normalized_data.items():
+    for key, values in data.items():
         next_column = pd.DataFrame(values).iloc[:,column_num]
         all_columns.append(next_column)
 

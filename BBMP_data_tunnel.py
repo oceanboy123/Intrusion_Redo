@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 
 def get_and_group_data(file_name, variables_target):
+    import pandas as pd
     raw_bbmp_data = file_name
     BBMP_data = pd.read_csv(raw_bbmp_data)
 
