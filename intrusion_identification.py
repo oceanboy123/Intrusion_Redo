@@ -12,9 +12,6 @@ def intrusion_identification(temp_values, salt_values, dates, coefficients):
     return Both_intrusion_dates
 
 
-#plt.imshow(temperature_m_inter_12.to_numpy(), cmap = 'jet')
-#plt.colorbar()
-#plt.show()
 
 #    Found out there are timestamps that are different and therefore
 #    have multiple measuerements for the same day. Making some profiles
