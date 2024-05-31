@@ -1,5 +1,5 @@
 # Importing relevant modules
-import pickle
+import global_functions as gf
 import BBMP_data_tunnel as BBMP
 
 raw_bbmp_data = 'bbmp_aggregated_profiles.csv'
@@ -36,4 +36,4 @@ selected_data = {
 
 file_name = 'BBMP_salected_data.pkl'
 
-save_joblib(file_name, selected_data)
+gf.save_joblib(file_name, selected_data)
