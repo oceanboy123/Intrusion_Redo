@@ -60,8 +60,8 @@ def data_query(QUERY, DATA):
 def prepare_json_mySQL(file_name):
     with open(file_name+'.json') as file: data = json.load(file)
 
-    columns = list(data[0].keys())
-    column_def =  ', '.join([f"{columns} VARCHAR(255)" for column in columns])
+    columns = list(data.keys())
+    column_def =  ', '.join([f"{column} VARCHAR(255)" for column in columns])
 
     return column_def
 
@@ -69,7 +69,7 @@ def prepare_json_mySQL(file_name):
 
 
 def create_table_json(column_def, table_name):
-    table_query = f"CREATE TABLE IF NOT EXISTS {table_name} ({column_def})"
+    table_query = f"CREATE TABLE {table_name} ({column_def})"
     row_pointer.execute(table_query)
     connection.commit()
 
