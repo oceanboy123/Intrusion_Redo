@@ -1,6 +1,5 @@
 # Importing relevant modules
-import json
-import pickle
+import global_functions as gf
 import BBMP_data_tunnel as BBMP
 
 raw_bbmp_data = 'bbmp_aggregated_profiles.csv'
@@ -19,15 +18,15 @@ transformed_data = BBMP.data_transformations(variables_matrices,target_variables
 
 selected_data = {
     'sample_row_temp': [],
-    'sample_diff_row_temp': list(transformed_data['temperature_avg_diff1_inter10']),
-    'sample_matrix_temp': list(transformed_data['temperature_interpolated_axis10']),
+    'sample_diff_row_temp': transformed_data['temperature_avg_diff1_inter10'],
+    'sample_matrix_temp': transformed_data['temperature_interpolated_axis10'],
 
     'sample_row_salt': [],
-    'sample_diff_row_salt': list(transformed_data['salinity_avg_diff1_inter10']),
-    'sample_matrix_salt': list(transformed_data['salinity_interpolated_axis10']),
+    'sample_diff_row_salt': transformed_data['salinity_avg_diff1_inter10'],
+    'sample_matrix_salt': transformed_data['salinity_interpolated_axis10'],
     
-    'sample_timestamps': list(normalized_data['Normalized Dates']),
-    'sample_depth': list(normalized_data['Normalized Depths']),
+    'sample_timestamps': normalized_data['Normalized Dates'],
+    'sample_depth': normalized_data['Normalized Depths'],
 
     'sample_intrusion_timestamps':[],
     'intrusion_indice':[],
@@ -35,7 +34,6 @@ selected_data = {
     'sallinity_coeff':[]
 }
 
-file_name = 'BBMP_salected_data'
+file_name = 'BBMP_salected_data.pkl'
 
-with open(file_name+'.pkl', 'wb') as file:pickle.dump(selected_data, file)
-with open(file_name+'.json', 'w') as json_file:json.dump(selected_data, json_file, indent=4)
+gf.save_joblib(file_name, selected_data)
