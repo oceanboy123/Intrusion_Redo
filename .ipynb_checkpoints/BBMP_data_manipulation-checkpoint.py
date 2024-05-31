@@ -34,6 +34,6 @@ selected_data = {
     'sallinity_coeff':[]
 }
 
-file_name = 'BBMP_salected_data01.pkl'
+file_name = 'BBMP_salected_data.pkl'
 
 with open(file_name, 'wb') as file:pickle.dump(selected_data, file)
