@@ -2,7 +2,6 @@ import joblib
 from datetime import datetime
 import numpy as np
 
-joblib.dump(selected_data,'joblib_test.pkl')
 
 def save_joblib(file_name, data):
     joblib.dump(data, file_name)
