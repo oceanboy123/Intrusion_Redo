@@ -7,6 +7,6 @@ selected_data = import_pkl(file_name)
 
 yearly_profiles = separate_yearly_profiles(selected_data)
 
-plt.imshow(yearly_profiles['Yearly Temp Profile'][2024], cmap = 'jet')
-plt.colorbar()
-plt.show()
+#plt.imshow(selected_data['sample_matrix_temp'].to_numpy(), cmap = 'jet')
+#plt.colorbar()
+#plt.show()
