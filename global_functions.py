@@ -1,13 +1,18 @@
-import pickle
+import joblib
 from datetime import datetime
 import numpy as np
 
-def import_pkl(file_name):
-    file_name = 'BBMP_salected_data.pkl'
-    with open(file_name, 'rb') as file:
-        data = pickle.load(file)
-        
+joblib.dump(selected_data,'joblib_test.pkl')
+
+def save_joblib(file_name, data):
+    joblib.dump(data, file_name)
+    
+    
+def import_joblib(file_name):
+    data = joblib.load(file_name)
+    
     return data
+
 
 def separate_yearly_profiles(selected_data):
     sample_datetimes = [datetime.fromtimestamp(ts) for ts in selected_data['sample_timestamps']]

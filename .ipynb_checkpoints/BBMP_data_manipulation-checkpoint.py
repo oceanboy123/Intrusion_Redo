@@ -36,4 +36,4 @@ selected_data = {
 
 file_name = 'BBMP_salected_data.pkl'
 
-with open(file_name, 'wb') as file:pickle.dump(selected_data, file)
+save_joblib(file_name, selected_data)
