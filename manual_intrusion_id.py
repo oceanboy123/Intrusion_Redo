@@ -11,13 +11,14 @@ yearly_profiles = gf.separate_yearly_profiles(selected_data)
 points = []
 def onclick(event):
     if event.button == 1:
-        x, y = event.xdata, event.ydata
+        if event.inaxes is not None:
+            x, y = event.xdata, event.ydata
 
-        points.append((x, y))
+            points.append((x, y))
 
-        print(f"Point selected: ({x}, {y})")
-        event.inaxes.plot(x, y, 'ro')
-        event.canvas.draw()
+            print(f"Point selected: ({x}, {y})")
+            event.inaxes.plot(x, y, 'ro')
+            event.canvas.draw()
 
 def onkey(event):
     if event.key == ' ':
@@ -42,9 +43,7 @@ for yr in year_list:
 
     cid_key = fig['Figure'].canvas.mpl_connect('key_press_event', onkey)
 
-    points_year[str(yr)] = get_points()
-
     plt.show()
 
 points_name = 'manual_intrusions_'+ str(year_list[0]) + str(year_list[-1])
-gf.save_joblib(points_name, points_year)
+gf.save_joblib(points_name, get_points)
