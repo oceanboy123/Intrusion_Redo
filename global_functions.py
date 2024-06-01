@@ -36,4 +36,4 @@ def separate_yearly_profiles(selected_data):
         yearly_profile_salt = selected_data_salt[:, indices]
         yearly_profiles_salt[year] = yearly_profile_salt
         
-    return {'Yearly Temp Profile': yearly_profiles_temp, 'Yearly Salt Profile': yearly_profiles_salt}
+    return {'Yearly Temp Profile': yearly_profiles_temp, 'Yearly Salt Profile': yearly_profiles_salt, 'Indices by Year':by_year_indices}
