@@ -1,6 +1,8 @@
 import joblib
 from datetime import datetime
 import numpy as np
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 
 
 def save_joblib(file_name, data):
@@ -37,3 +39,35 @@ def separate_yearly_profiles(selected_data):
         yearly_profiles_salt[year] = yearly_profile_salt
         
     return {'Yearly Temp Profile': yearly_profiles_temp, 'Yearly Salt Profile': yearly_profiles_salt, 'Indices by Year':by_year_indices}
+
+
+
+
+def plot_year_profiles(original_data, year_data, yr):
+    year = yr
+    timestamp = original_data['sample_timestamps'][year_data['Indices by Year'][year][0]:year_data['Indices by Year'][year][-1]]
+    datetime_list = [datetime.fromtimestamp(stamp) for stamp in timestamp]
+
+    fig, axs = plt.subplots(2)
+
+    X,Y = np.meshgrid(datetime_list, original_data['sample_depth'])
+    mesh0 = axs[0].pcolormesh(X,Y,year_data['Yearly Temp Profile'][year][:,:len(Y[0,:])], cmap='seismic')
+    cbar0 = fig.colorbar(mesh0, ax=axs[0])
+    axs[0].invert_yaxis()
+    mesh0.set_clim(0,10)
+    axs[0].set_xticks([])
+
+    mesh1 = axs[1].pcolormesh(X,Y,year_data['Yearly Salt Profile'][year][:,:len(Y[0,:])], cmap='seismic')
+    cbar1 = fig.colorbar(mesh1, ax=axs[1])
+    axs[1].invert_yaxis()
+    mesh1.set_clim(30.5,31.5)
+    axs[1].xaxis.set_major_formatter(mdates.DateFormatter("%m"))
+
+    fig.tight_layout()
+    year_box = axs[0].text(0.02,0.85,str(year), transform=axs[0].transAxes,fontsize=14,verticalalignment='bottom',horizontalalignment='left',bbox=dict(facecolor='white',alpha=0.5))
+
+    return {
+        'Figure':fig,
+        'Axes':axs,
+        'Mesh':[mesh0,mesh1]
+    }
