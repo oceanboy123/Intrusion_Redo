@@ -15,6 +15,47 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
+def intrusion_date_comparison(manual_dates, estimated_dates):
+    def within_days(date1, date2):
+        return abs((dt2 - dt1).days) <= 10
+
+    matching = []
+    unmatched_md = []
+    unmatched_ed = []
+
+    for dt1 in manual_dates:
+        found_match = False
+
+        for dt2 in estimated_dates:
+            if within_days(dt1, dt2):
+                matching.append((dt1, dt2))
+                found_match = True
+                break
+
+        if not found_match:
+            unmatched_md.append(dt1)
+
+    for dt2 in estimated_dates:
+        found_match = False
+
+        for dt1 in manual_dates:
+            if within_days(dt1, dt2):
+                found_match = True
+                break
+        
+        if not found_match:
+            unmatched_ed.append(dt2)
+
+
+
+    return {
+        'Matched':matching,
+        'Only Manual':unmatched_md,
+        'Only Estimated':unmatched_ed,
+    }
+
+
+
 def estimate_coefficients(sample_data):
     def intrusion_ID_performance(lst,sample_data):
         temp_intrusion_coeff, salt_intrusion_coeff = lst
@@ -24,9 +65,12 @@ def estimate_coefficients(sample_data):
 
         estimated_intrusion_dates = [value for value in temp_intrusion_dates.values.tolist() if value in salt_intrusion_dates.values.tolist()]
         estimated_intrusion_dates = [item for sublist in estimated_intrusion_dates for item in sublist]
+        estimated_intrusion_dates = [datetime.fromtimestamp(dt) for dt in estimated_intrusion_dates]
         real_intrusion_dates = sample_data['sample_intrusion_timestamps']
-        extra_id = [x for x in estimated_intrusion_dates if x not in real_intrusion_dates]
-        missed_id = [x for x in real_intrusion_dates if x not in estimated_intrusion_dates]
+        comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates)
+        missed_id = comparison_dates['Only Manual']
+        extra_id = comparison_dates['Only Estimated']
+
 
         if len(estimated_intrusion_dates) != 0:
             missed_id_parameter = len(missed_id)/len(real_intrusion_dates)
@@ -50,3 +94,6 @@ def estimate_coefficients(sample_data):
 
     best_coefficients = min(result_final, key= lambda x: x[1])
     return best_coefficients
+
+
+    
