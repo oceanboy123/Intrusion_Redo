@@ -71,3 +71,28 @@ def plot_year_profiles(original_data, year_data, yr, ranges):
         'Axes':axs,
         'Mesh':[mesh0,mesh1]
     }
+
+
+
+
+points = []
+def onclick(event):
+    if event.buttom == 1:
+        x, y = event.xdata, event.ydata
+
+        points.append((x, y))
+
+        print(f"Point selected: ({x}, {y})")
+        event.inaxes.plot(x, y, 'ro')
+        event.canvas.draw()
+
+
+
+def onkey(event):
+    if event.key == ' ':
+        plt.close(event.canvas.figure)
+
+
+
+def get_points():
+    return points
