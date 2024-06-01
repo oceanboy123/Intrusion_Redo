@@ -1,5 +1,5 @@
 import joblib
-from datetime import datetime
+from datetime import datetime,timedelta
 import numpy as np
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -70,3 +70,12 @@ def plot_year_profiles(original_data, year_data, yr, ranges):
         'Axes':axs,
         'Mesh':[mesh0,mesh1]
     }
+
+
+def from_1970(date):
+    reference_date = datetime(1970, 1, 1)
+
+    delta = timedelta(days=date)
+    datetime_obj = reference_date + delta
+
+    return datetime_obj

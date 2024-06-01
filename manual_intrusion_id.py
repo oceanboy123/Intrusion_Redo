@@ -1,6 +1,7 @@
 import global_functions as gf
 import matplotlib.pyplot as plt
 from datetime import datetime
+import numpy as np
 
 file_name = 'BBMP_salected_data.pkl'
 
@@ -45,5 +46,7 @@ for yr in year_list:
 
     plt.show()
 
-points_name = 'manual_intrusions_'+ str(year_list[0]) + str(year_list[-1])
-gf.save_joblib(points_name, get_points)
+intrusion_dates = list(np.array(get_points)[:,0])
+intrusion_datetimes = [gf.from_1970(dt) for dt in intrusion_dates]
+selected_data['sample_intrusion_timestamps'] = intrusion_datetimes
+gf.save_joblib(file_name, selected_data)
