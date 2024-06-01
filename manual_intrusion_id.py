@@ -9,7 +9,7 @@ yearly_profiles = gf.separate_yearly_profiles(selected_data)
 
 points = []
 def onclick(event):
-    if event.buttom == 1:
+    if event.button == 1:
         x, y = event.xdata, event.ydata
 
         points.append((x, y))
