@@ -1,5 +1,4 @@
 import global_functions as gf
-from global_functions import onclick, onkey
 import matplotlib.pyplot as plt
 
 file_name = 'BBMP_salected_data.pkl'
