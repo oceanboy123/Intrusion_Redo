@@ -76,7 +76,7 @@ def estimate_coefficients(sample_data):
             missed_id_parameter = len(missed_id)/len(real_intrusion_dates)
             extra_id_parameter = len(extra_id)/len(estimated_intrusion_dates)
 
-            performance_parameter = (missed_id_parameter + extra_id_parameter)/2
+            performance_parameter = (2*(missed_id_parameter) + extra_id_parameter)/3
         else:
             performance_parameter = 1
 
