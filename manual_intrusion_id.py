@@ -6,4 +6,4 @@ selected_data = gf.import_joblib(file_name)
 
 yearly_profiles = gf.separate_yearly_profiles(selected_data)
 
-gf.plot_year_profiles(selected_data, yearly_profiles, 2023)
+gf.plot_year_profiles(selected_data, yearly_profiles, 2023,[[0,10],[30.5,31.5]])
