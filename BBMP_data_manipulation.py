@@ -25,13 +25,19 @@ selected_data = {
     'sample_diff_row_salt': transformed_data['salinity_avg_diff1_inter10'],
     'sample_matrix_salt': transformed_data['salinity_interpolated_axis10'],
     
+    'sample_row_oxy': [],
+    'sample_diff_row_oxy': transformed_data['oxygen_avg_diff1_inter10'],
+    'sample_matrix_oxy': transformed_data['oxygen_interpolated_axis10'],
+
     'sample_timestamps': normalized_data['Normalized Dates'],
     'sample_depth': normalized_data['Normalized Depths'],
 
     'sample_intrusion_timestamps':[],
     'intrusion_indice':[],
     'temperature_coeff':[],
-    'sallinity_coeff':[]
+    'sallinity_coeff':[],
+    'oxygen_coeff':[],
+    'Performance':[]
 }
 
 file_name = 'BBMP_salected_data.pkl'
