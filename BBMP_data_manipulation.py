@@ -1,9 +1,9 @@
 # Importing relevant modules
 import global_functions as gf
-import BBMP_data_tunnel as BBMP
+import BBMP_data_functions as BBMP
 
 raw_bbmp_data = 'bbmp_aggregated_profiles.csv'
-target_variables = ['time_string','pressure','salinity','temperature']
+target_variables = ['time_string','pressure','salinity','temperature','oxygen']
 
 nested_data = BBMP.get_and_group_data(raw_bbmp_data,target_variables)
 

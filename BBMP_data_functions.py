@@ -24,8 +24,6 @@ def get_and_group_data(file_name, variables_target):
     target_data['Timestamp'] = dates_type_int
     grouped_by_date = target_data.groupby('Timestamp')
 
-
-    unique_dates = list(grouped_by_date.groups.keys())
     nested_groups = {}
 
     for group_name, group_data in grouped_by_date:
@@ -92,6 +90,7 @@ def separate_target_variables(string_name, data):
     
     all_columns = []
     labels = {
+        'oxygen':4,
         'temperature':3,
         'salinity':2
     }
