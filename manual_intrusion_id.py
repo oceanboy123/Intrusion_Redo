@@ -52,7 +52,7 @@ print('Intrusion identification completed')
 
 intrusion_dates = list(np.array(get_points)[:,0])
 intrusion_datetimes = [gf.from_1970(dt) for dt in intrusion_dates]
-selected_data['sample_intrusion_timestamps'] = intrusion_datetimes
+selected_data['sample_intrusion_timestamps'] = selected_data['sample_intrusion_timestamps'].append(intrusion_datetimes)
 
 version = input('Version name (Keep it simple):   ')
 file_fname = file_name + '_' + version
