@@ -3,7 +3,7 @@ import datetime
 import random
 import pandas as pd
 
-def make_fake_data(number_days,number_depths,low_temp,high_temp, low_salt,high_salt,num_intrusions, init_year,end_year):
+def make_test_data(number_days,number_depths,low_temp,high_temp, low_salt,high_salt,num_intrusions, init_year,end_year):
     sample_depths = np.linspace(0.5, 74, number_depths)
         
     sample_temp_matrix = np.random.uniform(low_temp, high_temp, size=(number_depths, number_days))
