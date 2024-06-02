@@ -2,10 +2,12 @@ import pandas as pd
 import numpy as np
 
 def get_and_group_data(file_name, variables_target):
+    
+    print('Reading CSV file')
     raw_bbmp_data = file_name
     BBMP_data = pd.read_csv(raw_bbmp_data)
 
-    # Extrating target data
+    print('Extrating target data')
     target_variables = variables_target
     target_data = BBMP_data.loc[:,target_variables]
 
@@ -20,12 +22,11 @@ def get_and_group_data(file_name, variables_target):
         int_ = days.timestamp()
         dates_type_int.append(int_ )
 
-    # Updating target data and grouping by day
+    print('Updating target data and grouping by day')
     target_data['Timestamp'] = dates_type_int
     grouped_by_date = target_data.groupby('Timestamp')
 
     nested_groups = {}
-
     for group_name, group_data in grouped_by_date:
         nested_groups[group_name] = group_data.values.tolist()
 
@@ -41,6 +42,7 @@ def get_and_group_data(file_name, variables_target):
 
 
 def normalize_length_data(data,upress):
+    print('Nomalizing depths and filling with NaN')
     for key, values in data.items():
         data_frame = pd.DataFrame(values)
 
@@ -97,6 +99,7 @@ def separate_target_variables(string_name, data):
 
     column_num = labels.get(string_name)
 
+    print('Creating Target Variable Matrices')
     for key, values in data.items():
         next_column = pd.DataFrame(values).iloc[:,column_num]
         all_columns.append(next_column)
@@ -107,6 +110,9 @@ def separate_target_variables(string_name, data):
 
 
 def data_transformations(matrix_list,variables_target,normalized_depths):
+    
+    print('Interpolating Data')
+
     transform_data = {}
     transformation_names = [
         '_interpolated_axis0',

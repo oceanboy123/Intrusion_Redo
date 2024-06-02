@@ -3,11 +3,14 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import numpy as np
 
-file_name = 'BBMP_salected_data.pkl'
+file_name = input("Enter the file name for intrusion identification (.pkl):   ")
 
+print('Importing Data')
 selected_data = gf.import_joblib(file_name)
 
 yearly_profiles = gf.separate_yearly_profiles(selected_data)
+
+print('Intrusion identification in progress')
 
 points = []
 def onclick(event):
@@ -45,8 +48,13 @@ for yr in year_list:
     cid_key = fig['Figure'].canvas.mpl_connect('key_press_event', onkey)
 
     plt.show()
+print('Intrusion identification completed')
 
 intrusion_dates = list(np.array(get_points)[:,0])
 intrusion_datetimes = [gf.from_1970(dt) for dt in intrusion_dates]
 selected_data['sample_intrusion_timestamps'] = intrusion_datetimes
-gf.save_joblib(file_name, selected_data)
+
+version = input('Version name (Keep it simple):   ')
+file_fname = file_name + '_' + version
+gf.save_joblib(file_fname, selected_data)
+print(f'Saved as {file_fname}')

@@ -5,6 +5,7 @@ import BBMP_data_functions as BBMP
 raw_bbmp_data = 'bbmp_aggregated_profiles.csv'
 target_variables = ['time_string','pressure','salinity','temperature','oxygen']
 
+
 nested_data = BBMP.get_and_group_data(raw_bbmp_data,target_variables)
 
 normalized_data = BBMP.normalize_length_data(nested_data['Nested Groups'],nested_data['Unique Depths'])
@@ -40,6 +41,7 @@ selected_data = {
     'Performance':[]
 }
 
-file_name = 'BBMP_salected_data.pkl'
+file_name = 'BBMP_salected_data0.pkl'
 
 gf.save_joblib(file_name, selected_data)
+print(f'Saved as {file_name}')
