@@ -11,7 +11,7 @@ def get_and_group_data(file_name, variables_target):
     target_variables = variables_target
     target_data = BBMP_data.loc[:,target_variables]
 
-    # Formating date_string into interger. Days from 01/01/1970 
+  
     date_format = "%Y-%m-%d %H:%M:%S"
     dates_type_datetime = pd.to_datetime(target_data.iloc[:,0], format=date_format)
     target_data['time_string'] = dates_type_datetime
@@ -28,7 +28,7 @@ def get_and_group_data(file_name, variables_target):
 
     nested_groups = {}
     for group_name, group_data in grouped_by_date:
-        nested_groups[group_name] = group_data.values.tolist()
+        nested_groups[group_name] = group_data
 
     unique_depths = list(set(list(target_data.iloc[:,1])))
     unique_depths.sort()
@@ -52,6 +52,7 @@ def normalize_length_data(data,upress):
                 new_row = [
                     data_frame.iloc[0,0],
                     p,
+                    float('nan'),
                     float('nan'),
                     float('nan'),
                     data_frame.iloc[0,-1]
