@@ -44,7 +44,7 @@ def get_and_group_data(file_name, variables_target):
 def normalize_length_data(data,upress):
     print('Nomalizing depths and filling with NaN')
     for key, values in data.items():
-        data_frame = pd.DataFrame(values)
+        data_frame = values
 
         for p in upress:
             if p not in data_frame.iloc[:,1].values:
@@ -75,7 +75,7 @@ def normalize_length_data(data,upress):
 
 
         data_frame = pd.DataFrame(unique_data)
-        data[key] = data_frame.values.tolist()
+        data[key] = data_frame
 
     normalized_depths = pd.DataFrame(data[list(data.keys())[0]]).loc[:,1]
     normalized_dates = list(data.keys())
