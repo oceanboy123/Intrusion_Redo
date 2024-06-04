@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import numpy as np
 
-file_name = input("Enter the file name for intrusion identification (.pkl):   ")
+file_name = input("Enter the file name for intrusion identification (include .pkl):   ")
 
 print('Importing Data')
 selected_data = gf.import_joblib(file_name)
@@ -52,9 +52,8 @@ print('Intrusion identification completed')
 
 intrusion_dates = list(np.array(get_points)[:,0])
 intrusion_datetimes = [gf.from_1970(dt) for dt in intrusion_dates]
-selected_data['sample_intrusion_timestamps'] = selected_data['sample_intrusion_timestamps'].append(intrusion_datetimes)
 
 version = input('Version name (Keep it simple):   ')
-file_fname = file_name + '_' + version
-gf.save_joblib(file_fname, selected_data)
+file_fname = 'manual_intrusions' + '_' + version + '.pkl'
+gf.save_joblib(file_fname, intrusion_datetimes)
 print(f'Saved as {file_fname}')
