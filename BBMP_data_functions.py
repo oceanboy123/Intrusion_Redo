@@ -61,6 +61,7 @@ def normalize_length_data(data,upress):
                 data_frame = pd.concat([data_frame, new_df_row.T], ignore_index=True)
         
         data_frame = data_frame.sort_values(by=1).reset_index(drop=True)
+        column_names = data_frame.columns.tolist()
 
         # Check for duplicated data
         column_index = 1
@@ -74,10 +75,10 @@ def normalize_length_data(data,upress):
                 unique_data.append(row)
 
 
-        data_frame = pd.DataFrame(unique_data)
+        data_frame = pd.DataFrame(unique_data, columns=column_names)
         data[key] = data_frame
 
-    normalized_depths = pd.DataFrame(data[list(data.keys())[0]]).loc[:,1]
+    normalized_depths = pd.DataFrame(data[list(data.keys())[0]]).loc[:,1].tolist()
     normalized_dates = list(data.keys())
 
     return {
