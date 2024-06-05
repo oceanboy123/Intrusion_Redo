@@ -95,7 +95,7 @@ def separate_target_variables(string_name, data):
 
     print('Creating Target Variable Matrices')
     for key, values in data.items():
-        next_column = values.iloc[string_name]
+        next_column = values[string_name]
         all_columns.append(next_column)
 
     return np.transpose(all_columns)
