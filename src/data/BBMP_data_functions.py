@@ -58,7 +58,6 @@ def normalize_length_data(data,upress):
                     data_frame.iloc[0,-1]
                 ]
                 new_df_row = pd.DataFrame(new_row).T
-                print(new_df_row)
                 new_df_row.columns = data_frame.columns.tolist()
                 data_frame = pd.concat([data_frame, new_df_row], ignore_index=True)
         
@@ -76,11 +75,10 @@ def normalize_length_data(data,upress):
                 seen.add(value)
                 unique_data.append(row)
 
-
         data_frame = pd.DataFrame(unique_data, columns=column_names)
         data[key] = data_frame
-
-    normalized_depths = pd.DataFrame(data[list(data.keys())[0]]).loc[:,1].tolist()
+    print(data[list(data.keys())[0]])
+    normalized_depths = data[list(data.keys())[0]].loc[:,1].tolist()
     normalized_dates = list(data.keys())
 
     return {
