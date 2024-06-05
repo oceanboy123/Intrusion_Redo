@@ -99,7 +99,7 @@ def from_1970(date):
 
 
 def intrusion_date_comparison(manual_dates, estimated_dates):
-    def within_days(date1, date2):
+    def within_days(dt1, dt2):
         return abs((dt2 - dt1).days) <= 10
 
     matching = []
@@ -152,8 +152,11 @@ def estimate_coefficients(sample_data):
         estimated_intrusion_dates = [datetime.fromtimestamp(dt) for dt in estimated_intrusion_dates]
         real_intrusion_dates = sample_data['sample_intrusion_timestamps']
         comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates)
+        
+        global missed_id, extra_id, caught_id
         missed_id = comparison_dates['Only Manual']
         extra_id = comparison_dates['Only Estimated']
+        caught_id = comparison_dates['Matched']
 
 
         if len(estimated_intrusion_dates) != 0:
@@ -177,7 +180,12 @@ def estimate_coefficients(sample_data):
             result_final.append((result.x, result.fun))
 
     best_coefficients = min(result_final, key= lambda x: x[1])
-    return best_coefficients
+    return {
+        'Estimated Coefficient':best_coefficients,
+        'Intrusions Missed': missed_id,
+        'Intrusions Extra': extra_id,
+        'Intrusions IDed': caught_id ,
+    }
 
 
 
