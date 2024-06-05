@@ -25,8 +25,6 @@ def import_joblib(file_name):
     return data
 
 
-
-
 def separate_yearly_profiles(selected_data):
     sample_datetimes = [datetime.fromtimestamp(ts) for ts in selected_data['sample_timestamps']]
     years_extracted = np.unique([dt.year for dt in sample_datetimes])
@@ -150,10 +148,11 @@ def estimate_coefficients(sample_data):
         estimated_intrusion_dates = [value for value in temp_intrusion_dates.values.tolist() if value in salt_intrusion_dates.values.tolist()]
         estimated_intrusion_dates = [item for sublist in estimated_intrusion_dates for item in sublist]
         estimated_intrusion_dates = [datetime.fromtimestamp(dt) for dt in estimated_intrusion_dates]
+        
+        global real_intrusion_dates
         real_intrusion_dates = sample_data['sample_intrusion_timestamps']
         comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates)
         
-        global missed_id, extra_id, caught_id
         missed_id = comparison_dates['Only Manual']
         extra_id = comparison_dates['Only Estimated']
         caught_id = comparison_dates['Matched']
@@ -180,22 +179,47 @@ def estimate_coefficients(sample_data):
             result_final.append((result.x, result.fun))
 
     best_coefficients = min(result_final, key= lambda x: x[1])
+
+    temp_coeff = list(best_coefficients[0])[0]
+    salt_coeff = list(best_coefficients[0])[0]
+
+    result_comp = intrusion_date_comparison(real_intrusion_dates, 
+                                            intrusion_identification(sample_data, [temp_coeff, salt_coeff]))
+
     return {
         'Estimated Coefficient':best_coefficients,
-        'Intrusions Missed': missed_id,
-        'Intrusions Extra': extra_id,
-        'Intrusions IDed': caught_id ,
+        'Intrusions Missed': result_comp['Only Manual'],
+        'Intrusions Extra': result_comp['Only Estimated'],
+        'Intrusions IDed': result_comp['Matched'] ,
     }
 
 
 
 
-def intrusion_identification(temp_values, salt_values, dates, coefficients):
+def intrusion_identification(sample_data, coefficients):
     temp_coeff = coefficients[0]
     salt_coeff = coefficients[1]
+
+    temp_values = sample_data['sample_diff_row_temp']
+    salt_values = sample_data['sample_diff_row_salt']
+    dates = sample_data['sample_timestamps']
+
     temperature_intrusion_dates = pd.DataFrame(dates).iloc[list(np.where(temp_values > temp_coeff)[0])]
     salinity_intrusion_dates = pd.DataFrame(dates).iloc[list(np.where(salt_values > salt_coeff)[0])]
 
     Both_intrusion_dates = [value for value in temperature_intrusion_dates.values.tolist() if value in salinity_intrusion_dates.values.tolist()]
-    
+    Both_intrusion_dates = [item for sublist in Both_intrusion_dates for item in sublist]
+    Both_intrusion_dates = [datetime.fromtimestamp(dt) for dt in Both_intrusion_dates]
+
     return Both_intrusion_dates
+
+
+def plot_year(file_name, ranges, yr):
+    range_1 = ranges[0]
+    range_2 = ranges[1]
+    selected_data = import_joblib(file_name)
+
+    yearly_profiles = separate_yearly_profiles(selected_data)
+    
+    plot_year_profiles(selected_data, yearly_profiles, 
+                        yr,[range_1, range_2])
