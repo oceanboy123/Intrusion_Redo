@@ -34,6 +34,7 @@ def get_points():
 
 range_1 = [0,10]
 range_2 = [30.5,31.5]
+range_3 = [0,12]
 points_year = {}
 
 timestamp = selected_data['sample_timestamps']
@@ -41,7 +42,7 @@ year_list = list(set([datetime.fromtimestamp(stamp).year for stamp in timestamp]
 
 for yr in year_list:
     fig = gf.plot_year_profiles(selected_data, yearly_profiles, 
-                        yr,[range_1, range_2])
+                        yr,[range_1, range_2, range_3])
 
     cid_click = fig['Figure'].canvas.mpl_connect('button_press_event', onclick)
 
@@ -50,7 +51,7 @@ for yr in year_list:
     plt.show()
 print('Intrusion identification completed')
 
-intrusion_dates = list(np.array(get_points)[:,0])
+intrusion_dates = list(np.array(get_points())[:,0])
 intrusion_datetimes = [gf.from_1970(dt) for dt in intrusion_dates]
 
 version = input('Version name (Keep it simple):   ')
