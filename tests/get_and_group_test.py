@@ -1,5 +1,6 @@
 import sys
 import os
+import joblib
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src', 'data'))
 
@@ -84,7 +85,7 @@ selected_data = {
     'Performance':[]
 }
 
-file_name = 'BBMP_salected_data0.pkl'
+file_name = 'BBMP_salected_data_test.pkl'
 
 joblib.dump(selected_data, file_name)
 print(f'Saved as {file_name}')
