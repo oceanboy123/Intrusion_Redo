@@ -78,7 +78,7 @@ def normalize_length_data(data,upress):
         data_frame = pd.DataFrame(unique_data, columns=column_names)
         data[key] = data_frame
     print(data[list(data.keys())[0]])
-    normalized_depths = data[list(data.keys())[0]].loc[:,1].tolist()
+    normalized_depths = data[list(data.keys())[0]]['pressure'].tolist()
     normalized_dates = list(data.keys())
 
     return {
