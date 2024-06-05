@@ -1,5 +1,5 @@
 # Importing relevant modules
-import global_functions as gf
+import joblib
 import BBMP_data_functions as BBMP
 
 raw_bbmp_data = 'bbmp_aggregated_profiles.csv'
@@ -44,5 +44,5 @@ selected_data = {
 
 file_name = 'BBMP_salected_data0.pkl'
 
-gf.save_joblib(file_name, selected_data)
+joblib.dump(selected_data, file_name)
 print(f'Saved as {file_name}')
