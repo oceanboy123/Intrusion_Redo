@@ -60,7 +60,7 @@ def normalize_length_data(data,upress):
                 new_df_row = pd.DataFrame(new_row).T
                 new_df_row.columns = data_frame.columns.tolist()
                 data_frame = pd.concat([data_frame, new_df_row], ignore_index=True)
-        data_frame = data_frame.sort_values(by=1).reset_index(drop=True)
+        data_frame = data_frame.sort_values(by=1)
         column_names = data_frame.columns.tolist()
 
         # Check for duplicated data
