@@ -5,8 +5,9 @@ import BBMP_data_functions as BBMP
 raw_bbmp_data = 'bbmp_aggregated_profiles.csv'
 target_variables = ['time_string','pressure','salinity','temperature','oxygen']
 
-
 nested_data = BBMP.get_and_group_data(raw_bbmp_data,target_variables)
+
+print(nested_data['Nested Groups'][list(nested_data['Nested Groups'].keys())[0]].head())
 
 normalized_data = BBMP.normalize_length_data(nested_data['Nested Groups'],nested_data['Unique Depths'])
 
