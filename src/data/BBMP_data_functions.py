@@ -77,7 +77,7 @@ def normalize_length_data(data,upress):
 
         data_frame = pd.DataFrame(unique_data, columns=column_names)
         data[key] = data_frame
-    print(data[list(data.keys())[0]])
+
     normalized_depths = data[list(data.keys())[0]]['pressure'].tolist()
     normalized_dates = list(data.keys())
 
@@ -90,20 +90,12 @@ def normalize_length_data(data,upress):
 
 
 
-def separate_target_variables(string_name, data):
-    
+def separate_target_variables(string_name, data): 
     all_columns = []
-    labels = {
-        'oxygen':4,
-        'temperature':3,
-        'salinity':2
-    }
-
-    column_num = labels.get(string_name)
 
     print('Creating Target Variable Matrices')
     for key, values in data.items():
-        next_column = pd.DataFrame(values).iloc[:,column_num]
+        next_column = values.iloc[string_name]
         all_columns.append(next_column)
 
     return np.transpose(all_columns)
@@ -128,7 +120,7 @@ def data_transformations(matrix_list,variables_target,normalized_depths):
         matrix_interpolated_axis0 = pandas_matrix.interpolate(axis=0).replace(0,np.nan)
         matrix_interpolated_axis10 = matrix_interpolated_axis0.interpolate(axis=1).replace(0,np.nan)
         matrix_diff = pd.DataFrame(np.diff(matrix_interpolated_axis10, axis=1)).replace(0,np.nan)
-        matrix_avg_below = matrix_diff.iloc[list(np.where(normalized_depths > 60)[0]),:].mean(axis=0)
+        matrix_avg_below = matrix_diff.iloc[list(np.where(np.array(normalized_depths) > 60)[0]),:].mean(axis=0)
 
         transform_data[variables_target[count]+transformation_names[0]] = matrix_interpolated_axis0
         transform_data[variables_target[count]+transformation_names[1]] = matrix_interpolated_axis10
