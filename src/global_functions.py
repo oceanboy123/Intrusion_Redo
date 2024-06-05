@@ -1,4 +1,5 @@
 import joblib
+import os
 from datetime import datetime,timedelta
 import numpy as np
 import matplotlib.dates as mdates
@@ -9,13 +10,17 @@ from scipy.optimize import minimize
 
 
 def save_joblib(file_name, data):
-    joblib.dump(data, file_name)
+    directory = 'data'
+    file_path = os.path.join(directory, file_name)
+    joblib.dump(data, file_path)
     
 
 
     
 def import_joblib(file_name):
-    data = joblib.load(file_name)
+    directory = 'data'
+    file_path = os.path.join(directory, file_name)
+    data = joblib.load(file_path)
     
     return data
 
