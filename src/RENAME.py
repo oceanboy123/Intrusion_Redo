@@ -5,13 +5,13 @@ from datetime import datetime
 import numpy as np
 
 file_name = input("Enter the file name for intrusion identification (include .pkl):   ")
-
-print('Importing Data')
+lin = "-"*6+' '
+print(lin+'Importing Data')
 selected_data = gf.import_joblib(file_name)
 
 yearly_profiles = gf.separate_yearly_profiles(selected_data)
 
-print('Intrusion identification in progress')
+print(lin+'Intrusion identification in progress')
 
 points = []
 def onclick(event):
@@ -43,14 +43,14 @@ year_list = list(set([datetime.fromtimestamp(stamp).year for stamp in timestamp]
 
 for yr in year_list:
     fig = gf.plot_year_profiles(selected_data, yearly_profiles, 
-                        yr,[range_1, range_2, range_3])
+                        yr,[range_1, range_2])
 
     cid_click = fig['Figure'].canvas.mpl_connect('button_press_event', onclick)
 
     cid_key = fig['Figure'].canvas.mpl_connect('key_press_event', onkey)
 
     plt.show()
-print('Intrusion identification completed')
+print(lin+'Intrusion identification completed')
 
 intrusion_dates = list(np.array(get_points())[:,0])
 intrusion_datetimes = [gf.from_1970(dt) for dt in intrusion_dates]
@@ -61,10 +61,18 @@ gf.save_joblib(file_fname, intrusion_datetimes)
 print(f'Saved as {file_fname}')
 
 
+intrusion_type: int = input('What type? Enter the number inside the brakets. Normal[0] / Mid[1] / Inverse[2]:   ')
 
-selected_data['sample_intrusion_timestamps'] = intrusion_datetimes
+if intrusion_type is 0:
+    selected_data['sample_intrusion_timestamps'] = intrusion_datetimes
+elif intrusion_type is 1:
+    selected_data['sample_mid_timestamps'] = intrusion_datetimes
+elif intrusion_type is 2:
+    selected_data['sample_inverse_timestamps'] = intrusion_datetimes
+else:
+    print('Dates not saved, input not recognized')
 
-print('Estimating coefficients for optimized intrusion identification')
+print(lin+'Estimating coefficients for optimized intrusion identification')
 results = gf.estimate_coefficients(selected_data)
 
 selected_data['intrusion_indice'] = [results['Intrusions Missed'], 
@@ -72,7 +80,7 @@ selected_data['intrusion_indice'] = [results['Intrusions Missed'],
                                        results['Intrusions IDed']]
 
 
-print('Recording results in data file')
+print(lin+'Recording results in data file')
 selected_data['temperature_coeff'] = list(results['Estimated Coefficient'][0])[0]
 selected_data['sallinity_coeff'] = list(results['Estimated Coefficient'][0])[1]
 selected_data['Performance'] = results['Estimated Coefficient'][1]
