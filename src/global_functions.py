@@ -9,72 +9,98 @@ from scipy.optimize import minimize
 
 
 
-def save_joblib(file_name, data):
-    directory = 'data'
+def save_joblib(file_name: str, data: any) -> None:
+    directory: str = 'data'
     file_path = os.path.join(directory, file_name)
     joblib.dump(data, file_path)
-    
 
 
-    
-def import_joblib(file_name):
-    directory = 'data'
+def import_joblib(file_name: str) -> any:
+    directory: str = 'data'
     file_path = os.path.join(directory, file_name)
-    data = joblib.load(file_path)
+    data: any = joblib.load(file_path)
     
     return data
 
 
-def separate_yearly_profiles(selected_data):
-    sample_datetimes = [datetime.fromtimestamp(ts) for ts in selected_data['sample_timestamps']]
-    years_extracted = np.unique([dt.year for dt in sample_datetimes])
+def timestamp2datetime_lists(lst:list[int]) -> list[datetime]:
+    datetime_list:list[datetime] = [datetime.fromtimestamp(ts) for ts in lst]
+    return datetime_list
 
-    grouped_years = {year: [] for year in years_extracted}
-    for i in sample_datetimes:
+
+def separate_yearly_dates(datetime_list:list[datetime]) -> dict[list]:
+    years_extracted:list = np.unique([dt.year for dt in datetime_list])
+
+    grouped_years:dict[list] = {year: [] for year in years_extracted}
+    for i in datetime_list:
         grouped_years[i.year].append(i)
 
-    by_year_indices = {year: [sample_datetimes.index(dt) for dt in grouped_years[year]] for year in years_extracted}
+    return grouped_years, years_extracted
 
-    selected_data_temp = selected_data['sample_matrix_temp'].to_numpy()
-    selected_data_salt = selected_data['sample_matrix_salt'].to_numpy()
 
-    yearly_profiles_temp = {}
-    yearly_profiles_salt = {}
+def create_yearly_matrices(selected_data:dict, year_indices:dict[list]) -> dict[dict]:
+    Temp_dataframe = selected_data['sample_matrix_temp']
+    Salt_dataframe = selected_data['sample_matrix_salt']
+    
+    selected_data_temp = Temp_dataframe.to_numpy()
+    selected_data_salt = Salt_dataframe.to_numpy()
 
-    for year, indices in by_year_indices.items():
+    yearly_profiles_temp: dict = {}
+    yearly_profiles_salt: dict = {}
+
+    for year, indices in year_indices.items():
         yearly_profile_temp = selected_data_temp[:, indices]
         yearly_profiles_temp[year] = yearly_profile_temp
 
         yearly_profile_salt = selected_data_salt[:, indices]
         yearly_profiles_salt[year] = yearly_profile_salt
+
+    return yearly_profiles_temp, yearly_profiles_salt
+
+
+def separate_yearly_profiles(selected_data: dict) -> dict[dict]:
+    sample_datetimes = timestamp2datetime_lists(selected_data['sample_timestamps'])
+
+    grouped_years, unq_yrs  = separate_yearly_dates(sample_datetimes)
+
+    by_year_indices = {year: [sample_datetimes.index(dt) for dt in grouped_years[year]] 
+                       for year in unq_yrs}
+
+    yearly_profiles_temp, yearly_profiles_salt = create_yearly_matrices(selected_data, by_year_indices)
         
-    return {'Yearly Temp Profile': yearly_profiles_temp, 'Yearly Salt Profile': yearly_profiles_salt, 'Indices by Year':by_year_indices}
+    return {'Yearly Temp Profile': yearly_profiles_temp, 
+            'Yearly Salt Profile': yearly_profiles_salt, 
+            'Indices by Year':by_year_indices}
 
 
-
-
-def plot_year_profiles(original_data, year_data, yr, ranges):
-    year = yr
-    timestamp = original_data['sample_timestamps'][year_data['Indices by Year'][year][0]:year_data['Indices by Year'][year][-1]]
-    datetime_list = [datetime.fromtimestamp(stamp) for stamp in timestamp]
+def plot_year_profiles(original_data:dict[any], year_data: dict[dict], yr: int, ranges: list[list]):
+    
+    init_date_index = year_data['Indices by Year'][yr][0]
+    last_date_index = year_data['Indices by Year'][yr][-1]
+    timestamp = original_data['sample_timestamps'][init_date_index:last_date_index]
+    datetime_list = timestamp2datetime_lists(timestamp)
 
     fig, axs = plt.subplots(2)
+    year_temp_data = year_data['Yearly Temp Profile'][yr]
+    year_salt_data = year_data['Yearly Salt Profile'][yr]
 
     X,Y = np.meshgrid(datetime_list, original_data['sample_depth'])
-    mesh0 = axs[0].pcolormesh(X,Y,year_data['Yearly Temp Profile'][year][:,:len(Y[0,:])], cmap='seismic')
-    cbar0 = fig.colorbar(mesh0, ax=axs[0])
+    mesh0 = axs[0].pcolormesh(X,Y,year_temp_data[:,:len(Y[0,:])], cmap='seismic')
+    fig.colorbar(mesh0, ax=axs[0])
     axs[0].invert_yaxis()
     mesh0.set_clim(ranges[0])
     axs[0].set_xticks([])
 
-    mesh1 = axs[1].pcolormesh(X,Y,year_data['Yearly Salt Profile'][year][:,:len(Y[0,:])], cmap='seismic')
-    cbar1 = fig.colorbar(mesh1, ax=axs[1])
+    mesh1 = axs[1].pcolormesh(X,Y,year_salt_data[:,:len(Y[0,:])], cmap='seismic')
+    fig.colorbar(mesh1, ax=axs[1])
     axs[1].invert_yaxis()
     mesh1.set_clim(ranges[1])
     axs[1].xaxis.set_major_formatter(mdates.DateFormatter("%m"))
 
     fig.tight_layout()
-    year_box = axs[0].text(0.02,0.85,str(year), transform=axs[0].transAxes,fontsize=14,verticalalignment='bottom',horizontalalignment='left',bbox=dict(facecolor='white',alpha=0.5))
+    axs[0].text(0.02,0.85,str(yr), transform=axs[0].transAxes,fontsize=14,
+                verticalalignment='bottom',horizontalalignment='left',
+                bbox=dict(facecolor='white',alpha=0.5))
 
     return {
         'Figure':fig,
@@ -83,9 +109,7 @@ def plot_year_profiles(original_data, year_data, yr, ranges):
     }
 
 
-
-
-def from_1970(date):
+def from_1970(date: int) -> datetime:
     reference_date = datetime(1970, 1, 1)
 
     delta = timedelta(days=date)
@@ -94,9 +118,7 @@ def from_1970(date):
     return datetime_obj
 
 
-
-
-def intrusion_date_comparison(manual_dates, estimated_dates):
+def intrusion_date_comparison(manual_dates: list[datetime], estimated_dates: list[datetime]) -> dict[list]:
     def within_days(dt1, dt2):
         return abs((dt2 - dt1).days) <= 10
 
@@ -127,8 +149,6 @@ def intrusion_date_comparison(manual_dates, estimated_dates):
         if not found_match:
             unmatched_ed.append(dt2)
 
-
-
     return {
         'Matched':matching,
         'Only Manual':unmatched_md,
@@ -136,38 +156,46 @@ def intrusion_date_comparison(manual_dates, estimated_dates):
     }
 
 
+def intrusion_identification(lst: list[int],sample_data: dict[any]) -> list[datetime]:
+    temp_intrusion_coeff, salt_intrusion_coeff = lst
+
+    intrusion_temp_indices = list(np.where(sample_data['sample_diff_row_temp'] > temp_intrusion_coeff)[0]+1)
+    intrusion_salt_indices = list(np.where(sample_data['sample_diff_row_salt'] > salt_intrusion_coeff)[0]+1)
+
+    all_timestamps = pd.DataFrame(sample_data['sample_timestamps'])
+
+    temp_intrusion_dates = all_timestamps.iloc[intrusion_temp_indices]
+    salt_intrusion_dates = all_timestamps.iloc[intrusion_salt_indices]
+
+    estimated_intrusion_dates = [value for value in temp_intrusion_dates.values.tolist() if value in salt_intrusion_dates.values.tolist()]
+    estimated_intrusion_dates = [item for sublist in estimated_intrusion_dates for item in sublist]
+    estimated_intrusion_dates = timestamp2datetime_lists(estimated_intrusion_dates)
+
+    return estimated_intrusion_dates
 
 
-def estimate_coefficients(sample_data):
-    def intrusion_ID_performance(lst,sample_data):
-        temp_intrusion_coeff, salt_intrusion_coeff = lst
-
-        temp_intrusion_dates = pd.DataFrame(sample_data['sample_timestamps']).iloc[list(np.where(sample_data['sample_diff_row_temp'] > temp_intrusion_coeff)[0]+1)]
-        salt_intrusion_dates = pd.DataFrame(sample_data['sample_timestamps']).iloc[list(np.where(sample_data['sample_diff_row_salt'] > salt_intrusion_coeff)[0]+1)]
-
-        estimated_intrusion_dates = [value for value in temp_intrusion_dates.values.tolist() if value in salt_intrusion_dates.values.tolist()]
-        estimated_intrusion_dates = [item for sublist in estimated_intrusion_dates for item in sublist]
-        estimated_intrusion_dates = [datetime.fromtimestamp(dt) for dt in estimated_intrusion_dates]
+def intrusion_ID_performance(lst: list[int],sample_data: dict[any]):
+    estimated_intrusion_dates = intrusion_identification(lst,sample_data)
         
-        global real_intrusion_dates
-        real_intrusion_dates = sample_data['sample_intrusion_timestamps']
-        comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates)
+    real_intrusion_dates = sample_data['sample_intrusion_timestamps']
+    comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates)
         
-        missed_id = comparison_dates['Only Manual']
-        extra_id = comparison_dates['Only Estimated']
-        caught_id = comparison_dates['Matched']
+    missed_id = comparison_dates['Only Manual']
+    extra_id = comparison_dates['Only Estimated']
+    caught_id = comparison_dates['Matched']
+
+    if len(estimated_intrusion_dates) != 0:
+        missed_id_parameter = len(missed_id)/len(real_intrusion_dates)
+        extra_id_parameter = len(extra_id)/len(estimated_intrusion_dates)
+
+        performance_parameter = (2*(missed_id_parameter) + extra_id_parameter)/3
+    else:
+        performance_parameter = 1
+
+    return performance_parameter
 
 
-        if len(estimated_intrusion_dates) != 0:
-            missed_id_parameter = len(missed_id)/len(real_intrusion_dates)
-            extra_id_parameter = len(extra_id)/len(estimated_intrusion_dates)
-
-            performance_parameter = (2*(missed_id_parameter) + extra_id_parameter)/3
-        else:
-            performance_parameter = 1
-
-        return performance_parameter
-
+def estimate_coefficients(sample_data: dict[any]) -> dict[list[any]]:
     temp_range = np.arange(0,1,0.01)
     salt_range = np.arange(0,1,0.01)
     result_final = []
@@ -181,7 +209,9 @@ def estimate_coefficients(sample_data):
     best_coefficients = min(result_final, key= lambda x: x[1])
 
     temp_coeff = list(best_coefficients[0])[0]
-    salt_coeff = list(best_coefficients[0])[0]
+    salt_coeff = list(best_coefficients[0])[1]
+
+    real_intrusion_dates = sample_data['sample_intrusion_timestamps']
 
     result_comp = intrusion_date_comparison(real_intrusion_dates, 
                                             intrusion_identification(sample_data, [temp_coeff, salt_coeff]))
@@ -194,27 +224,7 @@ def estimate_coefficients(sample_data):
     }
 
 
-
-
-def intrusion_identification(sample_data, coefficients):
-    temp_coeff = coefficients[0]
-    salt_coeff = coefficients[1]
-
-    temp_values = sample_data['sample_diff_row_temp']
-    salt_values = sample_data['sample_diff_row_salt']
-    dates = sample_data['sample_timestamps']
-
-    temperature_intrusion_dates = pd.DataFrame(dates).iloc[list(np.where(temp_values > temp_coeff)[0])]
-    salinity_intrusion_dates = pd.DataFrame(dates).iloc[list(np.where(salt_values > salt_coeff)[0])]
-
-    Both_intrusion_dates = [value for value in temperature_intrusion_dates.values.tolist() if value in salinity_intrusion_dates.values.tolist()]
-    Both_intrusion_dates = [item for sublist in Both_intrusion_dates for item in sublist]
-    Both_intrusion_dates = [datetime.fromtimestamp(dt) for dt in Both_intrusion_dates]
-
-    return Both_intrusion_dates
-
-
-def plot_year(file_name, ranges, yr):
+def plot_year(file_name: str, ranges: list[int], yr:int) -> None:
     range_1 = ranges[0]
     range_2 = ranges[1]
     selected_data = import_joblib(file_name)
