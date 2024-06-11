@@ -194,9 +194,9 @@ def intrusion_ID_performance(lst: list[int],sample_data: dict[any]):
     return performance_parameter
 
 
-def estimate_coefficients(sample_data: dict[any]) -> dict[list[any]]:
-    temp_range = np.arange(0,1,0.01)
-    salt_range = np.arange(0,1,0.01)
+def estimate_coefficients(sample_data: dict[any], range: list[int]) -> dict[list[any]]:
+    temp_range = np.arange(range[0],range[1],0.01)
+    salt_range = np.arange(range[0],range[1],0.01)
     result_final = []
 
     for temp_guess in temp_range:

@@ -61,19 +61,24 @@ gf.save_joblib(file_fname, intrusion_datetimes)
 print(f'Saved as {file_fname}')
 
 
-intrusion_type: int = input('What type? Enter the number inside the brakets. Normal[0] / Mid[1] / Inverse[2]:   ')
+intrusion_type: int = int(input('What type? Enter the number inside the brakets. Normal[0] / Mid[1] / Inverse[2]:   '))
 
+ranges = [-1, 1]
 if intrusion_type == 0:
     selected_data['sample_intrusion_timestamps'] = intrusion_datetimes
+    ranges = [0, 1]
 elif intrusion_type == 1:
     selected_data['sample_mid_timestamps'] = intrusion_datetimes
+    
 elif intrusion_type == 2:
     selected_data['sample_inverse_timestamps'] = intrusion_datetimes
+    
 else:
-    print('Dates not saved, input not recognized')
+    selected_data['sample_TBD_timestamps'] = intrusion_datetimes
+    
 
 print(lin+'Estimating coefficients for optimized intrusion identification')
-results = gf.estimate_coefficients(selected_data)
+results = gf.estimate_coefficients(selected_data, ranges)
 
 selected_data['intrusion_indice'] = [results['Intrusions Missed'], 
                                      results['Intrusions Extra'],
