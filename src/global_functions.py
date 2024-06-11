@@ -8,7 +8,6 @@ import pandas as pd
 from scipy.optimize import minimize
 
 
-
 def save_joblib(file_name: str, data: any) -> None:
     directory: str = 'data'
     file_path = os.path.join(directory, file_name)
