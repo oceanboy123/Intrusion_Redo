@@ -63,11 +63,11 @@ print(f'Saved as {file_fname}')
 
 intrusion_type: int = input('What type? Enter the number inside the brakets. Normal[0] / Mid[1] / Inverse[2]:   ')
 
-if intrusion_type is 0:
+if intrusion_type == 0:
     selected_data['sample_intrusion_timestamps'] = intrusion_datetimes
-elif intrusion_type is 1:
+elif intrusion_type == 1:
     selected_data['sample_mid_timestamps'] = intrusion_datetimes
-elif intrusion_type is 2:
+elif intrusion_type == 2:
     selected_data['sample_inverse_timestamps'] = intrusion_datetimes
 else:
     print('Dates not saved, input not recognized')
