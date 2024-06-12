@@ -78,7 +78,7 @@ else:
     
 
 print(lin+'Estimating coefficients for optimized intrusion identification')
-results = gf.estimate_coefficients(selected_data, ranges)
+results = gf.estimate_coefficients(selected_data, ranges, intrusion_type)
 
 selected_data['intrusion_indice'] = [results['Intrusions Missed'], 
                                      results['Intrusions Extra'],
