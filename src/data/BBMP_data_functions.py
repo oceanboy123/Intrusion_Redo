@@ -1,26 +1,19 @@
 import pandas as pd
 import numpy as np
 
-def get_and_group_data(file_name, variables_target):
+def get_and_group_data(file_name: str, variables_target: list[str]) -> dict[list]:
     
     print('Reading CSV file')
-    raw_bbmp_data = file_name
-    BBMP_data = pd.read_csv(raw_bbmp_data)
+    BBMP_data = pd.read_csv(file_name)
 
     print('Extrating target data')
-    target_variables = variables_target
-    target_data = BBMP_data.loc[:,target_variables]
-
+    target_data = BBMP_data.loc[:,variables_target]
   
     date_format = "%Y-%m-%d %H:%M:%S"
     dates_type_datetime = pd.to_datetime(target_data.iloc[:,0], format=date_format)
     target_data['time_string'] = dates_type_datetime
 
-    dates_type_int = []
-    for days in dates_type_datetime:
-
-        int_ = days.timestamp()
-        dates_type_int.append(int_ )
+    dates_type_int:list[int] = [days.timestamp() for days in dates_type_datetime]
 
     print('Updating target data and grouping by day')
     target_data['Timestamp'] = dates_type_int
@@ -39,43 +32,55 @@ def get_and_group_data(file_name, variables_target):
     }
 
 
+def normalize_depth_from_list(upress: list, data_frame):
+    for p in upress:
+        if p not in data_frame.iloc[:,1].values:
+
+            new_row = [
+                data_frame.iloc[0,0],
+                p,
+                float('nan'),
+                float('nan'),
+                float('nan'),
+                data_frame.iloc[0,-1]
+            ]
+
+            new_df_row = pd.DataFrame(new_row).T
+            new_df_row.columns = data_frame.columns.tolist()
+            data_frame = pd.concat([data_frame, new_df_row], ignore_index=True)
+        
+    data_frame = data_frame.sort_values(by='pressure')
+
+    return data_frame
 
 
-def normalize_length_data(data,upress):
+def check_duplicate_rows(data_frame):
+    column_names = data_frame.columns.tolist()
+
+    # Check for duplicated data
+    column_index = 1
+    seen = set()
+    unique_data = []
+
+    for row in data_frame.values.tolist():
+        value = row[column_index]
+        if value not in seen:
+            seen.add(value)
+            unique_data.append(row)
+
+    data_frame = pd.DataFrame(unique_data, columns=column_names)
+
+    return data_frame
+
+
+def normalize_length_data(data: dict,upress: list) -> dict[dict,list,list]:
     print('Nomalizing depths and filling with NaN')
     for key, values in data.items():
         data_frame = values
-
-        for p in upress:
-            if p not in data_frame.iloc[:,1].values:
-
-                new_row = [
-                    data_frame.iloc[0,0],
-                    p,
-                    float('nan'),
-                    float('nan'),
-                    float('nan'),
-                    data_frame.iloc[0,-1]
-                ]
-                new_df_row = pd.DataFrame(new_row).T
-                new_df_row.columns = data_frame.columns.tolist()
-                data_frame = pd.concat([data_frame, new_df_row], ignore_index=True)
         
-        data_frame = data_frame.sort_values(by='pressure')
-        column_names = data_frame.columns.tolist()
+        data_frame = normalize_depth_from_list(upress, data_frame)
+        data_frame = check_duplicate_rows(data_frame)
 
-        # Check for duplicated data
-        column_index = 1
-        seen = set()
-        unique_data = []
-
-        for row in data_frame.values.tolist():
-            value = row[column_index]
-            if value not in seen:
-                seen.add(value)
-                unique_data.append(row)
-
-        data_frame = pd.DataFrame(unique_data, columns=column_names)
         data[key] = data_frame
 
     normalized_depths = data[list(data.keys())[0]]['pressure'].tolist()
@@ -88,22 +93,14 @@ def normalize_length_data(data,upress):
     }
 
 
-
-
-def separate_target_variables(string_name, data): 
-    all_columns = []
-
+def separate_target_variables(string_name: str, data: dict): 
     print('Creating Target Variable Matrices')
-    for key, values in data.items():
-        next_column = values[string_name]
-        all_columns.append(next_column)
+    all_columns = np.transpose([values[string_name] for key, values in data.items()])
 
-    return np.transpose(all_columns)
+    return all_columns
 
 
-
-
-def data_transformations(matrix_list,variables_target,normalized_depths):
+def data_transformations(matrix_list :list,variables_target : list[str],normalized_depths: list) -> dict:
     
     print('Interpolating Data')
 
@@ -112,7 +109,8 @@ def data_transformations(matrix_list,variables_target,normalized_depths):
         '_interpolated_axis0',
         '_interpolated_axis10',
         '_diff_axis1_inter10',
-        '_avg_diff1_inter10'
+        '_avg_diff1_inter10',
+        '_avgmid_diff1_inter10'
     ]
     count = 0
     for matrix in matrix_list:
@@ -120,12 +118,18 @@ def data_transformations(matrix_list,variables_target,normalized_depths):
         matrix_interpolated_axis0 = pandas_matrix.interpolate(axis=0).replace(0,np.nan)
         matrix_interpolated_axis10 = matrix_interpolated_axis0.interpolate(axis=1).replace(0,np.nan)
         matrix_diff = pd.DataFrame(np.diff(matrix_interpolated_axis10, axis=1)).replace(0,np.nan)
-        matrix_avg_below = matrix_diff.iloc[list(np.where(np.array(normalized_depths) > 60)[0]),:].mean(axis=0)
+
+        normal_depths = np.array(normalized_depths)
+        rows_bellow60 = list(np.where(normal_depths > 60)[0])
+        rows_btw20_35 = list(np.where(normal_depths > 20 & normal_depths < 35)[0])
+        matrix_avg_below = matrix_diff.iloc[rows_bellow60,:].mean(axis=0)
+        matrix_avg_btw = matrix_diff.iloc[rows_btw20_35,:].mean(axis=0)
 
         transform_data[variables_target[count]+transformation_names[0]] = matrix_interpolated_axis0
         transform_data[variables_target[count]+transformation_names[1]] = matrix_interpolated_axis10
         transform_data[variables_target[count]+transformation_names[2]] = matrix_diff
         transform_data[variables_target[count]+transformation_names[3]] = matrix_avg_below
+        transform_data[variables_target[count]+transformation_names[4]] = matrix_avg_btw
         
         count += 1
 
