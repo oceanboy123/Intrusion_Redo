@@ -155,26 +155,34 @@ def intrusion_date_comparison(manual_dates: list[datetime], estimated_dates: lis
     }
 
 
-def intrusion_identification(lst: list[int],sample_data: dict[any]) -> list[datetime]:
+def intrusion_identification(lst: list[int],sample_data: dict[any], intrusion_type:int) -> list[datetime]:
     temp_intrusion_coeff, salt_intrusion_coeff = lst
 
-    intrusion_temp_indices = list(np.where(sample_data['sample_diff_row_temp'] > temp_intrusion_coeff)[0]+1)
-    intrusion_salt_indices = list(np.where(sample_data['sample_diff_row_salt'] > salt_intrusion_coeff)[0]+1)
+    column_avgs_temp = sample_data['sample_diff_row_temp']
+    column_avgs_salt = sample_data['sample_diff_row_salt']
+
+    if intrusion_type == 1:
+        column_avgs_temp = sample_data['sample_diff_midrow_temp']
+        column_avgs_salt = sample_data['sample_diff_midrow_salt']
+
+    intrusion_temp_indices = list(np.where(column_avgs_temp > temp_intrusion_coeff)[0]+1)
+    intrusion_salt_indices = list(np.where(column_avgs_salt > salt_intrusion_coeff)[0]+1)
 
     all_timestamps = pd.DataFrame(sample_data['sample_timestamps'])
 
     temp_intrusion_dates = all_timestamps.iloc[intrusion_temp_indices]
     salt_intrusion_dates = all_timestamps.iloc[intrusion_salt_indices]
 
-    estimated_intrusion_dates = [value for value in temp_intrusion_dates.values.tolist() if value in salt_intrusion_dates.values.tolist()]
+    estimated_intrusion_dates = [value for value in temp_intrusion_dates.values.tolist() 
+                                 if value in salt_intrusion_dates.values.tolist()]
     estimated_intrusion_dates = [item for sublist in estimated_intrusion_dates for item in sublist]
     estimated_intrusion_dates = timestamp2datetime_lists(estimated_intrusion_dates)
 
     return estimated_intrusion_dates
 
 
-def intrusion_ID_performance(lst: list[int],sample_data: dict[any]):
-    estimated_intrusion_dates = intrusion_identification(lst,sample_data)
+def intrusion_ID_performance(lst: list[int],sample_data: dict[any], intrusion_type: int):
+    estimated_intrusion_dates = intrusion_identification(lst,sample_data, intrusion_type)
         
     real_intrusion_dates = sample_data['sample_intrusion_timestamps']
     comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates)
@@ -194,7 +202,7 @@ def intrusion_ID_performance(lst: list[int],sample_data: dict[any]):
     return performance_parameter
 
 
-def estimate_coefficients(sample_data: dict[any], range: list[int]) -> dict[list[any]]:
+def estimate_coefficients(sample_data: dict[any], range: list[int], intrusion_type: int) -> dict[list[any]]:
     temp_range = np.arange(range[0],range[1],0.01)
     salt_range = np.arange(range[0],range[1],0.01)
     result_final = []
@@ -202,7 +210,7 @@ def estimate_coefficients(sample_data: dict[any], range: list[int]) -> dict[list
     for temp_guess in temp_range:
         for salt_guess in salt_range:
             initial_guess = [temp_guess, salt_guess]
-            result = minimize(intrusion_ID_performance, initial_guess, args=(sample_data,))
+            result = minimize(intrusion_ID_performance, initial_guess, args=(sample_data,intrusion_type,))
             result_final.append((result.x, result.fun))
 
     best_coefficients = min(result_final, key= lambda x: x[1])
