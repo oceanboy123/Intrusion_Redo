@@ -142,9 +142,9 @@ def intrusion_date_comparison(manual_dates: list[datetime], estimated_dates: lis
             if len(single_match) > 1:
                 diff_list = [match[0] for match in single_match]
                 min_index = [idx for idx, value in enumerate(diff_list) if value == min(diff_list)]
-                matching.append(single_match[min_index])
+                matching.append([single_match[min_index]])
             else:
-               matching.append(single_match[0]) 
+               matching.append(single_match) 
 
     for dt2 in estimated_dates:
         found_match = False
