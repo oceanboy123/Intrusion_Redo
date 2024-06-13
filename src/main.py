@@ -5,6 +5,11 @@ from datetime import datetime
 import numpy as np
 
 file_name = input("Enter the file name for intrusion identification (include .pkl):   ")
+
+if int(file_name) == 1:
+    file_name = 'BBMP_salected_data0.pkl'
+
+
 lin = "-"*6+' '
 print(lin+'Importing Data')
 selected_data = gf.import_joblib(file_name)
