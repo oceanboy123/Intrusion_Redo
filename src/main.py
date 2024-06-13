@@ -4,10 +4,13 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import numpy as np
 
-file_name = input("Enter the file name for intrusion identification (include .pkl):   ")
+#file_name = input("Enter the file name for intrusion identification (include .pkl):   ")
+file_name = 2
 
 if int(file_name) == 1:
     file_name = 'BBMP_salected_data0.pkl'
+elif int(file_name) == 2:
+    file_name = 'BBMP_salected_data.pkl'
 
 lin = "-"*6+' '
 print(lin+'Importing Data')
