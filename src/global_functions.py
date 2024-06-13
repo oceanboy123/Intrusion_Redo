@@ -253,7 +253,7 @@ def intrusion_ID_performance(lst: list[int],sample_data: dict[any],
 def estimate_coefficients(sample_data: dict[any], range: list[int], intrusion_name: str) -> dict[list[any]]:
     real_intrusion_dates = sample_data[intrusion_name]
     
-    temp_range = np.arange(range[0],range[1],0.05)
+    temp_range = np.arange(range[0],range[1],0.025)
     salt_range = np.arange(0,range[1],0.02)
     result_final = []
 
@@ -445,14 +445,14 @@ if __name__ == '__main__':
                                         results['Intrusions IDed']]
 
     print(lin+'Recording results in data file')
-    selected_data['temperature_coeff'] = list(results['Estimated Coefficient'][0])[0]
-    selected_data['sallinity_coeff'] = list(results['Estimated Coefficient'][0])[1]
-    selected_data['Performance'] = results['Estimated Coefficient'][1]
+    selected_data[intrusion_name+'temperature_coeff'] = list(results['Estimated Coefficient'][0])[0]
+    selected_data[intrusion_name+'sallinity_coeff'] = list(results['Estimated Coefficient'][0])[1]
+    selected_data[intrusion_name+'Performance'] = results['Estimated Coefficient'][1]
 
     #desc = input("Write description:   ")
     #selected_data['Comments'] = desc
 
     #file_fname = input("Enter the file name for output data file (include .pkl):   ")
-    file_fname = 'BBMP_salected_data_test.pkl'
+    file_fname = 'BBMP_salected_data.pkl'
     save_joblib(file_fname, selected_data)
     print(f'Saved as {file_fname}')
