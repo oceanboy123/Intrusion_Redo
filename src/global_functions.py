@@ -221,7 +221,7 @@ def estimate_coefficients(sample_data: dict[any], range: list[int], intrusion_ty
     real_intrusion_dates = sample_data['sample_intrusion_timestamps']
 
     result_comp = intrusion_date_comparison(real_intrusion_dates, 
-                                            intrusion_identification(sample_data, [temp_coeff, salt_coeff]))
+                                            intrusion_identification(sample_data, [temp_coeff, salt_coeff],intrusion_type ))
 
     return {
         'Estimated Coefficient':best_coefficients,
