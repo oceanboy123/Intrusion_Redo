@@ -124,6 +124,7 @@ def data_transformations(matrix_list :list,variables_target : list[str],normaliz
         rows_over35 = list(np.where(normal_depths < 35)[0])
         rows_under20 = list(np.where(normal_depths > 20)[0])
         rows_btw20_35 = sorted(list(set(rows_over35+rows_under20)))
+        print(rows_btw20_35)
         matrix_avg_below = matrix_diff.iloc[rows_bellow60,:].mean(axis=0)
         matrix_avg_btw = matrix_diff.iloc[rows_btw20_35,:].mean(axis=0)
 
