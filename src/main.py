@@ -16,6 +16,11 @@ lin = "-"*6+' '
 print(lin+'Importing Data')
 selected_data = gf.import_joblib(file_name)
 
+all_dates = gf.timestamp2datetime_lists(selected_data['sample_timestamps'])
+int_dates = selected_data['sample_TBD_timestamps']
+
+int_indices = gf.get_original_indices(all_dates, int_dates)
+
 yearly_profiles = gf.separate_yearly_profiles(selected_data)
 
 print(lin+'Intrusion identification in progress')
@@ -76,6 +81,8 @@ if intrusion_type == 0:
     ranges = [0, 1]
 elif intrusion_type == 1:
     selected_data['sample_mid_timestamps'] = intrusion_datetimes
+    intrusion_temp_A = selected_data['sample_diff_midrow_temp'][int_indices]
+    intrusion_salt_A = selected_data['sample_diff_midrow_salt'][int_indices]
     
 elif intrusion_type == 2:
     selected_data['sample_inverse_timestamps'] = intrusion_datetimes
@@ -83,6 +90,9 @@ elif intrusion_type == 2:
 else:
     selected_data['sample_TBD_timestamps'] = intrusion_datetimes
     
+intrusion_temp_A = selected_data['sample_diff_row_temp'][int_indices]
+intrusion_salt_A = selected_data['sample_diff_row_salt'][int_indices]
+
 
 print(lin+'Estimating coefficients for optimized intrusion identification')
 results = gf.estimate_coefficients(selected_data, ranges, intrusion_type)
