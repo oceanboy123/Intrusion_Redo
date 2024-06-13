@@ -403,8 +403,7 @@ def name_version(file_name: str, version: str, data: any) -> None:
 
 
 if __name__ == '__main__':
-    #file_name = input("Enter the file name for intrusion identification (include .pkl):   ")
-    file_name = 2
+    file_name = input("Enter the file name for intrusion identification (include .pkl):   ")
     lin = "-"*6+' '
 
     print(lin+'Importing Data')
@@ -419,12 +418,10 @@ if __name__ == '__main__':
     intrusion_datetimes = user_intrusion_selection(selected_data, yearly_profiles, year_list)
     print(lin+'Intrusion identification completed')
 
-    #version = input('Version name (Keep it simple):   ')
-    version = 'test'
+    version = input('Version name (Keep it simple):   ')
     name_version('manual_intrusions', version, intrusion_datetimes)
 
-    # intrusion_type: int = int(input('What type? Enter the number inside the brakets. Normal[0] / Mid[1] / Inverse[2]/ TBD[else]:   '))
-    intrusion_type = 3
+    intrusion_type: int = int(input('What type? Enter the number inside the brakets. Normal[0] / Mid[1] / Inverse[2]/ TBD[else]:   '))
     intrusion_name = identify_intrusion_type(selected_data,intrusion_type)
     selected_data[intrusion_name] = intrusion_datetimes
 
@@ -451,10 +448,10 @@ if __name__ == '__main__':
     selected_data[intrusion_name+'sallinity_coeff'] = list(results['Estimated Coefficient'][0])[1]
     selected_data[intrusion_name+'Performance'] = results['Estimated Coefficient'][1]
 
-    #desc = input("Write description:   ")
-    #selected_data['Comments'] = desc
+    desc = input("Write description:   ")
+    selected_data[intrusion_name+'_Comments'] = desc
 
-    #file_fname = input("Enter the file name for output data file (include .pkl):   ")
+    file_fname = input("Enter the file name for output data file (include .pkl):   ")
     file_fname = 'BBMP_salected_data.pkl'
     save_joblib(file_fname, selected_data)
     print(f'Saved as {file_fname}')
