@@ -354,10 +354,12 @@ def get_points():
 #--------------------------------------------------------------------------------------
 
 def import_selected_data(file_name: str) -> dict:
-    if int(file_name) == 1:
+    if file_name == '1':
         file_name = 'BBMP_salected_data0.pkl'
-    elif int(file_name) == 2:
+    elif file_name == '2':
         file_name = 'BBMP_salected_data.pkl'
+    else:
+        pass
 
     selected_data = import_joblib(file_name)
     yearly_profiles = separate_yearly_profiles(selected_data)
