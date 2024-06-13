@@ -198,6 +198,7 @@ def intrusion_ID_performance(lst: list[int],sample_data: dict[any], intrusion_ty
 
     real_intrusion_dates = identify_intrusion_type(sample_data,intrusion_type)
     comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates)
+    print(len(real_intrusion_dates))
         
     missed_id = comparison_dates['Only Manual']
     extra_id = comparison_dates['Only Estimated']
