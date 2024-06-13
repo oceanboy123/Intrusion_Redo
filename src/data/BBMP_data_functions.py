@@ -100,7 +100,7 @@ def separate_target_variables(string_name: str, data: dict):
     return all_columns
 
 
-def data_transformations(matrix_list :list,variables_target : list[str],normalized_depths: list) -> dict:
+def data_transformations(matrix_list :list,variables_target : list[str],normalized_depths: list) -> dict[any]:
     
     print('Interpolating Data')
 
