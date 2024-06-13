@@ -191,7 +191,7 @@ def identify_intrusion_type(sample_data,intrusion_type):
     else:
         intrusion_name = sample_data['sample_TBD_timestamps']
     
-    return sample_data[intrusion_name]
+    return intrusion_name
 
 def intrusion_ID_performance(lst: list[int],sample_data: dict[any], intrusion_type: int):
     estimated_intrusion_dates = intrusion_identification(lst,sample_data, intrusion_type)

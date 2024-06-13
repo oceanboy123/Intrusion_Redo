@@ -65,7 +65,7 @@ gf.save_joblib(file_fname, intrusion_datetimes)
 print(f'Saved as {file_fname}')
 
 
-intrusion_type: int = int(input('What type? Enter the number inside the brakets. Normal[0] / Mid[1] / Inverse[2]:   '))
+intrusion_type: int = int(input('What type? Enter the number inside the brakets. Normal[0] / Mid[1] / Inverse[2]/ TBD[else]:   '))
 
 ranges = [-1, 1]
 if intrusion_type == 0:
