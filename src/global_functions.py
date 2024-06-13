@@ -117,9 +117,9 @@ def from_1970(date: int) -> datetime:
     return datetime_obj
 
 
-def intrusion_date_comparison(manual_dates: list[datetime], estimated_dates: list[datetime]) -> dict[list]:
+def intrusion_date_comparison(manual_dates: list[datetime], estimated_dates: list[datetime], A_days) -> dict[list]:
     def within_days(dt1, dt2):
-        return abs((dt2 - dt1).days) <= 10
+        return abs((dt2 - dt1).days) <= A_days
 
     matching = []
     unmatched_md = []
@@ -198,7 +198,6 @@ def intrusion_ID_performance(lst: list[int],sample_data: dict[any], intrusion_ty
 
     real_intrusion_dates = identify_intrusion_type(sample_data,intrusion_type)
     comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates)
-    print(len(real_intrusion_dates))
         
     missed_id = comparison_dates['Only Manual']
     extra_id = comparison_dates['Only Estimated']
@@ -216,12 +215,11 @@ def intrusion_ID_performance(lst: list[int],sample_data: dict[any], intrusion_ty
 
 
 def estimate_coefficients(sample_data: dict[any], range: list[int], intrusion_type: int) -> dict[list[any]]:
-    print('Something is not right')
+    real_intrusion_dates = identify_intrusion_type(sample_data,intrusion_type)
+    
     temp_range = np.arange(range[0],range[1],0.01)
     salt_range = np.arange(range[0],range[1],0.01)
     result_final = []
-
-    print(temp_range)
 
     for temp_guess in temp_range:
         for salt_guess in salt_range:
@@ -233,8 +231,6 @@ def estimate_coefficients(sample_data: dict[any], range: list[int], intrusion_ty
 
     temp_coeff = list(best_coefficients[0])[0]
     salt_coeff = list(best_coefficients[0])[1]
-
-    real_intrusion_dates = identify_intrusion_type(sample_data,intrusion_type)
 
     result_comp = intrusion_date_comparison(real_intrusion_dates, 
                                             intrusion_identification(sample_data, [temp_coeff, salt_coeff],intrusion_type ))
