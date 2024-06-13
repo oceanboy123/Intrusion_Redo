@@ -119,7 +119,8 @@ def from_1970(date: int) -> datetime:
 
 def intrusion_date_comparison(manual_dates: list[datetime], estimated_dates: list[datetime], A_days) -> dict[list]:
     def within_days(dt1, dt2):
-        return abs((dt2 - dt1).days) <= A_days
+        calc = abs((dt2 - dt1).days)
+        return calc
 
     matching = []
     unmatched_md = []
@@ -127,15 +128,23 @@ def intrusion_date_comparison(manual_dates: list[datetime], estimated_dates: lis
 
     for dt1 in manual_dates:
         found_match = False
-
+        single_match = []
         for dt2 in estimated_dates:
-            if within_days(dt1, dt2):
-                matching.append((dt1, dt2))
+            diff = within_days(dt1, dt2)
+            if diff <= A_days:
+                single_match.append([diff, dt1, dt2])
                 found_match = True
                 break
 
         if not found_match:
             unmatched_md.append(dt1)
+        else:
+            if len(single_match) > 1:
+                diff_list = [match[0] for match in single_match]
+                min_index = [idx for idx, value in enumerate(diff_list) if value == min(diff_list)]
+                matching.append(single_match[min_index])
+            else:
+               matching.append(single_match) 
 
     for dt2 in estimated_dates:
         found_match = False
@@ -197,7 +206,7 @@ def intrusion_ID_performance(lst: list[int],sample_data: dict[any], intrusion_ty
     estimated_intrusion_dates = intrusion_identification(lst,sample_data, intrusion_type)
 
     real_intrusion_dates = identify_intrusion_type(sample_data,intrusion_type)
-    comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates)
+    comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates,10)
         
     missed_id = comparison_dates['Only Manual']
     extra_id = comparison_dates['Only Estimated']
