@@ -181,10 +181,22 @@ def intrusion_identification(lst: list[int],sample_data: dict[any], intrusion_ty
     return estimated_intrusion_dates
 
 
+def identify_intrusion_type(sample_data,intrusion_type):
+    if intrusion_type == 0:
+        intrusion_name = sample_data['sample_intrusion_timestamps']
+    elif intrusion_type == 1:
+        intrusion_name = sample_data['sample_mid_timestamps']  
+    elif intrusion_type == 2:
+        intrusion_name = sample_data['sample_inverse_timestamps']
+    else:
+        intrusion_name = sample_data['sample_TBD_timestamps']
+    
+    return sample_data[intrusion_name]
+
 def intrusion_ID_performance(lst: list[int],sample_data: dict[any], intrusion_type: int):
     estimated_intrusion_dates = intrusion_identification(lst,sample_data, intrusion_type)
-        
-    real_intrusion_dates = sample_data['sample_intrusion_timestamps']
+
+    real_intrusion_dates = identify_intrusion_type(sample_data,intrusion_type)
     comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates)
         
     missed_id = comparison_dates['Only Manual']
@@ -218,7 +230,7 @@ def estimate_coefficients(sample_data: dict[any], range: list[int], intrusion_ty
     temp_coeff = list(best_coefficients[0])[0]
     salt_coeff = list(best_coefficients[0])[1]
 
-    real_intrusion_dates = sample_data['sample_intrusion_timestamps']
+    real_intrusion_dates = identify_intrusion_type(sample_data,intrusion_type)
 
     result_comp = intrusion_date_comparison(real_intrusion_dates, 
                                             intrusion_identification(sample_data, [temp_coeff, salt_coeff],intrusion_type ))
