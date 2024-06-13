@@ -1,4 +1,4 @@
-import global_functions as gf
+import main_functions as gf
 
 file_name = input("Enter the file name of the data to be loaded (include .pkl):   ")
 data_name = input("Enter the data file name (include .pkl):   ")
