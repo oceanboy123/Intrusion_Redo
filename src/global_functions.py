@@ -144,7 +144,7 @@ def intrusion_date_comparison(manual_dates: list[datetime], estimated_dates: lis
                 min_index = [idx for idx, value in enumerate(diff_list) if value == min(diff_list)]
                 matching.append(single_match[min_index])
             else:
-               matching.append(single_match) 
+               matching.append(single_match[0]) 
 
     for dt2 in estimated_dates:
         found_match = False
@@ -157,6 +157,7 @@ def intrusion_date_comparison(manual_dates: list[datetime], estimated_dates: lis
         if not found_match:
             unmatched_ed.append(dt2)
 
+    matching = [item for sublist in matching for item in sublist]
     return {
         'Matched':matching,
         'Only Manual':unmatched_md,
@@ -261,3 +262,15 @@ def plot_year(file_name: str, ranges: list[int], yr:int) -> None:
     
     plot_year_profiles(selected_data, yearly_profiles, 
                         yr,[range_1, range_2])
+    
+def get_original_indices(all_dates: list[datetime], int_dates: list[datetime]) -> list[int]:
+    #all_dates = timestamp2datetime_lists(selected_data['sample_timestamps'])
+    #int_dates = selected_data['sample_TBD_timestamps']
+
+    comparison_results = intrusion_date_comparison(int_dates, all_dates,10)
+    comparison_results['Matched'] = [item for sublist in comparison_results['Matched'] for item in sublist]
+    compared_dates = comparison_results['Matched']
+    intrusion_dates = [match[2] for match in compared_dates]
+    intrusion_indices = [i for i, dt1 in enumerate(all_dates) for j, dt2 in enumerate(intrusion_dates) if dt1 == dt2]
+
+    return intrusion_indices
