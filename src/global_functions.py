@@ -268,7 +268,6 @@ def get_original_indices(all_dates: list[datetime], int_dates: list[datetime]) -
     #int_dates = selected_data['sample_TBD_timestamps']
 
     comparison_results = intrusion_date_comparison(int_dates, all_dates,10)
-    comparison_results['Matched'] = [item for sublist in comparison_results['Matched'] for item in sublist]
     compared_dates = comparison_results['Matched']
     intrusion_dates = [match[2] for match in compared_dates]
     intrusion_indices = [i for i, dt1 in enumerate(all_dates) for j, dt2 in enumerate(intrusion_dates) if dt1 == dt2]
