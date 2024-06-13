@@ -216,9 +216,12 @@ def intrusion_ID_performance(lst: list[int],sample_data: dict[any], intrusion_ty
 
 
 def estimate_coefficients(sample_data: dict[any], range: list[int], intrusion_type: int) -> dict[list[any]]:
+    print('Something is not right')
     temp_range = np.arange(range[0],range[1],0.01)
     salt_range = np.arange(range[0],range[1],0.01)
     result_final = []
+
+    print(temp_range)
 
     for temp_guess in temp_range:
         for salt_guess in salt_range:
