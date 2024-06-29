@@ -1,0 +1,2 @@
+Raw_file_path,Date_created,Target_variables,Profile_count,Deep_averages,Mid_averages,Output_dataset_path
+../DATA/RAW/bbmp_aggregated_profiles.csv,Sat Jun 29 07:41:24 2024,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1346,60,"[20, 35]",../DATA/PROCESSED/BBMP_salected_data0.pkl
