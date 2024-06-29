@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 def get_and_group_data(file_name: str, variables_target: list[str]) -> dict[list]:
     
     print('Reading CSV file')
@@ -31,6 +34,8 @@ def get_and_group_data(file_name: str, variables_target: list[str]) -> dict[list
         'Unique Depths':unique_depths
     }
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 def normalize_depth_from_list(upress: list, data_frame):
     for p in upress:
@@ -53,6 +58,8 @@ def normalize_depth_from_list(upress: list, data_frame):
 
     return data_frame
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 def check_duplicate_rows(data_frame):
     column_names = data_frame.columns.tolist()
@@ -72,6 +79,8 @@ def check_duplicate_rows(data_frame):
 
     return data_frame
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 def normalize_length_data(data: dict,upress: list) -> dict[dict,list,list]:
     print('Nomalizing depths and filling with NaN')
@@ -92,6 +101,8 @@ def normalize_length_data(data: dict,upress: list) -> dict[dict,list,list]:
         'Normalized Dates': normalized_dates,
     }
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
 def separate_target_variables(string_name: str, data: dict): 
     print('Creating Target Variable Matrices')
@@ -99,8 +110,10 @@ def separate_target_variables(string_name: str, data: dict):
 
     return all_columns
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
 
-def data_transformations(matrix_list :list,variables_target : list[str],normalized_depths: list) -> dict[any]:
+def data_transformations(matrix_list :list,variables_target : list[str],normalized_depths: list, deep:int, mid:list[int]) -> dict[any]:
     
     print('Interpolating Data')
 
@@ -112,6 +125,7 @@ def data_transformations(matrix_list :list,variables_target : list[str],normaliz
         '_avg_diff1_inter10',
         '_avgmid_diff1_inter10'
     ]
+
     count = 0
     for matrix in matrix_list:
         pandas_matrix = pd.DataFrame(matrix)
@@ -120,9 +134,9 @@ def data_transformations(matrix_list :list,variables_target : list[str],normaliz
         matrix_diff = pd.DataFrame(np.diff(matrix_interpolated_axis10, axis=1)).replace(0,np.nan)
 
         normal_depths = np.array(normalized_depths)
-        rows_bellow60 = list(np.where(normal_depths > 60)[0])
-        rows_over35 = list(np.where(normal_depths < 35)[0])
-        rows_under20 = list(np.where(normal_depths > 20)[0])
+        rows_bellow60 = list(np.where(normal_depths > deep)[0])
+        rows_over35 = list(np.where(normal_depths < mid[1])[0])
+        rows_under20 = list(np.where(normal_depths > mid[0])[0])
         print(rows_under20)
         rows_btw20_35 = sorted(list(set(rows_over35+rows_under20)))
         print(rows_btw20_35)
@@ -139,23 +153,39 @@ def data_transformations(matrix_list :list,variables_target : list[str],normaliz
 
     return transform_data
 
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 if __name__ == '__main__':
     # Importing relevant modules
     import joblib
     import ETL_processes as BBMP
+    import os
+    import time
+    import csv
 
-    raw_bbmp_data = '../DATA/RAW/bbmp_aggregated_profiles.csv'
+    raw_name = 'bbmp_aggregated_profiles.csv'
+    raw_bbmp_data = '../DATA/RAW/' + raw_name
+    
+    metadata = {}
+    stat_info = os.stat(raw_bbmp_data)
+    metadata['Raw_file_path'] = raw_bbmp_data
+    metadata['Date_created'] = time.ctime(stat_info.st_birthtime)
 
     target_variables = ['time_string',
                         'pressure',
                         'salinity',
                         'temperature',
                         'oxygen']
+    
+    metadata['Target_variables'] = str(target_variables)
 
     nested_data = BBMP.get_and_group_data(raw_bbmp_data,target_variables)
 
     nested_groups: dict = nested_data['Nested Groups']
     unique_depths: list = nested_data['Unique Depths']
+
+    metadata['Profile_count'] = [len(nested_groups)]
 
     print(nested_groups[list(nested_groups.keys())[0]].head())
 
@@ -165,8 +195,13 @@ if __name__ == '__main__':
     variables_matrices = [BBMP.separate_target_variables(names, normalized_data) 
                         for names in target_variables[2:]]
 
+    mid = [20,35]
+    deep = 60
     normalized_depths = normal_data['Normalized Depths']
-    transformed_data = BBMP.data_transformations(variables_matrices,target_variables[2:],normalized_depths)
+    transformed_data = BBMP.data_transformations(variables_matrices,target_variables[2:],normalized_depths, deep, mid)
+
+    metadata['Deep_averages'] = [deep]
+    metadata['Mid_averages'] = str(mid)
 
     selected_data = {
         'sample_diff_midrow_temp': transformed_data['temperature_avgmid_diff1_inter10'],
@@ -183,17 +218,26 @@ if __name__ == '__main__':
 
         'sample_timestamps': normal_data['Normalized Dates'],
         'sample_depth': normal_data['Normalized Depths'],
-
-        'sample_intrusion_timestamps':[],
-        'intrusion_indice':[],
-        'temperature_coeff':[],
-        'sallinity_coeff':[],
-        'oxygen_coeff':[],
-        'Performance':[]
     }
 
     file_NAME = 'BBMP_salected_data0.pkl'
     file_PATH = '../DATA/PROCESSED/' + file_NAME
+
+    metadata['Output_dataset_path'] = file_PATH
+
+    meta_processing = pd.DataFrame(metadata)
+
+    metadata_csv = 'metadata_processing.csv'
+    csv_path = '../DATA/PROCESSED/' + metadata_csv
+
+    with open(csv_path,'r') as file:
+        read = csv.reader(file)
+        row_count = sum(1 for row in read)
+
+    if row_count == 0:
+        meta_processing.to_csv(csv_path,mode='a', header=True, index=False)
+    else:
+        meta_processing.to_csv(csv_path,mode='a', header=False, index=False)
 
     joblib.dump(selected_data, file_PATH)
     print(f'Saved as {file_NAME}')
