@@ -169,7 +169,7 @@ if __name__ == '__main__':
     
     metadata = {}
     stat_info = os.stat(raw_bbmp_data)
-    metadata['Raw_file_path'] = raw_bbmp_data
+     
     metadata['Date_created'] = time.ctime(stat_info.st_birthtime)
 
     target_variables = ['time_string',

@@ -403,11 +403,18 @@ def name_version(file_name: str, version: str, data: any) -> None:
 
 
 if __name__ == '__main__':
+    import os
+    import time
+    import csv
+
     file_name = input("Enter the file name for intrusion identification (include .pkl):   ")
+    file_PATH = '../DATA/PROCESSED/' + file_name
     lin = "-"*6+' '
 
+    metadata = {}
+
     print(lin+'Importing Data')
-    selected_data, yearly_profiles = import_selected_data(file_name)
+    selected_data, yearly_profiles = import_selected_data(file_PATH )
 
     data_dates_name = 'sample_timestamps'
     data_timestamps = selected_data[data_dates_name]
@@ -424,15 +431,19 @@ if __name__ == '__main__':
     intrusion_type: int = int(input('What type? Enter the number inside the brakets. Normal[0] / Mid[1] / Inverse[2]/ TBD[else]:   '))
     intrusion_name = identify_intrusion_type(selected_data,intrusion_type)
     selected_data[intrusion_name] = intrusion_datetimes
+    metadata['Intrusion_dates'] = intrusion_datetimes
 
     int_indices = get_original_indices(data_datetimes, intrusion_datetimes)
     intrusion_dex = intrusion_name + '_INDICES'
     selected_data[intrusion_dex] = int_indices
+    metadata['Intrusion_indices'] = int_indices
 
     intrusion_temp_A, intrusion_salt_A = get_intrusion_effects(selected_data, int_indices)
     intrusion_changes = intrusion_name + '_EFFECTS'
     selected_data[intrusion_changes] = {'Temp Effects': intrusion_temp_A,
                                     'Salt Effects': intrusion_salt_A}
+    metadata['Intrusion_temp_effects'] = intrusion_temp_A
+    metadata['Intrusion_salt_effects'] = intrusion_salt_A
 
     ranges = [-1, 1]
     print(lin+'Estimating coefficients for optimized intrusion identification')
