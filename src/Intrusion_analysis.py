@@ -10,17 +10,8 @@ from scipy.optimize import minimize
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
-def save_joblib(file_name: str, data: any) -> None:
-    directory: str = 'data'
-    file_path = os.path.join(directory, file_name)
-    joblib.dump(data, file_path)
+def import_joblib(file_path: str) -> any:
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def import_joblib(file_name: str) -> any:
-    directory: str = 'data'
-    file_path = os.path.join(directory, file_name)
     data: any = joblib.load(file_path)
     
     return data
@@ -69,262 +60,6 @@ def create_yearly_matrices(selected_data:dict, year_indices:dict[list]) -> dict[
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
-def separate_yearly_profiles(selected_data: dict) -> dict[dict]:
-    sample_datetimes = timestamp2datetime_lists(selected_data['sample_timestamps'])
-
-    grouped_years, unq_yrs  = separate_yearly_dates(sample_datetimes)
-
-    by_year_indices = {year: [sample_datetimes.index(dt) for dt in grouped_years[year]] 
-                       for year in unq_yrs}
-
-    yearly_profiles_temp, yearly_profiles_salt = create_yearly_matrices(selected_data, by_year_indices)
-        
-    return {'Yearly Temp Profile': yearly_profiles_temp, 
-            'Yearly Salt Profile': yearly_profiles_salt, 
-            'Indices by Year':by_year_indices}
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def plot_year_profiles(original_data:dict[any], year_data: dict[dict], yr: int, ranges: list[list]):
-    
-    init_date_index = year_data['Indices by Year'][yr][0]
-    last_date_index = year_data['Indices by Year'][yr][-1]
-    timestamp = original_data['sample_timestamps'][init_date_index:last_date_index]
-    datetime_list = timestamp2datetime_lists(timestamp)
-
-    fig, axs = plt.subplots(2)
-    year_temp_data = year_data['Yearly Temp Profile'][yr]
-    year_salt_data = year_data['Yearly Salt Profile'][yr]
-
-    X,Y = np.meshgrid(datetime_list, original_data['sample_depth'])
-    mesh0 = axs[0].pcolormesh(X,Y,year_temp_data[:,:len(Y[0,:])], cmap='seismic')
-    fig.colorbar(mesh0, ax=axs[0])
-    axs[0].invert_yaxis()
-    mesh0.set_clim(ranges[0])
-    axs[0].set_xticks([])
-
-    mesh1 = axs[1].pcolormesh(X,Y,year_salt_data[:,:len(Y[0,:])], cmap='seismic')
-    fig.colorbar(mesh1, ax=axs[1])
-    axs[1].invert_yaxis()
-    mesh1.set_clim(ranges[1])
-    axs[1].xaxis.set_major_formatter(mdates.DateFormatter("%m"))
-
-    fig.tight_layout()
-    axs[0].text(0.02,0.85,str(yr), transform=axs[0].transAxes,fontsize=14,
-                verticalalignment='bottom',horizontalalignment='left',
-                bbox=dict(facecolor='white',alpha=0.5))
-
-    return {
-        'Figure':fig,
-        'Axes':axs,
-        'Mesh':[mesh0,mesh1]
-    }
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def from_1970(date: int) -> datetime:
-    reference_date = datetime(1970, 1, 1)
-
-    delta = timedelta(days=date)
-    datetime_obj = reference_date + delta
-
-    return datetime_obj
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def intrusion_date_comparison(manual_dates: list[datetime], estimated_dates: list[datetime], A_days) -> dict[list]:
-    def within_days(dt1, dt2):
-        calc = abs((dt2 - dt1).days)
-        return calc
-
-    matching = []
-    unmatched_md = []
-
-    for dt1 in manual_dates:
-        found_match = False
-        single_match = []
-        for dt2 in estimated_dates:
-            diff = within_days(dt1, dt2)
-            if diff <= A_days:
-                single_match.append([diff, dt1, dt2])
-                found_match = True
-                break
-
-        if not found_match:
-            unmatched_md.append(dt1)
-        else:
-            if len(single_match) > 1:
-                diff_list = [match[0] for match in single_match]
-                min_index = [idx for idx, value in enumerate(diff_list) if value == min(diff_list)]
-                matching.append([single_match[min_index]])
-            else:
-               matching.append(single_match) 
-    
-    matching = [item for sublist in matching for item in sublist]
-    matching_estimated = [sublist[2] for sublist in matching]
-
-    set1 = set(estimated_dates)
-    set2 = set(matching_estimated)
-    unmatched_ed = set1-set2
-
-    return {
-        'Matched':matching,
-        'Only Manual':unmatched_md,
-        'Only Estimated':unmatched_ed,
-    }
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def intrusion_identification(lst: list[int],sample_data: dict[any], intrusion_name: str) -> list[datetime]:
-    temp_intrusion_coeff, salt_intrusion_coeff = lst
-
-    column_avgs_temp = sample_data['sample_diff_row_temp']
-    column_avgs_salt = sample_data['sample_diff_row_salt']
-
-    if intrusion_name == 'sample_mid_timestamps':
-        column_avgs_temp = sample_data['sample_diff_midrow_temp']
-        column_avgs_salt = sample_data['sample_diff_midrow_salt']
-
-    intrusion_temp_indices = list(np.where(column_avgs_temp > temp_intrusion_coeff)[0]+1)
-    intrusion_salt_indices = list(np.where(column_avgs_salt > salt_intrusion_coeff)[0]+1)
-
-    data_dates_name = 'sample_timestamps'
-    all_timestamps = pd.DataFrame(sample_data[data_dates_name])
-
-    temp_intrusion_dates = all_timestamps.iloc[intrusion_temp_indices]
-    salt_intrusion_dates = all_timestamps.iloc[intrusion_salt_indices]
-
-    estimated_intrusion_dates = [value for value in temp_intrusion_dates.values.tolist() 
-                                 if value in salt_intrusion_dates.values.tolist()]
-    estimated_intrusion_dates = [item for sublist in estimated_intrusion_dates for item in sublist]
-    estimated_intrusion_dates = timestamp2datetime_lists(estimated_intrusion_dates)
-
-    return estimated_intrusion_dates
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def identify_intrusion_type(sample_data,intrusion_type):
-    if intrusion_type == 0:
-        intrusion_name = 'sample_intrusion_timestamps'
-    elif intrusion_type == 1:
-        intrusion_name = 'sample_mid_timestamps'
-    elif intrusion_type == 2:
-        intrusion_name = 'sample_inverse_timestamps'
-    else:
-        intrusion_name = 'sample_TBD_timestamps'
-    
-    return intrusion_name
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def intrusion_ID_performance(lst: list[int],sample_data: dict[any], 
-                             intrusion_name = 'sample_TBD_timestamps'):
-    
-    estimated_intrusion_dates = intrusion_identification(lst,sample_data, intrusion_name)
-
-    real_intrusion_dates = sample_data[intrusion_name]
-    comparison_dates = intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates,10)
-        
-    missed_id = comparison_dates['Only Manual']
-    extra_id = comparison_dates['Only Estimated']
-    caught_id = comparison_dates['Matched']
-
-    if len(estimated_intrusion_dates) != 0:
-        missed_id_parameter = len(missed_id)/len(real_intrusion_dates)
-        extra_id_parameter = len(extra_id)/len(estimated_intrusion_dates)
-
-        performance_parameter = ((len(real_intrusion_dates)*(missed_id_parameter) + 
-                                 len(estimated_intrusion_dates)*extra_id_parameter)/
-                                 (len(real_intrusion_dates)+len(estimated_intrusion_dates)))
-    else:
-        performance_parameter = 1
-
-    return performance_parameter
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def estimate_coefficients(sample_data: dict[any], range: list[int], intrusion_name: str) -> dict[list[any]]:
-    real_intrusion_dates = sample_data[intrusion_name]
-    
-    temp_range = np.arange(range[0],range[1],0.025)
-    salt_range = np.arange(0,range[1],0.02)
-    result_final = []
-
-    for temp_guess in temp_range:
-        for salt_guess in salt_range:
-            initial_guess = [temp_guess, salt_guess]
-            print(initial_guess)
-            result = minimize(intrusion_ID_performance, initial_guess, args=(sample_data,))
-            result_final.append((result.x, result.fun))
-
-    best_coefficients = min(result_final, key= lambda x: x[1])
-
-    temp_coeff = list(best_coefficients[0])[0]
-    salt_coeff = list(best_coefficients[0])[1]
-
-    result_comp = intrusion_date_comparison(real_intrusion_dates, 
-                                            intrusion_identification([temp_coeff, salt_coeff],
-                                                                      sample_data,intrusion_type ), 10)
-
-    return {
-        'Estimated Coefficient':best_coefficients,
-        'Intrusions Missed': result_comp['Only Manual'],
-        'Intrusions Extra': result_comp['Only Estimated'],
-        'Intrusions IDed': result_comp['Matched'] ,
-    }
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def plot_year(file_name: str, ranges: list[int], yr:int) -> None:
-    range_1 = ranges[0]
-    range_2 = ranges[1]
-    selected_data = import_joblib(file_name)
-
-    yearly_profiles = separate_yearly_profiles(selected_data)
-    
-    plot_year_profiles(selected_data, yearly_profiles, 
-                        yr,[range_1, range_2])
-    
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def get_original_indices(all_dates: list[datetime], int_dates: list[datetime]) -> list[int]:
-    #all_dates = timestamp2datetime_lists(selected_data['sample_timestamps'])
-    #int_dates = selected_data['sample_TBD_timestamps']
-
-    comparison_results = intrusion_date_comparison(int_dates, all_dates,10)
-    compared_dates = comparison_results['Matched']
-    intrusion_dates = [match[2] for match in compared_dates]
-    intrusion_indices = [i for i, dt1 in enumerate(all_dates) for j, dt2 in enumerate(intrusion_dates) if dt1 == dt2]
-
-    return intrusion_indices
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def get_intrusion_effects(selected_data, int_indices):
-    bottom_avg = ['sample_diff_row_temp', 'sample_diff_row_salt']
-    mid_avg = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt']
-    intrusion_temp_A = selected_data[bottom_avg[0]][int_indices]
-    intrusion_salt_A = selected_data[bottom_avg[1]][int_indices]
-
-    if intrusion_type == 1:
-        intrusion_temp_A = selected_data[mid_avg[0]][int_indices]
-        intrusion_salt_A = selected_data[mid_avg[1]][int_indices]
-    
-    return intrusion_temp_A, intrusion_salt_A
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
 points = []
 def onclick(event):
     if event.button == 1:
@@ -353,116 +88,287 @@ def get_points():
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
-def import_selected_data(file_name: str) -> dict:
-    if file_name == '1':
-        file_name = 'BBMP_salected_data0.pkl'
-    elif file_name == '2':
-        file_name = 'BBMP_salected_data.pkl'
-    else:
-        pass
+class intrusions:
+    
+    lin = "-"*6+' '
+    dates_error = 10
+    OF_range = [-1, 1]
+    dates_name = 'sample_timestamps'
+    depth_name = 'sample_depth'
+    temp_range = [0,10]
+    salt_range = [30.5,31.5]
+    oxy_range = [0,12]
+    bottom_avg_names = ['sample_diff_row_temp', 'sample_diff_row_salt']
+    mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt']
 
-    selected_data = import_joblib(file_name)
-    yearly_profiles = separate_yearly_profiles(selected_data)
 
-    return selected_data, yearly_profiles
+    def __init__(self, PATH) -> None:
+        self.metadata_intrusions = {}
+        self.table_IDeffects = {}
+        self.table_coefficients = {}
+        self.table_coefficients_error = {}
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+        print(self.lin+'Importing Data')
+        self.metadata_intrusions['Input_dataset'] = PATH
+        self.data = import_joblib(PATH)
 
-def user_intrusion_selection(selected_data: dict[any], yearly_profiles: dict[any], 
-                             year_list: list) -> list[datetime]:
-    range_1 = [0,10]
-    range_2 = [30.5,31.5]
-    range_3 = [0,12]
+    
+    def separate_yearly_profiles(self) -> dict[dict]:
+        self.dates_stamp = self.data[self.dates_name]
+        self.dates = timestamp2datetime_lists(self.dates_stamp)
 
-    for yr in year_list:
-        fig = plot_year_profiles(selected_data, yearly_profiles, 
-                            yr,[range_1, range_2])
+        grouped_years, self.uyears  = separate_yearly_dates(self.dates)
 
-        cid_click = fig['Figure'].canvas.mpl_connect('button_press_event', onclick)
+        self.metadata_intrusions['Init_year'] = [self.uyears[0]]
+        self.metadata_intrusions['End_year'] = [self.uyears[-1]]
 
-        cid_key = fig['Figure'].canvas.mpl_connect('key_press_event', onkey)
+        by_year_indices = {year: [self.dates.index(dt) for dt in grouped_years[year]] 
+                        for year in self.uyears}
 
-        plt.show()
+        yearly_profiles_temp, yearly_profiles_salt = create_yearly_matrices(self.data, by_year_indices)
+            
+        return {'Yearly Temp Profile': yearly_profiles_temp, 
+                'Yearly Salt Profile': yearly_profiles_salt, 
+                'Indices by Year':by_year_indices}
 
-    intrusion_dates = list(np.array(get_points())[:,0])
-    intrusion_datetimes = [from_1970(dt) for dt in intrusion_dates]
 
-    return intrusion_datetimes
+    def plot_year_profiles(self, year_data: dict[dict], yr: int):
+    
+        init_date_index = year_data['Indices by Year'][yr][0]
+        last_date_index = year_data['Indices by Year'][yr][-1]
+        datetime_list = self.dates[init_date_index:last_date_index]
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+        fig, axs = plt.subplots(2)
+        year_temp_data = year_data['Yearly Temp Profile'][yr]
+        year_salt_data = year_data['Yearly Salt Profile'][yr]
 
-def name_version(file_name: str, version: str, data: any) -> None:
-    file_fname = file_name + '_' + version + '.pkl'
-    save_joblib(file_fname, data)
-    print(f'Saved as {file_fname}')
+        X,Y = np.meshgrid(datetime_list, self.data[self.depth_name])
+        mesh0 = axs[0].pcolormesh(X,Y,year_temp_data[:,:len(Y[0,:])], cmap='seismic')
+        fig.colorbar(mesh0, ax=axs[0])
+        axs[0].invert_yaxis()
+        mesh0.set_clim(self.temp_range)
+        axs[0].set_xticks([])
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+        mesh1 = axs[1].pcolormesh(X,Y,year_salt_data[:,:len(Y[0,:])], cmap='seismic')
+        fig.colorbar(mesh1, ax=axs[1])
+        axs[1].invert_yaxis()
+        mesh1.set_clim(self.salt_range)
+        axs[1].xaxis.set_major_formatter(mdates.DateFormatter("%m"))
+
+        fig.tight_layout()
+        axs[0].text(0.02,0.85,str(yr), transform=axs[0].transAxes,fontsize=14,
+                    verticalalignment='bottom',horizontalalignment='left',
+                    bbox=dict(facecolor='white',alpha=0.5))
+
+        return {
+            'Figure':fig,
+            'Axes':axs,
+            'Mesh':[mesh0,mesh1]
+        }
+
+
+    def from_1970(self,date: int) -> datetime:
+        reference_date = datetime(1970, 1, 1)
+
+        delta = timedelta(days=date)
+        datetime_obj = reference_date + delta
+
+        return datetime_obj
+
+
+    def user_intrusion_selection(self, yearly_profiles: dict[any]) -> None:
+        print(self.lin+'Intrusion identification in progress')
+
+        for yr in self.uyears:
+            fig = self.plot_year_profiles(yearly_profiles, 
+                                yr)
+
+            cid_click = fig['Figure'].canvas.mpl_connect('button_press_event', onclick)
+
+            cid_key = fig['Figure'].canvas.mpl_connect('key_press_event', onkey)
+
+            plt.show()
+
+        intrusion_dates = list(np.array(get_points())[:,0])
+        self.manualID_dates = [self.from_1970(dt) for dt in intrusion_dates]\
+        
+        self.table_IDeffects['Dates'] = self.manualID_dates
+        print(self.lin+'Intrusion identification completed')
+
+
+    def intrusion_date_comparison(self, dates1, dates2) -> dict[list]:
+        def within_days(dt1, dt2):
+            calc = abs((dt2 - dt1).days)
+            return calc
+
+        matching = []
+        unmatched_md = []
+
+        for dt1 in dates1:
+            found_match = False
+            single_match = []
+            for dt2 in dates2:
+                diff = within_days(dt1, dt2)
+                if diff <= self.dates_error:
+                    single_match.append([diff, dt1, dt2])
+                    found_match = True
+                    break
+
+            if not found_match:
+                unmatched_md.append(dt1)
+            else:
+                if len(single_match) > 1:
+                    diff_list = [match[0] for match in single_match]
+                    min_index = [idx for idx, value in enumerate(diff_list) if value == min(diff_list)]
+                    matching.append([single_match[min_index]])
+                else:
+                    matching.append(single_match) 
+        
+        matching = [item for sublist in matching for item in sublist]
+        matching_estimated = [sublist[2] for sublist in matching]
+
+        set1 = set(dates2)
+        set2 = set(matching_estimated)
+        unmatched_ed = set1-set2
+
+        return {
+            'Matched':matching,
+            'Only Manual':unmatched_md,
+            'Only Estimated':unmatched_ed,
+        }
+
+
+    def get_original_indices(self) -> None:
+
+        comparison_results = self.intrusion_date_comparison(self.manualID_dates, self.dates)
+        compared_dates = comparison_results['Matched']
+        intrusion_dates = [match[2] for match in compared_dates]
+        self.manualID_indices = [i for i, dt1 in enumerate(self.dates) for j, dt2 in enumerate(intrusion_dates) if dt1 == dt2]
+        self.table_IDeffects['Index'] = self.manualID_indices
+
+
+    def get_intrusion_effects(self) -> None:
+
+        self.manualID_temp_effects = self.data[self.bottom_avg_names[0]][self.manualID_indices]
+        self.manualID_salt_effects = self.data[self.bottom_avg_names[1]][self.manualID_indices]
+
+        if self.manualID_type.upper() == 'MID':
+            self.manualID_temp_effects = self.data[self.mid_avg_names[0]][self.manualID_indices]
+            self.manualID_salt_effects = self.data[self.mid_avg_names[1]][self.manualID_indices]
+        
+        self.table_IDeffects['Temp_effects'] = self.manualID_temp_effects
+        self.table_IDeffects['Salt_effects'] = self.manualID_salt_effects
+
+    
+    def intrusion_identification(self, lst: list[int]) -> list[datetime]:
+        temp_intrusion_coeff, salt_intrusion_coeff = lst
+
+        column_avgs_temp = self.data[self.bottom_avg_names[0]]
+        column_avgs_salt = self.data[self.bottom_avg_names[1]]
+
+        if self.manualID_type.upper() == 'MID':
+            column_avgs_temp = self.data[self.mid_avg_names[0]]
+            column_avgs_salt = self.data[self.mid_avg_names[1]]
+
+        intrusion_temp_indices = list(np.where(column_avgs_temp > temp_intrusion_coeff)[0]+1)
+        intrusion_salt_indices = list(np.where(column_avgs_salt > salt_intrusion_coeff)[0]+1)
+
+        all_timestamps = pd.DataFrame(self.dates_stamp)
+
+        temp_intrusion_dates = all_timestamps.iloc[intrusion_temp_indices]
+        salt_intrusion_dates = all_timestamps.iloc[intrusion_salt_indices]
+
+        estimated_intrusion_dates = [value for value in temp_intrusion_dates.values.tolist() 
+                                    if value in salt_intrusion_dates.values.tolist()]
+        estimated_intrusion_dates = [item for sublist in estimated_intrusion_dates for item in sublist]
+        estimated_intrusion_dates = timestamp2datetime_lists(estimated_intrusion_dates)
+
+        return estimated_intrusion_dates
+
+
+    def intrusion_ID_performance(self, lst: list[int]):
+        
+        estimated_intrusion_dates = self.intrusion_identification(lst)
+
+        real_intrusion_dates = self.manualID_dates
+        comparison_dates = self.intrusion_date_comparison(real_intrusion_dates, estimated_intrusion_dates)
+            
+        missed_id = comparison_dates['Only Manual']
+        extra_id = comparison_dates['Only Estimated']
+        caught_id = comparison_dates['Matched']
+
+        if len(estimated_intrusion_dates) != 0:
+            missed_id_parameter = len(missed_id)/len(real_intrusion_dates)
+            extra_id_parameter = len(extra_id)/len(estimated_intrusion_dates)
+
+            performance_parameter = ((len(real_intrusion_dates)*(missed_id_parameter) + 
+                                    len(estimated_intrusion_dates)*extra_id_parameter)/
+                                    (len(real_intrusion_dates)+len(estimated_intrusion_dates)))
+        else:
+            performance_parameter = 1
+
+        return performance_parameter
+
+
+    def estimate_coefficients(self) -> None:
+        print(self.lin+'Estimating coefficients for optimized intrusion identification')
+
+        real_intrusion_dates = self.manualID_dates
+        range = self.OF_range
+        
+        temp_range = np.arange(range[0],range[1],0.025)
+        salt_range = np.arange(0,range[1],0.02)
+        result_final = []
+
+        for temp_guess in temp_range:
+            for salt_guess in salt_range:
+                initial_guess = [temp_guess, salt_guess]
+                result = minimize(self.intrusion_ID_performance, initial_guess)
+                result_final.append((result.x, result.fun))
+
+        best_coefficients = min(result_final, key= lambda x: x[1])
+
+        self.OP_performance = best_coefficients[1]
+        self.OP_temp_coeff = list(best_coefficients[0])[0]
+        self.OP_salt_coeff = list(best_coefficients[0])[1]
+
+        self.table_coefficients['Temp_coefficient'] = [self.OP_temp_coeff]
+        self.table_coefficients['Salt_coefficient'] = [self.OP_salt_coeff]
+        self.table_coefficients['Performance'] = [self.OP_performance]
+
+        result_comp = self.intrusion_date_comparison(real_intrusion_dates, 
+                                                self.intrusion_identification([self.OP_temp_coeff, self.OP_salt_coeff]))
+        
+        self.OP_Missed = result_comp['Only Manual']
+        self.OP_Extra = result_comp['Only Estimated']
+        self.OP_Found = result_comp['Matched']
+
+        self.table_coefficients_error['Missed'] = self.OP_Missed
+        self.table_coefficients_error['Extra'] = self.OP_Extra
+        self.table_coefficients_error['Found'] = self.OP_Found
+
+    #def metadata(self):
+
+
+def main(file_name, intrusion_type) -> intrusions:
+    
+    file_PATH = '../DATA/PROCESSED/' + file_name
+    
+    BBMP = intrusions(file_PATH)
+
+    yearly_profiles = BBMP.separate_yearly_profiles()
+
+    BBMP.user_intrusion_selection(yearly_profiles)
+    BBMP.manualID_type = intrusion_type
+    BBMP.metadata_intrusions['Type'] = BBMP.manualID_type
+    BBMP.get_original_indices()
+    BBMP.get_intrusion_effects()
+    BBMP.estimate_coefficients()
+
+    return BBMP
 
 
 if __name__ == '__main__':
-    import os
-    import time
-    import csv
+    Data = main('BBMP_salected_data_test.pkl', 'Normal')
 
-    file_name = input("Enter the file name for intrusion identification (include .pkl):   ")
-    file_PATH = '../DATA/PROCESSED/' + file_name
-    lin = "-"*6+' '
-
-    metadata = {}
-
-    print(lin+'Importing Data')
-    selected_data, yearly_profiles = import_selected_data(file_PATH )
-
-    data_dates_name = 'sample_timestamps'
-    data_timestamps = selected_data[data_dates_name]
-    data_datetimes = [datetime.fromtimestamp(stamp) for stamp in data_timestamps]
-    year_list = list(set([dt.year for dt in data_datetimes]))
-
-    print(lin+'Intrusion identification in progress')
-    intrusion_datetimes = user_intrusion_selection(selected_data, yearly_profiles, year_list)
-    print(lin+'Intrusion identification completed')
-
-    version = input('Version name (Keep it simple):   ')
-    name_version('manual_intrusions', version, intrusion_datetimes)
-
-    intrusion_type: int = int(input('What type? Enter the number inside the brakets. Normal[0] / Mid[1] / Inverse[2]/ TBD[else]:   '))
-    intrusion_name = identify_intrusion_type(selected_data,intrusion_type)
-    selected_data[intrusion_name] = intrusion_datetimes
-    metadata['Intrusion_dates'] = intrusion_datetimes
-
-    int_indices = get_original_indices(data_datetimes, intrusion_datetimes)
-    intrusion_dex = intrusion_name + '_INDICES'
-    selected_data[intrusion_dex] = int_indices
-    metadata['Intrusion_indices'] = int_indices
-
-    intrusion_temp_A, intrusion_salt_A = get_intrusion_effects(selected_data, int_indices)
-    intrusion_changes = intrusion_name + '_EFFECTS'
-    selected_data[intrusion_changes] = {'Temp Effects': intrusion_temp_A,
-                                    'Salt Effects': intrusion_salt_A}
-    metadata['Intrusion_temp_effects'] = intrusion_temp_A
-    metadata['Intrusion_salt_effects'] = intrusion_salt_A
-
-    ranges = [-1, 1]
-    print(lin+'Estimating coefficients for optimized intrusion identification')
-    results = estimate_coefficients(selected_data, ranges, intrusion_name)
-
-    intrusion_opt_results = intrusion_name + '_SEPARATED'
-    selected_data[intrusion_opt_results] = [results['Intrusions Missed'], 
-                                        results['Intrusions Extra'],
-                                        results['Intrusions IDed']]
-
-    print(lin+'Recording results in data file')
-    selected_data[intrusion_name+'temperature_coeff'] = list(results['Estimated Coefficient'][0])[0]
-    selected_data[intrusion_name+'sallinity_coeff'] = list(results['Estimated Coefficient'][0])[1]
-    selected_data[intrusion_name+'Performance'] = results['Estimated Coefficient'][1]
-
-    desc = input("Write description:   ")
-    selected_data[intrusion_name+'_Comments'] = desc
-
-    file_fname = input("Enter the file name for output data file (include .pkl):   ")
-    file_fname = 'BBMP_salected_data.pkl'
-    save_joblib(file_fname, selected_data)
-    print(f'Saved as {file_fname}')
+    
