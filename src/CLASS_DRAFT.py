@@ -11,7 +11,7 @@ from scipy.optimize import minimize
 #--------------------------------------------------------------------------------------
 
 def import_joblib(file_path: str) -> any:
-    
+
     data: any = joblib.load(file_path)
     
     return data
@@ -115,6 +115,8 @@ class intrusions:
     def separate_yearly_profiles(self) -> dict[dict]:
         self.dates_stamp = self.data[self.dates_name]
         self.dates = timestamp2datetime_lists(self.dates_stamp)
+
+        print(self.dates)
 
         grouped_years, self.uyears  = separate_yearly_dates(self.dates)
 
