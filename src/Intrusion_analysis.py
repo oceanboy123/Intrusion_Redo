@@ -1,5 +1,7 @@
 import joblib
 import os
+import time
+import csv
 from datetime import datetime,timedelta
 import numpy as np
 import matplotlib.dates as mdates
@@ -100,16 +102,24 @@ class intrusions:
     oxy_range = [0,12]
     bottom_avg_names = ['sample_diff_row_temp', 'sample_diff_row_salt']
     mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt']
-
+    meta_path = '../DATA/PROCESSED/TABLES/'
+    coeff_error_table = 'coefficients_error.csv'
+    coeff_table = 'coefficients.csv'
+    intrusions_table = 'intrusionID+effect.csv'
+    meta_table = 'metadata_intrusions.csv'
 
     def __init__(self, PATH) -> None:
         self.metadata_intrusions = {}
         self.table_IDeffects = {}
         self.table_coefficients = {}
         self.table_coefficients_error = {}
+        self.table_coefficients_error_comb = {}
 
         print(self.lin+'Importing Data')
         self.metadata_intrusions['Input_dataset'] = PATH
+        stat_info = os.stat(PATH)
+        self.metadata_intrusions['Date_created'] = time.ctime(stat_info.st_birthtime)
+
         self.data = import_joblib(PATH)
 
     
@@ -259,6 +269,8 @@ class intrusions:
         self.table_IDeffects['Temp_effects'] = self.manualID_temp_effects
         self.table_IDeffects['Salt_effects'] = self.manualID_salt_effects
 
+        self.metadata_intrusions['Variables_used'] = str(['salinity', 'temperature'])
+
     
     def intrusion_identification(self, lst: list[int]) -> list[datetime]:
         temp_intrusion_coeff, salt_intrusion_coeff = lst
@@ -347,8 +359,61 @@ class intrusions:
         self.table_coefficients_error['Extra'] = self.OP_Extra
         self.table_coefficients_error['Found'] = self.OP_Found
 
-    #def metadata(self):
+    
+    def count_csv_rows(self,PATH) -> int:
+        with open(PATH,'r') as file:
+            read = csv.reader(file)
+            row_count = sum(1 for row in read)
 
+        return row_count
+    
+
+    def record_single(self, TABLE, DICT) -> None:
+        table_path = self.meta_path+TABLE
+        row_num1 = self.count_csv_rows(table_path)
+
+        if row_num1 == 0:
+            DICT['ID'] = 1
+            DATAF= pd.DataFrame(DICT)
+            DATAF.to_csv(table_path,mode='a', header=True, index=False)
+        else:
+            DICT['ID'] = row_num1
+            DATAF= pd.DataFrame(DICT)
+            DATAF.to_csv(table_path,mode='a', header=False, index=False)
+
+    
+    def record_metadata(self) -> None:
+        row_num = self.count_csv_rows(self.meta_path+self.meta_table)
+        rows_intrusion = len(self.table_IDeffects['Dates'])
+
+        rows_missed = len(self.table_coefficients_error['Missed'])
+        rows_extra = len(self.table_coefficients_error['Extra'])
+        rows_found = len(self.table_coefficients_error['Found'])
+        self.table_coefficients_error_comb['Type'] = ['Missed']*rows_missed + ['Extra']*rows_extra + ['Found']*rows_found
+        self.table_coefficients_error_comb['Dates'] = self.table_coefficients_error['Missed'] + self.table_coefficients_error['Extra'] + self.table_coefficients_error['Found']
+        rows_error = len(self.table_coefficients_error_comb['Dates'])
+
+        if row_num == 0:
+            index = 1
+            self.table_IDeffects['ID'] = [index]*rows_intrusion
+            self.table_coefficients_error_comb['Error'] = [index]*rows_error
+            DataF_IDeffects = pd.DataFrame(self.table_IDeffects)
+            DataF_error = pd.DataFrame(self.table_coefficients_error_comb)
+            DataF_IDeffects.to_csv(self.meta_path+self.intrusions_table,mode='a', header=True, index=False)
+            DataF_error.to_csv(self.meta_path+self.coeff_error_table,mode='a', header=True, index=False)
+            
+        else:
+            index = row_num
+            self.table_IDeffects['ID'] = [index]*rows_intrusion
+            self.table_coefficients_error_comb['Error'] = [index]*rows_error
+            DataF_IDeffects = pd.DataFrame(self.table_IDeffects)
+            DataF_error = pd.DataFrame(self.table_coefficients_error_comb)
+            DataF_IDeffects.to_csv(self.meta_path+self.intrusions_table,mode='a', header=False, index=False)
+            DataF_error.to_csv(self.meta_path+self.coeff_error_table,mode='a', header=False, index=False)
+        
+        self.record_single(self.meta_table, self.metadata_intrusions)
+        self.record_single(self.coeff_table, self.table_coefficients)
+    
 
 def main(file_name, intrusion_type) -> intrusions:
     
@@ -364,10 +429,11 @@ def main(file_name, intrusion_type) -> intrusions:
     BBMP.get_original_indices()
     BBMP.get_intrusion_effects()
     BBMP.estimate_coefficients()
+    BBMP.record_metadata()
 
     return BBMP
 
-
+ 
 if __name__ == '__main__':
     Data = main('BBMP_salected_data_test.pkl', 'Normal')
 
