@@ -107,6 +107,7 @@ class intrusions:
         self.bottom_avg_names = ['sample_diff_row_temp', 'sample_diff_row_salt']
         self.mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt']
         self.OF_range = [-1, 1]
+        self.dates = []
 
         self.metadata_intrusions['Input_dataset'] = PATH
         self.data = import_joblib(PATH)
