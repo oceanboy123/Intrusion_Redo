@@ -12,27 +12,27 @@ This project represent the reproduction of my MSc Thesis code orignally develope
 - Normlaized and Conformed profile data (PROCESSED)
 - Connection Labels (→)
 
-Intrusion_Redo/
-├── SRC/
-│   ├── get_BBMP_csv.sh
-│   ├── ETL_processes.py
-│   ├── Intrusion_analysis.py
-├── DATA/
-│   ├── RAW/
-|   │   ├── @metadata_csv (-> Update)
-│   ├── PROCESSED/
-|   │   ├── TABLES/
-|   |   │   ├── @coefficients_error (-> Error)
-|   |   │   ├── @coefficients (-> ID/Error)
-|   |   │   ├── @intrusionID+effect (-> ID)
-|   |   │   ├── @metadata_intrusions (-> ID/Normal)
-|   │   ├── @metadata_processing (-> Normal/Update)
-|   │   ├── *processed_data
-│   ├── Data Documentation.md
-├── requirements.txt
-├── Documentation.md
-├── .gitignore
-└── .pylintrc
+- Intrusion_Redo/
+- ├── SRC/
+- │   ├── get_BBMP_csv.sh
+- │   ├── ETL_processes.py
+- │   ├── Intrusion_analysis.py
+- ├── DATA/
+- │   ├── RAW/
+- |   │   ├── @metadata_csv (-> Update)
+- │   ├── PROCESSED/
+- |   │   ├── TABLES/
+- |   |   │   ├── @coefficients_error (-> Error)
+- |   |   │   ├── @coefficients (-> ID/Error)
+- |   |   │   ├── @intrusionID+effect (-> ID)
+- |   |   │   ├── @metadata_intrusions (-> ID/Normal)
+- |   │   ├── @metadata_processing (-> Normal/Update)
+- |   │   ├── *processed_data
+- │   ├── Data Documentation.md
+- ├── requirements.txt
+- ├── Documentation.md
+- ├── .gitignore
+- └── .pylintrc
 
 ## Scripts
 
@@ -55,9 +55,9 @@ It will ask for a password. Just Press Enter.
 
 - How to use?
 
-ETL_processes {CSV file name} {Depth} {Depth Range}  {Output dataset name} *****TBD
+* ETL_processes {CSV file name} {Depth} {Depth Range}  {Output dataset name} *****TBD
            or
-python ETL_processes.py
+* python ETL_processes.py
 
 │Where:
 - Depth: Corresponds to the minimum depth at which deep depth averages will be calcualted. aka
@@ -71,13 +71,13 @@ python ETL_processes.py
 
 - How to use?
 
-Manual Identification
-Intrusion_analysis {Input dataset name} {Intrusion Type} {Indetification type} {Manual Type} *****TBD
+* Manual Identification
+* Intrusion_analysis {Input dataset name} {Intrusion Type} {Indetification type} {Manual Type} *****TBD
           or
-python Intrusion_analysis.py
+* python Intrusion_analysis.py
 
-Automated identification
-Intrusion_analysis {Input dataset name} {Intrusion Type} {Indetification type} {Coefficients}
+* Automated identification
+* Intrusion_analysis {Input dataset name} {Intrusion Type} {Indetification type} {Coefficients}
 *****TBD
 
 │Where:
