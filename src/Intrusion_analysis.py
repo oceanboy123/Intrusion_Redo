@@ -390,7 +390,7 @@ class intrusions:
         rows_extra = len(self.table_coefficients_error['Extra'])
         rows_found = len(self.table_coefficients_error['Found'])
         self.table_coefficients_error_comb['Type'] = ['Missed']*rows_missed + ['Extra']*rows_extra + ['Found']*rows_found
-        self.table_coefficients_error_comb['Dates'] = self.table_coefficients_error['Missed'] + self.table_coefficients_error['Extra'] + self.table_coefficients_error['Found']
+        self.table_coefficients_error_comb['Dates'] = list(self.table_coefficients_error['Missed']) + list(self.table_coefficients_error['Extra']) + [sub[-1] for sub in list(self.table_coefficients_error['Found'])]
         rows_error = len(self.table_coefficients_error_comb['Dates'])
 
         if row_num == 0:
