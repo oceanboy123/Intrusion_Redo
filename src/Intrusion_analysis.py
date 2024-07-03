@@ -12,6 +12,14 @@ from scipy.optimize import minimize
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
 
+def save_joblib(data:any,file_name: str) -> any:
+    file_path = '../DATA/PROCESSED/' + file_name
+    joblib.dump(data, file_path)
+    
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+
 def import_joblib(file_path: str) -> any:
 
     data: any = joblib.load(file_path)
@@ -384,6 +392,34 @@ class intrusions:
             DATAF.to_csv(table_path,mode='a', header=False, index=False)
 
     
+    def automatedID(self, coefficients, manual_input):
+        self.metadata_intrusions['manual_input_type'] = 'N/A'
+
+        self.metadata_intrusions['manual_input_path'] = 'N/A'
+
+        self.metadata_intrusions['manual_input_path'] = manual_input
+        intrusion_dates = import_joblib(manual_input)
+        self.manualID_dates = intrusion_dates
+        self.table_IDeffects['Dates'] = self.manualID_dates
+
+        self.metadata_intrusions['manual_input_save'] = 'OFF'
+
+        self.get_original_indices()
+        self.get_intrusion_effects()
+
+        self.table_coefficients['Temp_coefficient'] = [coefficients[0]]
+        self.table_coefficients['Salt_coefficient'] = [coefficients[1]]
+
+        self.OP_performance = self.intrusion_ID_performance(coefficients)
+        result_comp = self.intrusion_date_comparison(self.manualID_dates, 
+                                                self.intrusion_identification(coefficients))
+        
+        self.table_coefficients['Performance'] = [self.OP_performance]
+        self.table_coefficients_error['Missed'] = result_comp['Only Manual']
+        self.table_coefficients_error['Extra'] = result_comp['Only Estimated']
+        self.table_coefficients_error['Found'] = result_comp['Matched']
+
+    
     def record_metadata(self) -> None:
         row_num = self.count_csv_rows(self.meta_path+self.meta_table)
         rows_intrusion = len(self.table_IDeffects['Dates'])
@@ -417,7 +453,7 @@ class intrusions:
         self.record_single(self.coeff_table, self.table_coefficients)
     
 
-def main(file_name, intrusion_type, ID_type, manual_type, save_manual='OFF', manual_input='manual_intrusions_all_noO2.pkl') -> intrusions:
+def main(file_name, intrusion_type, ID_type, manual_type='MANUAL', coefficients=[0.5, 0.5], save_manual='OFF', manual_input='manual_intrusions_all_noO2.pkl') -> intrusions:
     
     file_PATH = '../DATA/PROCESSED/' + file_name
     
@@ -426,35 +462,41 @@ def main(file_name, intrusion_type, ID_type, manual_type, save_manual='OFF', man
     yearly_profiles = BBMP.separate_yearly_profiles()
 
     BBMP.metadata_intrusions['ID_type'] = ID_type.upper()
+    BBMP.metadata_intrusions['Current_time'] = [int(time.time())]
+    BBMP.manualID_type = intrusion_type
+    BBMP.metadata_intrusions['Intrusion_type'] = BBMP.manualID_type
 
     if ID_type.upper() == 'MANUAL':
         BBMP.metadata_intrusions['manual_input_type'] = manual_type.upper()
+        
         if manual_type.upper() == 'MANUAL':
             BBMP.metadata_intrusions['manual_input_path'] = 'N/A'
             BBMP.user_intrusion_selection(yearly_profiles)
+            
             if save_manual.upper() == 'ON':
-                pass
+                man_name = 'manualID_' + str(int(time.time())) + '.pkl'
+                save_joblib(BBMP.manualID_dates, man_name)
         else:
             BBMP.metadata_intrusions['manual_input_path'] = manual_input
             intrusion_dates = import_joblib(manual_input)
             BBMP.manualID_dates = intrusion_dates
             BBMP.table_IDeffects['Dates'] = BBMP.manualID_dates
-
-        BBMP.manualID_type = intrusion_type
-        BBMP.metadata_intrusions['Type'] = BBMP.manualID_type
+        
+        BBMP.metadata_intrusions['manual_input_save'] = save_manual.upper()
 
         BBMP.get_original_indices()
         BBMP.get_intrusion_effects()
-    else:
-        pass
+        BBMP.estimate_coefficients()
 
-    BBMP.estimate_coefficients()
+    else:
+        BBMP.automatedID(coefficients, manual_input)
+
     BBMP.record_metadata()
 
     return BBMP
 
  
 if __name__ == '__main__':
-    Data = main('BBMP_salected_data_test.pkl', 'Normal')
+    Data = main('BBMP_salected_data_test.pkl', 'Normal', 'MANUAL')
 
     
