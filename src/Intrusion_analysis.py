@@ -475,7 +475,7 @@ def main(file_name, intrusion_type, ID_type, manual_type='MANUAL', coefficients=
             BBMP.user_intrusion_selection(yearly_profiles)
             
             if save_manual.upper() == 'ON':
-                man_name = 'manualID_' + str(int(time.time())) + '.pkl'
+                man_name = 'manualID_' + BBMP.manualID_type + str(int(time.time())) + '.pkl'
                 save_joblib(BBMP.manualID_dates, man_name)
         else:
             manual_input_path = path_data + manual_input
@@ -499,6 +499,6 @@ def main(file_name, intrusion_type, ID_type, manual_type='MANUAL', coefficients=
 
  
 if __name__ == '__main__':
-    Data = main('BBMP_salected_data_test.pkl', 'Normal', 'OTHER', coefficients=[0.2, 0.08])
+    Data = main('BBMP_salected_data_test.pkl', 'MID', 'MANUAL', 'MANUAL', save_manual= 'ON')
 
     
