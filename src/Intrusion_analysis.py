@@ -3,7 +3,6 @@ import os
 import time
 import csv
 import argparse
-import pkg_resources
 import sys
 from datetime import datetime,timedelta
 import numpy as np
@@ -11,14 +10,6 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.optimize import minimize
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
-
-def get_data_path(filename, subfolder=''):
-    """Utility function to get the full path to a data file."""
-    path = pkg_resources.resource_filename(__name__, f'../DATA/{subfolder}{filename}')
-    return path
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
