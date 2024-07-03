@@ -115,6 +115,8 @@ class intrusions:
         self.table_coefficients_error = {}
         self.table_coefficients_error_comb = {}
 
+        self.manualID_dates = []
+
         print(self.lin+'Importing Data')
         self.metadata_intrusions['Input_dataset'] = PATH
         stat_info = os.stat(PATH)
@@ -415,7 +417,7 @@ class intrusions:
         self.record_single(self.coeff_table, self.table_coefficients)
     
 
-def main(file_name, intrusion_type) -> intrusions:
+def main(file_name, intrusion_type, ID_type, manual_type, save_manual='OFF', manual_input='manual_intrusions_all_noO2.pkl') -> intrusions:
     
     file_PATH = '../DATA/PROCESSED/' + file_name
     
@@ -423,11 +425,29 @@ def main(file_name, intrusion_type) -> intrusions:
 
     yearly_profiles = BBMP.separate_yearly_profiles()
 
-    BBMP.user_intrusion_selection(yearly_profiles)
-    BBMP.manualID_type = intrusion_type
-    BBMP.metadata_intrusions['Type'] = BBMP.manualID_type
-    BBMP.get_original_indices()
-    BBMP.get_intrusion_effects()
+    BBMP.metadata_intrusions['ID_type'] = ID_type.upper()
+
+    if ID_type.upper() == 'MANUAL':
+        BBMP.metadata_intrusions['manual_input_type'] = manual_type.upper()
+        if manual_type.upper() == 'MANUAL':
+            BBMP.metadata_intrusions['manual_input_path'] = 'N/A'
+            BBMP.user_intrusion_selection(yearly_profiles)
+            if save_manual.upper() == 'ON':
+                pass
+        else:
+            BBMP.metadata_intrusions['manual_input_path'] = manual_input
+            intrusion_dates = import_joblib(manual_input)
+            BBMP.manualID_dates = intrusion_dates
+            BBMP.table_IDeffects['Dates'] = BBMP.manualID_dates
+
+        BBMP.manualID_type = intrusion_type
+        BBMP.metadata_intrusions['Type'] = BBMP.manualID_type
+
+        BBMP.get_original_indices()
+        BBMP.get_intrusion_effects()
+    else:
+        pass
+
     BBMP.estimate_coefficients()
     BBMP.record_metadata()
 
