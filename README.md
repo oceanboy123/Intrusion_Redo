@@ -65,7 +65,7 @@ It will ask for a password. Just Press Enter.
 - Depth Range: Corresponds to the minimum depth at which mid depth averages will be calcualted. aka. Depth averages = avg effects calculated from depth1 to depth2.
 
 ### Intrusion_analysis.py
-- Manual identification of intrusion from the PROCESSED data. Recording both the time and the effects of these events. After identification, the coeficients that best match the manually selected intrusions are estimated through an optimization function that minimizes the number of extra and the number of missed intrusions based on your selection. A “true” intrusion data file, selected by the master user, is available and can be contested by the other users other than the master user. 
+
 
 - Automated identification involves the identification of intrusion events only based on coefficients for chnages in temperature and salinity. They can be calculated using the using manual identificastion and chosing to import a data file rather than selecting the intrusion events yourself.
 
