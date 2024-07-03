@@ -455,7 +455,8 @@ class intrusions:
 
 def main(file_name, intrusion_type, ID_type, manual_type='MANUAL', coefficients=[0.5, 0.5], save_manual='OFF', manual_input='manual_intrusions_all_noO2.pkl') -> intrusions:
     
-    file_PATH = '../DATA/PROCESSED/' + file_name
+    path_data = '../DATA/PROCESSED/'
+    file_PATH = path_data + file_name
     
     BBMP = intrusions(file_PATH)
 
@@ -477,8 +478,9 @@ def main(file_name, intrusion_type, ID_type, manual_type='MANUAL', coefficients=
                 man_name = 'manualID_' + str(int(time.time())) + '.pkl'
                 save_joblib(BBMP.manualID_dates, man_name)
         else:
-            BBMP.metadata_intrusions['manual_input_path'] = manual_input
-            intrusion_dates = import_joblib(manual_input)
+            manual_input_path = path_data + manual_input
+            BBMP.metadata_intrusions['manual_input_path'] = manual_input_path
+            intrusion_dates = import_joblib(manual_input_path)
             BBMP.manualID_dates = intrusion_dates
             BBMP.table_IDeffects['Dates'] = BBMP.manualID_dates
         
@@ -489,7 +491,7 @@ def main(file_name, intrusion_type, ID_type, manual_type='MANUAL', coefficients=
         BBMP.estimate_coefficients()
 
     else:
-        BBMP.automatedID(coefficients, manual_input)
+        BBMP.automatedID(coefficients, path_data + manual_input)
 
     BBMP.record_metadata()
 
@@ -497,6 +499,6 @@ def main(file_name, intrusion_type, ID_type, manual_type='MANUAL', coefficients=
 
  
 if __name__ == '__main__':
-    Data = main('BBMP_salected_data_test.pkl', 'Normal', 'MANUAL')
+    Data = main('BBMP_salected_data_test.pkl', 'Normal', 'OTHER', coefficients=[0.2, 0.08])
 
     
