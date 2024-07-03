@@ -3,7 +3,6 @@ import os
 import time
 import csv
 import argparse
-import pkg_resources
 import sys
 from datetime import datetime,timedelta
 import numpy as np
@@ -14,23 +13,15 @@ from scipy.optimize import minimize
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
-
-def get_data_path(filename, subfolder=''):
-    """Utility function to get the full path to a data file."""
-    path = pkg_resources.resource_filename(__name__, f'../DATA/{subfolder}{filename}')
-    return path
-
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+file_name = 'BBMP_salected_data_test.pkl'
+intrusion_type = 'Normal'
+ID_type = 'MANUAL'
+manual_type='MANUAL'
+coefficients=[0.5, 0.5]
+save_manual='OFF'
+manual_input='manual_intrusions_all_noO2.pkl'
 
 def get_command_line_args():
-    file_name = 'BBMP_salected_data_test.pkl'
-    intrusion_type = 'Normal'
-    ID_type = 'MANUAL'
-    manual_type='MANUAL'
-    coefficients=[0.5, 0.5]
-    save_manual='OFF'
-    manual_input='manual_intrusions_all_noO2.pkl'
     # Command line arguments
     parser = argparse.ArgumentParser(description='Arguments')
     parser.add_argument('file_name', type=str, help="""TBD""", default=file_name)
@@ -627,6 +618,6 @@ def main() -> intrusions:
 
  
 if __name__ == '__main__':
-    Data = main()
+    Data = main('BBMP_salected_data_test.pkl', 'MID', 'MANUAL', 'MANUAL', save_manual= 'ON')
 
     
