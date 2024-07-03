@@ -2,12 +2,73 @@ import joblib
 import os
 import time
 import csv
+import argparse
+import sys
 from datetime import datetime,timedelta
 import numpy as np
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.optimize import minimize
+
+#--------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+file_name = 'BBMP_salected_data_test.pkl'
+intrusion_type = 'Normal'
+ID_type = 'MANUAL'
+manual_type='MANUAL'
+coefficients=[0.5, 0.5]
+save_manual='OFF'
+manual_input='manual_intrusions_all_noO2.pkl'
+
+def get_command_line_args():
+    # Command line arguments
+    parser = argparse.ArgumentParser(description='Arguments')
+    parser.add_argument('file_name', type=str, help="""TBD""", default=file_name)
+    parser.add_argument('--intrusion_type', type=str, help='TBD')
+    parser.add_argument('--ID_type', type=str, help='TBD')
+    parser.add_argument('--manual_type', type=str, help='TBD')
+    parser.add_argument('--coefficients', type=list[int], help='TBD')
+    parser.add_argument('--save_manual', type=str, help='TBD')
+    parser.add_argument('--manual_input', type=str, help='TBD')
+
+    # Parse and read arguments and assign them to variables if exists
+    args, _ = parser.parse_known_args()
+
+    # Check if no arguments were provided and print help if so
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(0)
+
+    data_name = file_name
+    if args.file_name:
+        data_name = args.file_name
+
+    int_type = intrusion_type
+    if args.intrusion_type:
+        int_type = args.intrusion_type
+
+    idtype = ID_type
+    if args.ID_type:
+        idtype = args.ID_type
+
+    man_type = manual_type
+    if args.manual_type:
+        man_type=args.manual_type
+
+    coeff = coefficients
+    if args.coefficients:
+        coeff=args.coefficients
+
+    s_manual = save_manual
+    if args.save_manual:
+        s_manual=args.save_manual
+
+    i_manual = manual_input
+    if args.manual_input:
+        i_manual=args.manual_input
+
+    return data_name, int_type, idtype, man_type, coeff, s_manual, i_manual
 
 #--------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------
@@ -131,6 +192,63 @@ class intrusions:
         self.metadata_intrusions['Date_created'] = time.ctime(stat_info.st_birthtime)
 
         self.data = import_joblib(PATH)
+
+
+    def get_command_line_args(self):
+        file_name = 'BBMP_salected_data_test.pkl'
+        intrusion_type = 'Normal'
+        ID_type = 'MANUAL'
+        manual_type='MANUAL'
+        coefficients=[0.5, 0.5]
+        save_manual='OFF'
+        manual_input='manual_intrusions_all_noO2.pkl'
+        # Command line arguments
+        parser = argparse.ArgumentParser(description='Arguments')
+        parser.add_argument('file_name', type=str, help="""TBD""", default=file_name)
+        parser.add_argument('--intrusion_type', type=str, help='TBD')
+        parser.add_argument('--ID_type', type=str, help='TBD')
+        parser.add_argument('--manual_type', type=str, help='TBD')
+        parser.add_argument('--coefficients', type=list[int], help='TBD')
+        parser.add_argument('--save_manual', type=str, help='TBD')
+        parser.add_argument('--manual_input', type=str, help='TBD')
+
+        # Parse and read arguments and assign them to variables if exists
+        args, _ = parser.parse_known_args()
+
+        # Check if no arguments were provided and print help if so
+        if len(sys.argv) == 1:
+            parser.print_help()
+            sys.exit(0)
+
+        data_name = file_name
+        if args.file_name:
+            data_name = args.file_name
+
+        int_type = intrusion_type
+        if args.intrusion_type:
+            int_type = args.intrusion_type
+
+        idtype = ID_type
+        if args.ID_type:
+            idtype = args.ID_type
+
+        man_type = manual_type
+        if args.manual_type:
+            man_type=args.manual_type
+
+        coeff = coefficients
+        if args.coefficients:
+            coeff=args.coefficients
+
+        s_manual = save_manual
+        if args.save_manual:
+            s_manual=args.save_manual
+
+        i_manual = manual_input
+        if args.manual_input:
+            i_manual=args.manual_input
+
+        return data_name, int_type, idtype, man_type, coeff, s_manual, i_manual
 
     
     def separate_yearly_profiles(self) -> dict[dict]:
