@@ -1,3 +1,49 @@
+'''This code represents the translation of my master thesis work
+from MATLAB to Python. The code allows you to identify ocean water
+intrusion events in Bedford Basin (BB), Halifax, NS.
+
+Halifax Habour is composed of 3 main sections, the Outer Harbour,
+the Narrows and Bedford Basin. The Outer Harbour is dirrectly connected
+to the North Atlantic Ocean and it's connected to BB through a shallow
+and narrow channel called the Narrows. For comparison, The Narrows
+is about 20m deep in average, and BB is bowl shaped and reaches depths
+of about 70m
+
+Intrusion events are water parcels from the Outer Harbour that climb
+the slope from the open ocean to the Narrows and then spill into BB
+The reason why we care is because these events affect BB stratification,
+nutrient concentrations, oxygen concentrations at depths, and more.
+
+This code allows you to identify intrusion events both MANUALLY and
+and AUTOMATICALLY.
+
+MANUAL Identification: Allows you to identify these events using data from 
+the Bedford Basin Monitoring Program (BBMP) station, which collects oceanographic
+variables at different depths of the water column. For identification only 
+temperture and salinity are used, however, future updates will include oxygen at least.
+Using the intrusions you identified, the script will determine the best possible
+coefficients for automated intrusion identification using the variables provided
+(i.e., temperature and salinity), and it will also provide the performance of these
+coefficients
+
+AUTOMATED Indetification: Allows you to skip the manual identification and focus on
+testing different coefficients and their performance against a set of intrusions
+that were manually identified and saved in file fromat(.pkl)
+
+All metadata data lineage documentation colleted from automated and manual intrusion events are 
+recorded in .csv files located in the DATA/ directory.
+
+Future Funtinalities: MySQL database, Apache Airflow, and Distribution to compile
+data from multiple Users
+
+Data Source: https://www.bio.gc.ca/science/monitoring-monitorage/bbmp-pobb/bbmp-pobb-en.php
+
+For more information check my paper here: http://hdl.handle.net/10222/83180
+
+ '''
+
+
+# Imports
 import joblib
 import os
 import time
@@ -11,10 +57,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.optimize import minimize
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
 
-def get_command_line_args():
+
+def get_command_line_args() -> str:
     file_name = 'BBMP_salected_data_test.pkl'
     intrusion_type = 'Normal'
     ID_type = 'MANUAL'
@@ -70,34 +115,29 @@ def get_command_line_args():
 
     return data_name, int_type, idtype, man_type, coeff, s_manual, i_manual
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 def save_joblib(data:any,file_name: str) -> any:
     file_path = '../DATA/PROCESSED/' + file_name
     joblib.dump(data, file_path)
     
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
 
 def import_joblib(file_path: str) -> any:
-
     data: any = joblib.load(file_path)
-    
     return data
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 def timestamp2datetime_lists(lst:list[int]) -> list[datetime]:
+    '''Takes a list of timestapms and converst it to a list of datetimes'''
     datetime_list:list[datetime] = [datetime.fromtimestamp(ts) for ts in lst]
     return datetime_list
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 def separate_yearly_dates(datetime_list:list[datetime]) -> dict[list]:
+    '''Separates a list of datetimes and separates them by year by separating indices'''
     years_extracted:list = np.unique([dt.year for dt in datetime_list])
 
     grouped_years:dict[list] = {year: [] for year in years_extracted}
@@ -106,10 +146,10 @@ def separate_yearly_dates(datetime_list:list[datetime]) -> dict[list]:
 
     return grouped_years, years_extracted
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 def create_yearly_matrices(selected_data:dict, year_indices:dict[list]) -> dict[dict]:
+    '''Use separated indices by year and create matrices with the actual data for plotting'''
     Temp_dataframe = selected_data['sample_matrix_temp']
     Salt_dataframe = selected_data['sample_matrix_salt']
     
@@ -128,11 +168,11 @@ def create_yearly_matrices(selected_data:dict, year_indices:dict[list]) -> dict[
 
     return yearly_profiles_temp, yearly_profiles_salt
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
 
-points = []
+
+points = []   # Creates list to save the points selected
 def onclick(event):
+    '''Allows you to select point from plots'''
     if event.button == 1:
         if event.inaxes is not None:
             x, y = event.xdata, event.ydata
@@ -143,24 +183,24 @@ def onclick(event):
             event.inaxes.plot(x, y, 'ro')
             event.canvas.draw()
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 def onkey(event):
+    '''Terminates point selection stage'''
     if event.key == ' ':
         plt.close(event.canvas.figure)
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 def get_points():
     return points
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 class intrusions:
-    
+    '''Creates an Object representing a specific intrusion identification strategy'''
+
+    # Internal Variables
     lin = "-"*6+' '
     dates_error = 10
     OF_range = [-1, 1]
@@ -572,15 +612,18 @@ class intrusions:
     
 
 def main() -> intrusions:
+    # Get command line arguments
     file_name, intrusion_type, ID_type, manual_type, coefficients, save_manual, manual_input = get_command_line_args()
 
     path_data = '../DATA/PROCESSED/'
     file_PATH = path_data + file_name
     
+    # Initializing intrusion object
     BBMP = intrusions(file_PATH)
 
     yearly_profiles = BBMP.separate_yearly_profiles()
 
+    # Recording metadata
     BBMP.metadata_intrusions['ID_type'] = ID_type.upper()
     BBMP.metadata_intrusions['Current_time'] = [int(time.time())]
     BBMP.manualID_type = intrusion_type
@@ -590,28 +633,35 @@ def main() -> intrusions:
         BBMP.metadata_intrusions['manual_input_type'] = manual_type.upper()
         
         if manual_type.upper() == 'MANUAL':
+            # Manual identification through plots
             BBMP.metadata_intrusions['manual_input_path'] = 'N/A'
             BBMP.user_intrusion_selection(yearly_profiles)
             
             if save_manual.upper() == 'ON':
+                # Save manually identified intrusion
                 man_name = 'manualID_' + BBMP.manualID_type + str(int(time.time())) + '.pkl'
                 save_joblib(BBMP.manualID_dates, man_name)
         else:
+            # Manual indeitification through importing file
             manual_input_path = path_data + manual_input
             BBMP.metadata_intrusions['manual_input_path'] = manual_input_path
             intrusion_dates = import_joblib(manual_input_path)
             BBMP.manualID_dates = intrusion_dates
             BBMP.table_IDeffects['Dates'] = BBMP.manualID_dates
         
+        # Record Metadata
         BBMP.metadata_intrusions['manual_input_save'] = save_manual.upper()
-
         BBMP.get_original_indices()
         BBMP.get_intrusion_effects()
+
+        # Estimate optimized coefficients
         BBMP.estimate_coefficients()
 
     else:
+        # Automated identification using specific coefficients
         BBMP.automatedID(coefficients, path_data + manual_input)
 
+    # Record metadata in .csv files
     BBMP.record_metadata()
 
     return BBMP
