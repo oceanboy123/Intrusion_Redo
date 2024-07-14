@@ -1,5 +1,0 @@
-joblib
-numpy
-matplotlib
-pandas
-scipy
