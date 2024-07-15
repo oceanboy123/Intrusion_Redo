@@ -118,7 +118,7 @@ def get_command_line_args():
 
 
 def save_joblib(data:any,file_name: str) -> any:
-    file_path = '../DATA/PROCESSED/' + file_name
+    file_path = '../data/PROCESSED/' + file_name
     joblib.dump(data, file_path)
     
 
@@ -222,7 +222,7 @@ class intrusions:
     mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt'] 
     
     ## Table files
-    meta_path = '../DATA/PROCESSED/TABLES/'
+    meta_path = '../data/PROCESSED/TABLES/'
     coeff_error_table = 'coefficients_error.csv'
     coeff_table = 'coefficients.csv'
     intrusions_table = 'intrusionID+effect.csv'
@@ -598,7 +598,7 @@ def main() -> intrusions:
     # Get command line arguments
     file_name, intrusion_type, ID_type, manual_type, coefficients, save_manual, manual_input = get_command_line_args()
 
-    path_data = '../DATA/PROCESSED/'
+    path_data = '../data/PROCESSED/'
     file_PATH = path_data + file_name
     
     # Initializing intrusion object
