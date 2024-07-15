@@ -1,8 +1,12 @@
+# Importing relevant modules
+import joblib
+import ETL_processes as BBMP
+import os
+import time
+import csv
 import pandas as pd
 import numpy as np
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
 
 def get_and_group_data(file_name: str, variables_target: list[str]) -> dict[list]:
     
@@ -34,8 +38,7 @@ def get_and_group_data(file_name: str, variables_target: list[str]) -> dict[list
         'Unique Depths':unique_depths
     }
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 def normalize_depth_from_list(upress: list, data_frame):
     for p in upress:
@@ -58,8 +61,7 @@ def normalize_depth_from_list(upress: list, data_frame):
 
     return data_frame
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 def check_duplicate_rows(data_frame):
     column_names = data_frame.columns.tolist()
@@ -79,8 +81,7 @@ def check_duplicate_rows(data_frame):
 
     return data_frame
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 def normalize_length_data(data: dict,upress: list) -> dict[dict,list,list]:
     print('Nomalizing depths and filling with NaN')
@@ -101,8 +102,7 @@ def normalize_length_data(data: dict,upress: list) -> dict[dict,list,list]:
         'Normalized Dates': normalized_dates,
     }
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 def separate_target_variables(string_name: str, data: dict): 
     print('Creating Target Variable Matrices')
@@ -110,8 +110,7 @@ def separate_target_variables(string_name: str, data: dict):
 
     return all_columns
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
+
 
 def data_transformations(matrix_list :list,variables_target : list[str],normalized_depths: list, deep:int, mid:list[int]) -> dict[any]:
     
@@ -153,17 +152,8 @@ def data_transformations(matrix_list :list,variables_target : list[str],normaliz
 
     return transform_data
 
-#--------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------
 
-if __name__ == '__main__':
-    # Importing relevant modules
-    import joblib
-    import ETL_processes as BBMP
-    import os
-    import time
-    import csv
-
+def main():
     raw_name = 'bbmp_aggregated_profiles.csv'
     raw_bbmp_data = '../data/RAW/' + raw_name
     
@@ -241,3 +231,8 @@ if __name__ == '__main__':
 
     joblib.dump(selected_data, file_PATH)
     print(f'Saved as {file_NAME}')
+
+
+if __name__ == '__main__':
+    main()
+    
