@@ -12,5 +12,5 @@ cd $REMOTE_DIR
 get $FILE_NAME
 bye
 EOF
-mv bbmp_aggregated_profiles.csv ../DATA/RAW
+mv bbmp_aggregated_profiles.csv ../data/RAW
 echo "Download completed. File saved as $FILE_NAME"

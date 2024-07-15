@@ -165,7 +165,7 @@ if __name__ == '__main__':
     import csv
 
     raw_name = 'bbmp_aggregated_profiles.csv'
-    raw_bbmp_data = '../DATA/RAW/' + raw_name
+    raw_bbmp_data = '../data/RAW/' + raw_name
     
     metadata = {}
     stat_info = os.stat(raw_bbmp_data)
@@ -221,14 +221,14 @@ if __name__ == '__main__':
     }
 
     file_NAME = 'BBMP_salected_data0.pkl'
-    file_PATH = '../DATA/PROCESSED/' + file_NAME
+    file_PATH = '../data/PROCESSED/' + file_NAME
 
     metadata['Output_dataset_path'] = file_PATH
 
     meta_processing = pd.DataFrame(metadata)
 
     metadata_csv = 'metadata_processing.csv'
-    csv_path = '../DATA/PROCESSED/' + metadata_csv
+    csv_path = '../data/PROCESSED/' + metadata_csv
 
     with open(csv_path,'r') as file:
         read = csv.reader(file)
