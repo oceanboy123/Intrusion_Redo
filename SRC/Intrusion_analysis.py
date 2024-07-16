@@ -231,11 +231,6 @@ class intrusions:
     def __init__(self, PATH:str) -> None:
         
         # Metadata table{columns:metadata}
-        self.manualID_salt_effects = self.data[self.mid_avg_names[1]][self.manualID_indices]
-        self.manualID_temp_effects = self.data[self.mid_avg_names[0]][self.manualID_indices]
-        self.dates_stamp = self.data[self.dates_name]
-        grouped_years, self.uyears  = separate_yearly_dates(self.dates)
-        self.dates = timestamp2datetime_lists(self.dates_stamp)
         self.metadata_intrusions = {}
         self.table_IDeffects = {}
         self.table_coefficients = {}
@@ -253,6 +248,10 @@ class intrusions:
 
     
     def separate_yearly_profiles(self) -> dict[dict]:
+        self.dates_stamp = self.data[self.dates_name]
+        self.dates = timestamp2datetime_lists(self.dates_stamp)
+
+        grouped_years, self.uyears  = separate_yearly_dates(self.dates)
 
         self.metadata_intrusions['Init_year'] = [self.uyears[0]] # Record Initial Year
         self.metadata_intrusions['End_year'] = [self.uyears[-1]] # Record Final Year
@@ -399,7 +398,8 @@ class intrusions:
 
         if self.manualID_type.upper() == 'MID':
             # Selecting data based on mid-depts
-            pass
+            self.manualID_temp_effects = self.data[self.mid_avg_names[0]][self.manualID_indices]
+            self.manualID_salt_effects = self.data[self.mid_avg_names[1]][self.manualID_indices]
         
         self.table_IDeffects['Temp_effects'] = self.manualID_temp_effects # Record Intrusion effects
         self.table_IDeffects['Salt_effects'] = self.manualID_salt_effects
