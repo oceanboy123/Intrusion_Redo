@@ -1,4 +1,4 @@
-'''This code represents the translation of my master thesis work
+"""This code represents the translation of my master thesis work
 from MATLAB to Python. The code allows you to identify ocean water
 intrusion events in Bedford Basin (BB), Halifax, NS.
 
@@ -17,9 +17,9 @@ nutrient concentrations, oxygen concentrations at depths, and more.
 This code allows you to identify intrusion events both MANUALLY and
 and AUTOMATICALLY.
 
-MANUAL Identification: Allows you to identify these events using data from 
+MANUAL Identification: Allows you to identify these events using data from
 the Bedford Basin Monitoring Program (BBMP) station, which collects oceanographic
-variables at different depths of the water column. For identification only 
+variables at different depths of the water column. For identification only
 temperture and salinity are used, however, future updates will include oxygen at least.
 Using the intrusions you identified, the script will determine the best possible
 coefficients for automated intrusion identification using the variables provided
@@ -30,7 +30,7 @@ AUTOMATED Indetification: Allows you to skip the manual identification and focus
 testing different coefficients and their performance against a set of intrusions
 that were manually identified and saved in file fromat(.pkl)
 
-All metadata data lineage documentation colleted from automated and manual intrusion events are 
+All metadata data lineage documentation colleted from automated and manual intrusion events are
 recorded in .csv files located in the DATA/ directory.
 
 Future Funtinalities: MySQL database, Apache Airflow, and Distribution to compile
@@ -40,7 +40,7 @@ Data Source: https://www.bio.gc.ca/science/monitoring-monitorage/bbmp-pobb/bbmp-
 
 For more information check my paper here: http://hdl.handle.net/10222/83180
 
- '''
+ """
 
 
 # Imports
@@ -130,14 +130,14 @@ def import_joblib(file_path: str) -> any:
 
 
 def timestamp2datetime_lists(lst:list[int]) -> list[datetime]:
-    '''Takes a list of timestapms and converst it to a list of datetimes'''
+    """Takes a list of timestapms and converst it to a list of datetimes"""
     datetime_list:list[datetime] = [datetime.fromtimestamp(ts) for ts in lst]
     return datetime_list
 
 
 
 def separate_yearly_dates(datetime_list:list[datetime]) -> dict[list]:
-    '''Separates a list of datetimes by year by separating indices'''
+    """Separates a list of datetimes by year by separating indices"""
     years_extracted:list = np.unique([dt.year for dt in datetime_list])
 
     grouped_years:dict[list] = {year: [] for year in years_extracted}
@@ -149,8 +149,8 @@ def separate_yearly_dates(datetime_list:list[datetime]) -> dict[list]:
 
 
 def create_yearly_matrices(selected_data:dict, year_indices:dict[list]) -> dict:
-    '''Use separated indices from separate_yearly_dates() by year and create matrices 
-    with the data ready for plotting'''
+    """Use separated indices from separate_yearly_dates() by year and create matrices
+    with the data ready for plotting"""
 
     Temp_dataframe = selected_data['sample_matrix_temp']
     Salt_dataframe = selected_data['sample_matrix_salt']
@@ -174,7 +174,7 @@ def create_yearly_matrices(selected_data:dict, year_indices:dict[list]) -> dict:
 
 points = []   # Creates list to save the points selected
 def onclick(event):
-    '''Allows you to select point from plots'''
+    """Allows you to select point from plots"""
 
     if event.button == 1:
         if event.inaxes is not None:
@@ -189,7 +189,7 @@ def onclick(event):
 
 
 def onkey(event):
-    '''Terminates point selection stage'''
+    """Terminates point selection stage"""
 
     if event.key == ' ':
         plt.close(event.canvas.figure)
@@ -202,8 +202,8 @@ def get_points():
 
 
 class intrusions:
-    '''Creates an Object representing a specific intrusion identification strategy
-    and record metadata and data lineage'''
+    """Creates an Object representing a specific intrusion identification strategy
+    and record metadata and data lineage"""
 
     # Internal Variables
     lin = "-"*6+' ' # For printing purposes
@@ -231,6 +231,11 @@ class intrusions:
     def __init__(self, PATH:str) -> None:
         
         # Metadata table{columns:metadata}
+        self.manualID_salt_effects = self.data[self.mid_avg_names[1]][self.manualID_indices]
+        self.manualID_temp_effects = self.data[self.mid_avg_names[0]][self.manualID_indices]
+        self.dates_stamp = self.data[self.dates_name]
+        grouped_years, self.uyears  = separate_yearly_dates(self.dates)
+        self.dates = timestamp2datetime_lists(self.dates_stamp)
         self.metadata_intrusions = {}
         self.table_IDeffects = {}
         self.table_coefficients = {}
@@ -248,10 +253,6 @@ class intrusions:
 
     
     def separate_yearly_profiles(self) -> dict[dict]:
-        self.dates_stamp = self.data[self.dates_name]
-        self.dates = timestamp2datetime_lists(self.dates_stamp)
-
-        grouped_years, self.uyears  = separate_yearly_dates(self.dates)
 
         self.metadata_intrusions['Init_year'] = [self.uyears[0]] # Record Initial Year
         self.metadata_intrusions['End_year'] = [self.uyears[-1]] # Record Final Year
@@ -304,7 +305,7 @@ class intrusions:
 
 
     def from_1970(self,date: int) -> datetime:
-        '''Converts points selected from plot to datetime'''
+        """Converts points selected from plot to datetime"""
 
         reference_date = datetime(1970, 1, 1)
 
@@ -322,9 +323,9 @@ class intrusions:
             fig = self.plot_year_profiles(yearly_profiles, 
                                 yr)
 
-            cid_click = fig['Figure'].canvas.mpl_connect('button_press_event', onclick)
+            fig['Figure'].canvas.mpl_connect('button_press_event', onclick)
 
-            cid_key = fig['Figure'].canvas.mpl_connect('key_press_event', onkey)
+            fig['Figure'].canvas.mpl_connect('key_press_event', onkey)
 
             plt.show()
 
@@ -336,7 +337,7 @@ class intrusions:
 
 
     def intrusion_date_comparison(self, dates1:list[datetime], dates2:list[datetime]) -> dict[list]:
-        '''Compares datetime lists for similar (within self.dates_error) dates'''
+        """Compares datetime lists for similar (within self.dates_error) dates"""
         def within_days(dt1:datetime, dt2:datetime) ->int:
             calc = abs((dt2 - dt1).days)
             return calc
@@ -382,7 +383,7 @@ class intrusions:
 
 
     def get_original_indices(self) -> None:
-        '''Get the indices of the intrusions identified from the main data (self.dates)'''
+        """Get the indices of the intrusions identified from the main data (self.dates)"""
         comparison_results = self.intrusion_date_comparison(self.manualID_dates, self.dates)
         compared_dates = comparison_results['Matched']
         intrusion_dates = [match[2] for match in compared_dates]
@@ -391,15 +392,14 @@ class intrusions:
 
 
     def get_intrusion_effects(self) -> None:
-        '''Use the date indices from self.dates to identify the effects of those intrusions 
-        in self.data'''
+        """Use the date indices from self.dates to identify the effects of those intrusions
+        in self.data"""
         self.manualID_temp_effects = self.data[self.bottom_avg_names[0]][self.manualID_indices]
         self.manualID_salt_effects = self.data[self.bottom_avg_names[1]][self.manualID_indices]
 
         if self.manualID_type.upper() == 'MID':
             # Selecting data based on mid-depts
-            self.manualID_temp_effects = self.data[self.mid_avg_names[0]][self.manualID_indices]
-            self.manualID_salt_effects = self.data[self.mid_avg_names[1]][self.manualID_indices]
+            pass
         
         self.table_IDeffects['Temp_effects'] = self.manualID_temp_effects # Record Intrusion effects
         self.table_IDeffects['Salt_effects'] = self.manualID_salt_effects
@@ -408,10 +408,10 @@ class intrusions:
 
     
     def intrusion_identification(self, lst: list[int]) -> list[datetime]:
-        '''Uses given coefficients to identify intrusion events. These 
+        """Uses given coefficients to identify intrusion events. These
         numbers represent the changes in these variables that should be flagged
         as intrusion events based on a depth-average value (either 60-botttom
-        for deep, or mid depths that will depend on raw data transformation)'''
+        for deep, or mid depths that will depend on raw data transformation)"""
         
         temp_intrusion_coeff, salt_intrusion_coeff = lst
 
@@ -439,8 +439,8 @@ class intrusions:
 
 
     def intrusion_ID_performance(self, lst: list[int]) -> int:
-        '''Compares the manually identified intrusion and the estimated intrusions
-        to evaluate the coefficient performance'''
+        """Compares the manually identified intrusion and the estimated intrusions
+        to evaluate the coefficient performance"""
 
         estimated_intrusion_dates = self.intrusion_identification(lst)
         real_intrusion_dates = self.manualID_dates
@@ -454,8 +454,8 @@ class intrusions:
             missed_id_parameter = len(missed_id)/len(real_intrusion_dates)
             extra_id_parameter = len(extra_id)/len(estimated_intrusion_dates)
 
-            performance_parameter = ((len(real_intrusion_dates)*(missed_id_parameter) + 
-                                    len(estimated_intrusion_dates)*extra_id_parameter)/
+            performance_parameter = ((len(real_intrusion_dates) * missed_id_parameter +
+                                      len(estimated_intrusion_dates) * extra_id_parameter)/
                                     (len(real_intrusion_dates)+len(estimated_intrusion_dates)))
         else:
             performance_parameter = 1
@@ -464,9 +464,9 @@ class intrusions:
 
 
     def estimate_coefficients(self) -> None:
-        '''Estimates optimized coeeficients by iterarting through temperature coefficients
+        """Estimates optimized coeeficients by iterarting through temperature coefficients
         between self.OF_range and salinity coefficients between 0 to self.OF_range[1]
-        and finding the combination with the best results based on a performance parameter'''
+        and finding the combination with the best results based on a performance parameter"""
 
         print(self.lin+'Estimating coefficients for optimized intrusion identification')
 
@@ -507,16 +507,16 @@ class intrusions:
 
     
     def count_csv_rows(self,PATH) -> int:
-        '''Count number of rows to identify the new recording's index'''
+        """Count number of rows to identify the new recording's index"""
         with open(PATH,'r') as file:
             read = csv.reader(file)
-            row_count = sum(1 for row in read)
+            row_count = sum(1 for _ in read)
 
         return row_count
     
 
     def record_single(self, TABLE, DICT) -> None:
-        '''Record single row metadata'''
+        """Record single row metadata"""
         table_path = self.meta_path+TABLE
         row_num1 = self.count_csv_rows(table_path)
 
@@ -531,9 +531,9 @@ class intrusions:
 
     
     def automatedID(self, coefficients, manual_input):
-        '''Identify intrusion events based on coefficients for temperature 
-        and salinity, and based on a manual intrusion identification file 
-        '''
+        """Identify intrusion events based on coefficients for temperature
+        and salinity, and based on a manual intrusion identification file
+        """
         # Recording metadata
         self.metadata_intrusions['manual_input_type'] = 'N/A'
         self.metadata_intrusions['manual_input_path'] = 'N/A'
@@ -560,7 +560,7 @@ class intrusions:
 
     
     def record_metadata(self) -> None:
-        '''Record all the metadata into their corresponding .csv file'''
+        """Record all the metadata into their corresponding .csv file"""
 
         row_num = self.count_csv_rows(self.meta_path+self.meta_table)
         rows_intrusion = len(self.table_IDeffects['Dates'])
