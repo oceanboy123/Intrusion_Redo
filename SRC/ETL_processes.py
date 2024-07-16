@@ -222,7 +222,7 @@ def main():
 
     with open(csv_path,'r') as file:
         read = csv.reader(file)
-        row_count = sum(1 for row in read)
+        row_count = sum(1 for _ in read)
 
     if row_count == 0:
         meta_processing.to_csv(csv_path,mode='a', header=True, index=False)
