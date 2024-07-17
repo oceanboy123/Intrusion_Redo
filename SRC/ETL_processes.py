@@ -34,7 +34,7 @@ def get_and_group_data(file_name: str, variables_target: list[str]) -> dict[str,
 
     return {
         'Nested Groups': nested_groups,
-        'Unique Depths': unique_depths
+        'Unique Depths': unique_depths,
     }
 
 
@@ -42,10 +42,10 @@ def normalize_depth_from_list(upress: list, data_frame):
     for p in upress:
         if p not in data_frame.iloc[:, 1].values:
 
-            new_row = [
+            new_row = [ 
                 data_frame.iloc[0,0],
                 p,
-                float('nan'),
+                float('nan'), 
                 float('nan'),
                 float('nan'),
                 data_frame.iloc[0,-1]
@@ -79,18 +79,17 @@ def check_duplicate_rows(data_frame):
     return data_frame
 
 
-def normalize_length_data(data: dict,upress: list) -> dict[str, dict | list | Any]:
+def normalize_length_data(data: dict,upress: list) -> dict[str, dict | list | any]:
     print('Nomalizing depths and filling with NaN')
     for key, values in data.items():
         data_frame = values
-        
         data_frame = normalize_depth_from_list(upress, data_frame)
         data_frame = check_duplicate_rows(data_frame)
 
         data[key] = data_frame
 
-    normalized_depths = data[list(data.keys())[0]]['pressure'].tolist()
-    normalized_dates = list(data.keys())
+    normalized_depths: list = data[list(data.keys())[0]]['pressure'].tolist()
+    normalized_dates: list = list(data.keys())
 
     return {
         'Normalized Data': data,
@@ -106,7 +105,7 @@ def separate_target_variables(string_name: str, data: dict):
     return all_columns
 
 
-def data_transformations(matrix_list :list,variables_target : list[str],normalized_depths: list, deep:int, mid:list[int]) -> dict[str, Any]:
+def data_transformations(matrix_list :list,variables_target : list[str],normalized_depths: list, deep:int, mid:list[int]) -> dict:
     
     print('Interpolating Data')
 
