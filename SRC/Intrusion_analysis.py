@@ -58,11 +58,10 @@ import pandas as pd
 from scipy.optimize import minimize
 
 
-
 def get_command_line_args():
     file_name = 'BBMP_salected_data_test.pkl'
     intrusion_type = 'Normal'
-    ID_type = 'MANUAL'
+    id_type = 'MANUAL'
     manual_type='MANUAL'
     coefficients=[0.5, 0.5]
     save_manual='OFF'
@@ -93,7 +92,7 @@ def get_command_line_args():
     if args.intrusion_type:
         int_type = args.intrusion_type
 
-    idtype = ID_type
+    idtype = id_type
     if args.ID_type:
         idtype = args.ID_type
 
@@ -116,24 +115,20 @@ def get_command_line_args():
     return data_name, int_type, idtype, man_type, coeff, s_manual, i_manual
 
 
-
 def save_joblib(data:any,file_name: str) -> any:
     file_path = '../data/PROCESSED/' + file_name
     joblib.dump(data, file_path)
     
-
 
 def import_joblib(file_path: str) -> any:
     data: any = joblib.load(file_path)
     return data
 
 
-
 def timestamp2datetime_lists(lst:list[int]) -> list[datetime]:
     """Takes a list of timestapms and converst it to a list of datetimes"""
     datetime_list:list[datetime] = [datetime.fromtimestamp(ts) for ts in lst]
     return datetime_list
-
 
 
 def separate_yearly_dates(datetime_list:list[datetime]) -> dict[list]:
@@ -147,16 +142,15 @@ def separate_yearly_dates(datetime_list:list[datetime]) -> dict[list]:
     return grouped_years, years_extracted
 
 
-
 def create_yearly_matrices(selected_data:dict, year_indices:dict[list]) -> dict:
     """Use separated indices from separate_yearly_dates() by year and create matrices
     with the data ready for plotting"""
 
-    Temp_dataframe = selected_data['sample_matrix_temp']
-    Salt_dataframe = selected_data['sample_matrix_salt']
+    temp_dataframe = selected_data['sample_matrix_temp']
+    salt_dataframe = selected_data['sample_matrix_salt']
     
-    selected_data_temp = Temp_dataframe.to_numpy()
-    selected_data_salt = Salt_dataframe.to_numpy()
+    selected_data_temp = temp_dataframe.to_numpy()
+    selected_data_salt = salt_dataframe.to_numpy()
 
     yearly_profiles_temp: dict = {}
     yearly_profiles_salt: dict = {}
@@ -169,7 +163,6 @@ def create_yearly_matrices(selected_data:dict, year_indices:dict[list]) -> dict:
         yearly_profiles_salt[year] = yearly_profile_salt
 
     return yearly_profiles_temp, yearly_profiles_salt
-
 
 
 points = []   # Creates list to save the points selected
@@ -187,7 +180,6 @@ def onclick(event):
             event.canvas.draw()
 
 
-
 def onkey(event):
     """Terminates point selection stage"""
 
@@ -195,13 +187,11 @@ def onkey(event):
         plt.close(event.canvas.figure)
 
 
-
 def get_points():
     return points
 
 
-
-class intrusions:
+class Intrusions:
     """Creates an Object representing a specific intrusion identification strategy
     and record metadata and data lineage"""
 
@@ -228,23 +218,39 @@ class intrusions:
     intrusions_table = 'intrusionID+effect.csv'
     meta_table = 'metadata_intrusions.csv'
 
-    def __init__(self, PATH:str) -> None:
+    def __init__(self, path:str) -> None:
         
-        # Metadata table{columns:metadata}
+        # Metadata Tables {columns:metadata}
         self.metadata_intrusions = {}
         self.table_IDeffects = {}
         self.table_coefficients = {}
         self.table_coefficients_error = {}
         self.table_coefficients_error_comb = {}
 
+        # Dates from the BBMP Profile Data
+        self.dates_stamp = []
+        self.dates = []
+        self.uyears  = []
+
+        # Dates and Effects from Manually Identified Intrusion Events
         self.manualID_dates = []
+        self.manualID_indices = []
+        self.manualID_temp_effects = []
+        self.manualID_salt_effects = []
+
+        # Automatic Intrusion Identification Coefficients and Performance
+        self.OP_performance = []
+        self.OP_temp_coeff = []
+        self.OP_salt_coeff = []
+        self.OP_Missed = []
+        self.OP_Extra = []
+        self.OP_Found = []
 
         print(self.lin+'Importing Data')
-        self.metadata_intrusions['Input_dataset'] = PATH # Record Input
-        stat_info = os.stat(PATH)
+        self.metadata_intrusions['Input_dataset'] = path # Record Input
+        stat_info = os.stat(path)
         self.metadata_intrusions['Date_created'] = time.ctime(stat_info.st_birthtime) # Record Time
-
-        self.data = import_joblib(PATH) # Import profile data
+        self.data = import_joblib(path) # Import profile data
 
     
     def separate_yearly_profiles(self) -> dict[dict]:
@@ -277,15 +283,15 @@ class intrusions:
         year_salt_data = year_data['Yearly Salt Profile'][yr]
 
         # Temperature Plot
-        X,Y = np.meshgrid(datetime_list, self.data[self.depth_name])
-        mesh0 = axs[0].pcolormesh(X,Y,year_temp_data[:,:len(Y[0,:])], cmap='seismic')
+        xmesh,ymesh = np.meshgrid(datetime_list, self.data[self.depth_name])
+        mesh0 = axs[0].pcolormesh(xmesh,ymesh,year_temp_data[:,:len(ymesh[0,:])], cmap='seismic')
         fig.colorbar(mesh0, ax=axs[0])
         axs[0].invert_yaxis()
         mesh0.set_clim(self.temp_range)
         axs[0].set_xticks([])
 
         # Salinity Plot
-        mesh1 = axs[1].pcolormesh(X,Y,year_salt_data[:,:len(Y[0,:])], cmap='seismic')
+        mesh1 = axs[1].pcolormesh(xmesh,ymesh,year_salt_data[:,:len(ymesh[0,:])], cmap='seismic')
         fig.colorbar(mesh1, ax=axs[1])
         axs[1].invert_yaxis()
         mesh1.set_clim(self.salt_range)
@@ -302,8 +308,8 @@ class intrusions:
             'Mesh':[mesh0,mesh1]
         }
 
-
-    def from_1970(self,date: int) -> datetime:
+    @staticmethod
+    def from_1970(date: int) -> datetime:
         """Converts points selected from plot to datetime"""
 
         reference_date = datetime(1970, 1, 1)
@@ -337,8 +343,8 @@ class intrusions:
 
     def intrusion_date_comparison(self, dates1:list[datetime], dates2:list[datetime]) -> dict[list]:
         """Compares datetime lists for similar (within self.dates_error) dates"""
-        def within_days(dt1:datetime, dt2:datetime) ->int:
-            calc = abs((dt2 - dt1).days)
+        def within_days(dtes1:datetime, dtes2:datetime) ->int:
+            calc = abs((dtes2 - dtes1).days)
             return calc
 
         matching = []
@@ -438,7 +444,7 @@ class intrusions:
         return estimated_intrusion_dates
 
 
-    def intrusion_ID_performance(self, lst: list[int]) -> int:
+    def intrusion_id_performance(self, lst: list[int]) -> int:
         """Compares the manually identified intrusion and the estimated intrusions
         to evaluate the coefficient performance"""
 
@@ -481,7 +487,7 @@ class intrusions:
         for temp_guess in temp_range:
             for salt_guess in salt_range:
                 initial_guess = [temp_guess, salt_guess]
-                result = minimize(self.intrusion_ID_performance, initial_guess)
+                result = minimize(self.intrusion_id_performance, initial_guess)
                 result_final.append((result.x, result.fun))
 
         best_coefficients = min(result_final, key= lambda x: x[1])
@@ -505,32 +511,32 @@ class intrusions:
         self.table_coefficients_error['Extra'] = self.OP_Extra # Record False positives based on manual
         self.table_coefficients_error['Found'] = self.OP_Found # Record Correct identification based on manual
 
-    
-    def count_csv_rows(self,PATH) -> int:
+    @staticmethod
+    def count_csv_rows(self, path) -> int:
         """Count number of rows to identify the new recording's index"""
-        with open(PATH,'r') as file:
+        with open(path,'r') as file:
             read = csv.reader(file)
             row_count = sum(1 for _ in read)
 
         return row_count
     
 
-    def record_single(self, TABLE, DICT) -> None:
+    def record_single(self, table, dicts) -> None:
         """Record single row metadata"""
-        table_path = self.meta_path+TABLE
+        table_path = self.meta_path+table
         row_num1 = self.count_csv_rows(table_path)
 
         if row_num1 == 0:
-            DICT['ID'] = 1
-            DATAF= pd.DataFrame(DICT)
-            DATAF.to_csv(table_path,mode='a', header=True, index=False)
+            dicts['ID'] = 1
+            dataf= pd.DataFrame(dicts)
+            dataf.to_csv(table_path,mode='a', header=True, index=False)
         else:
-            DICT['ID'] = row_num1
-            DATAF= pd.DataFrame(DICT)
-            DATAF.to_csv(table_path,mode='a', header=False, index=False)
+            dicts['ID'] = row_num1
+            dataf= pd.DataFrame(dicts)
+            dataf.to_csv(table_path,mode='a', header=False, index=False)
 
     
-    def automatedID(self, coefficients, manual_input):
+    def automatedid(self, coefficients, manual_input):
         """Identify intrusion events based on coefficients for temperature
         and salinity, and based on a manual intrusion identification file
         """
@@ -576,78 +582,78 @@ class intrusions:
             index = 1
             self.table_IDeffects['ID'] = [index]*rows_intrusion
             self.table_coefficients_error_comb['Error'] = [index]*rows_error
-            DataF_IDeffects = pd.DataFrame(self.table_IDeffects)
-            DataF_error = pd.DataFrame(self.table_coefficients_error_comb)
-            DataF_IDeffects.to_csv(self.meta_path+self.intrusions_table,mode='a', header=True, index=False)
-            DataF_error.to_csv(self.meta_path+self.coeff_error_table,mode='a', header=True, index=False)
+            dataf_ideffects = pd.DataFrame(self.table_IDeffects)
+            dataf_error = pd.DataFrame(self.table_coefficients_error_comb)
+            dataf_ideffects.to_csv(self.meta_path+self.intrusions_table,mode='a', header=True, index=False)
+            dataf_error.to_csv(self.meta_path+self.coeff_error_table,mode='a', header=True, index=False)
             
         else:
             index = row_num
             self.table_IDeffects['ID'] = [index]*rows_intrusion
             self.table_coefficients_error_comb['Error'] = [index]*rows_error
-            DataF_IDeffects = pd.DataFrame(self.table_IDeffects)
-            DataF_error = pd.DataFrame(self.table_coefficients_error_comb)
-            DataF_IDeffects.to_csv(self.meta_path+self.intrusions_table,mode='a', header=False, index=False)
-            DataF_error.to_csv(self.meta_path+self.coeff_error_table,mode='a', header=False, index=False)
+            dataf_ideffects = pd.DataFrame(self.table_IDeffects)
+            dataf_error = pd.DataFrame(self.table_coefficients_error_comb)
+            dataf_ideffects.to_csv(self.meta_path+self.intrusions_table,mode='a', header=False, index=False)
+            dataf_error.to_csv(self.meta_path+self.coeff_error_table,mode='a', header=False, index=False)
         
         self.record_single(self.meta_table, self.metadata_intrusions)
         self.record_single(self.coeff_table, self.table_coefficients)
     
 
-def main() -> intrusions:
+def main() -> Intrusions:
     # Get command line arguments
-    file_name, intrusion_type, ID_type, manual_type, coefficients, save_manual, manual_input = get_command_line_args()
+    file_name, intrusion_type, id_type, manual_type, coefficients, save_manual, manual_input = get_command_line_args()
 
     path_data = '../data/PROCESSED/'
-    file_PATH = path_data + file_name
+    file_dirpath = path_data + file_name
     
     # Initializing intrusion object
-    BBMP = intrusions(file_PATH)
+    bbmp = Intrusions(file_dirpath)
 
-    yearly_profiles = BBMP.separate_yearly_profiles()
+    yearly_profiles = bbmp.separate_yearly_profiles()
 
     # Recording metadata
-    BBMP.metadata_intrusions['ID_type'] = ID_type.upper()
-    BBMP.metadata_intrusions['Current_time'] = [int(time.time())]
-    BBMP.manualID_type = intrusion_type
-    BBMP.metadata_intrusions['Intrusion_type'] = BBMP.manualID_type
+    bbmp.metadata_intrusions['ID_type'] = id_type.upper()
+    bbmp.metadata_intrusions['Current_time'] = [int(time.time())]
+    bbmp.manualID_type = intrusion_type
+    bbmp.metadata_intrusions['Intrusion_type'] = bbmp.manualID_type
 
-    if ID_type.upper() == 'MANUAL':
-        BBMP.metadata_intrusions['manual_input_type'] = manual_type.upper()
+    if id_type.upper() == 'MANUAL':
+        bbmp.metadata_intrusions['manual_input_type'] = manual_type.upper()
         
         if manual_type.upper() == 'MANUAL':
             # Manual identification through plots
-            BBMP.metadata_intrusions['manual_input_path'] = 'N/A'
-            BBMP.user_intrusion_selection(yearly_profiles)
+            bbmp.metadata_intrusions['manual_input_path'] = 'N/A'
+            bbmp.user_intrusion_selection(yearly_profiles)
             
             if save_manual.upper() == 'ON':
                 # Save manually identified intrusion
-                man_name = 'manualID_' + BBMP.manualID_type + str(int(time.time())) + '.pkl'
-                save_joblib(BBMP.manualID_dates, man_name)
+                man_name = 'manualID_' + bbmp.manualID_type + str(int(time.time())) + '.pkl'
+                save_joblib(bbmp.manualID_dates, man_name)
         else:
             # Manual indeitification through importing file
             manual_input_path = path_data + manual_input
-            BBMP.metadata_intrusions['manual_input_path'] = manual_input_path
+            bbmp.metadata_intrusions['manual_input_path'] = manual_input_path
             intrusion_dates = import_joblib(manual_input_path)
-            BBMP.manualID_dates = intrusion_dates
-            BBMP.table_IDeffects['Dates'] = BBMP.manualID_dates
+            bbmp.manualID_dates = intrusion_dates
+            bbmp.table_IDeffects['Dates'] = bbmp.manualID_dates
         
         # Record Metadata
-        BBMP.metadata_intrusions['manual_input_save'] = save_manual.upper()
-        BBMP.get_original_indices()
-        BBMP.get_intrusion_effects()
+        bbmp.metadata_intrusions['manual_input_save'] = save_manual.upper()
+        bbmp.get_original_indices()
+        bbmp.get_intrusion_effects()
 
         # Estimate optimized coefficients
-        BBMP.estimate_coefficients()
+        bbmp.estimate_coefficients()
 
     else:
         # Automated identification using specific coefficients
-        BBMP.automatedID(coefficients, path_data + manual_input)
+        bbmp.automatedid(coefficients, path_data + manual_input)
 
     # Record metadata in .csv files
-    BBMP.record_metadata()
+    bbmp.record_metadata()
 
-    return BBMP
+    return bbmp
 
  
 if __name__ == '__main__':
