@@ -512,7 +512,7 @@ class Intrusions:
         self.table_coefficients_error['Found'] = self.OP_Found # Record Correct identification based on manual
 
     @staticmethod
-    def count_csv_rows(self, path) -> int:
+    def count_csv_rows(path) -> int:
         """Count number of rows to identify the new recording's index"""
         with open(path,'r') as file:
             read = csv.reader(file)
