@@ -11,10 +11,10 @@ def get_and_group_data(file_name: str, variables_target: list[str]) -> dict[str,
     
     print('Reading CSV file')
     bbmp_data = pd.read_csv(file_name)
-
+    
     print('Extrating target data')
     target_data = bbmp_data.loc[:, variables_target]
-  
+
     date_format = "%Y-%m-%d %H:%M:%S"
     dates_type_datetime = pd.to_datetime(target_data.iloc[:, 0], format=date_format)
     target_data['time_string'] = dates_type_datetime
@@ -172,14 +172,14 @@ def main():
 
     print(nested_groups[list(nested_groups.keys())[0]].head())
 
-    normal_data = normalize_length_data(nested_groups,unique_depths)
+    normal_data = normalize_length_data(nested_groups, unique_depths)
     normalized_data = normal_data['Normalized Data']
 
     variables_matrices = [separate_target_variables(names, normalized_data) 
                         for names in target_variables[2:]]
 
     mid = [20, 35]
-    deep = 60
+    deep = 60 
     normalized_depths = normal_data['Normalized Depths']
     transformed_data = data_transformations(variables_matrices,target_variables[2:],normalized_depths, deep, mid)
 
@@ -203,10 +203,10 @@ def main():
         'sample_depth': normal_data['Normalized Depths'],
     }
 
-    file_NAME = 'BBMP_salected_data0.pkl'
-    file_PATH = '../data/PROCESSED/' + file_NAME
+    file_name = 'BBMP_salected_data0.pkl'
+    file_path = '../data/PROCESSED/' + file_name
 
-    metadata['Output_dataset_path'] = file_PATH
+    metadata['Output_dataset_path'] = file_path
 
     meta_processing = pd.DataFrame(metadata)
 
@@ -222,10 +222,11 @@ def main():
     else:
         meta_processing.to_csv(csv_path,mode='a', header=False, index=False)
 
-    joblib.dump(selected_data, file_PATH)
-    print(f'Saved as {file_NAME}')
+    joblib.dump(selected_data, file_path)
+    print(f'Saved as {file_name}')
 
 
 if __name__ == '__main__':
     main()
+
     
