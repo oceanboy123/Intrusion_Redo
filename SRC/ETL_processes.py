@@ -1,6 +1,5 @@
 # Importing relevant modules
 import joblib
-import ETL_processes as BBMP
 import os
 import time
 import csv
@@ -8,16 +7,16 @@ import pandas as pd
 import numpy as np
 
 
-def get_and_group_data(file_name: str, variables_target: list[str]) -> dict[list]:
+def get_and_group_data(file_name: str, variables_target: list[str]) -> dict[str, dict | list]:
     
     print('Reading CSV file')
-    BBMP_data = pd.read_csv(file_name)
+    bbmp_data = pd.read_csv(file_name)
 
     print('Extrating target data')
-    target_data = BBMP_data.loc[:,variables_target]
+    target_data = bbmp_data.loc[:, variables_target]
   
     date_format = "%Y-%m-%d %H:%M:%S"
-    dates_type_datetime = pd.to_datetime(target_data.iloc[:,0], format=date_format)
+    dates_type_datetime = pd.to_datetime(target_data.iloc[:, 0], format=date_format)
     target_data['time_string'] = dates_type_datetime
 
     dates_type_int:list[int] = [days.timestamp() for days in dates_type_datetime]
@@ -30,19 +29,18 @@ def get_and_group_data(file_name: str, variables_target: list[str]) -> dict[list
     for group_name, group_data in grouped_by_date:
         nested_groups[group_name] = group_data
 
-    unique_depths = list(set(list(target_data.iloc[:,1])))
+    unique_depths = list(set(list(target_data.iloc[:, 1])))
     unique_depths.sort()
 
     return {
-        'Nested Groups':nested_groups,
-        'Unique Depths':unique_depths
+        'Nested Groups': nested_groups,
+        'Unique Depths': unique_depths
     }
-
 
 
 def normalize_depth_from_list(upress: list, data_frame):
     for p in upress:
-        if p not in data_frame.iloc[:,1].values:
+        if p not in data_frame.iloc[:, 1].values:
 
             new_row = [
                 data_frame.iloc[0,0],
@@ -60,7 +58,6 @@ def normalize_depth_from_list(upress: list, data_frame):
     data_frame = data_frame.sort_values(by='pressure')
 
     return data_frame
-
 
 
 def check_duplicate_rows(data_frame):
@@ -82,8 +79,7 @@ def check_duplicate_rows(data_frame):
     return data_frame
 
 
-
-def normalize_length_data(data: dict,upress: list) -> dict[dict,list,list]:
+def normalize_length_data(data: dict,upress: list) -> dict[str, dict | list | Any]:
     print('Nomalizing depths and filling with NaN')
     for key, values in data.items():
         data_frame = values
@@ -103,7 +99,6 @@ def normalize_length_data(data: dict,upress: list) -> dict[dict,list,list]:
     }
 
 
-
 def separate_target_variables(string_name: str, data: dict): 
     print('Creating Target Variable Matrices')
     all_columns = np.transpose([values[string_name] for key, values in data.items()])
@@ -111,8 +106,7 @@ def separate_target_variables(string_name: str, data: dict):
     return all_columns
 
 
-
-def data_transformations(matrix_list :list,variables_target : list[str],normalized_depths: list, deep:int, mid:list[int]) -> dict[any]:
+def data_transformations(matrix_list :list,variables_target : list[str],normalized_depths: list, deep:int, mid:list[int]) -> dict[str, Any]:
     
     print('Interpolating Data')
 
@@ -128,9 +122,9 @@ def data_transformations(matrix_list :list,variables_target : list[str],normaliz
     count = 0
     for matrix in matrix_list:
         pandas_matrix = pd.DataFrame(matrix)
-        matrix_interpolated_axis0 = pandas_matrix.interpolate(axis=0).replace(0,np.nan)
-        matrix_interpolated_axis10 = matrix_interpolated_axis0.interpolate(axis=1).replace(0,np.nan)
-        matrix_diff = pd.DataFrame(np.diff(matrix_interpolated_axis10, axis=1)).replace(0,np.nan)
+        matrix_interpolated_axis0 = pandas_matrix.interpolate(axis=0).replace(0, np.nan)
+        matrix_interpolated_axis10 = matrix_interpolated_axis0.interpolate(axis=1).replace(0, np.nan)
+        matrix_diff = pd.DataFrame(np.diff(matrix_interpolated_axis10, axis=1)).replace(0, np.nan)
 
         normal_depths = np.array(normalized_depths)
         rows_bellow60 = list(np.where(normal_depths > deep)[0])
@@ -139,8 +133,8 @@ def data_transformations(matrix_list :list,variables_target : list[str],normaliz
         print(rows_under20)
         rows_btw20_35 = sorted(list(set(rows_over35+rows_under20)))
         print(rows_btw20_35)
-        matrix_avg_below = matrix_diff.iloc[rows_bellow60,:].mean(axis=0)
-        matrix_avg_btw = matrix_diff.iloc[rows_btw20_35,:].mean(axis=0)
+        matrix_avg_below = matrix_diff.iloc[rows_bellow60, :].mean(axis=0)
+        matrix_avg_btw = matrix_diff.iloc[rows_btw20_35, :].mean(axis=0)
 
         transform_data[variables_target[count]+transformation_names[0]] = matrix_interpolated_axis0
         transform_data[variables_target[count]+transformation_names[1]] = matrix_interpolated_axis10
@@ -170,7 +164,7 @@ def main():
     
     metadata['Target_variables'] = str(target_variables)
 
-    nested_data = BBMP.get_and_group_data(raw_bbmp_data,target_variables)
+    nested_data = get_and_group_data(raw_bbmp_data, target_variables)
 
     nested_groups: dict = nested_data['Nested Groups']
     unique_depths: list = nested_data['Unique Depths']
@@ -179,16 +173,16 @@ def main():
 
     print(nested_groups[list(nested_groups.keys())[0]].head())
 
-    normal_data = BBMP.normalize_length_data(nested_groups,unique_depths)
+    normal_data = normalize_length_data(nested_groups,unique_depths)
     normalized_data = normal_data['Normalized Data']
 
-    variables_matrices = [BBMP.separate_target_variables(names, normalized_data) 
+    variables_matrices = [separate_target_variables(names, normalized_data) 
                         for names in target_variables[2:]]
 
-    mid = [20,35]
+    mid = [20, 35]
     deep = 60
     normalized_depths = normal_data['Normalized Depths']
-    transformed_data = BBMP.data_transformations(variables_matrices,target_variables[2:],normalized_depths, deep, mid)
+    transformed_data = data_transformations(variables_matrices,target_variables[2:],normalized_depths, deep, mid)
 
     metadata['Deep_averages'] = [deep]
     metadata['Mid_averages'] = str(mid)
@@ -220,7 +214,7 @@ def main():
     metadata_csv = 'metadata_processing.csv'
     csv_path = '../data/PROCESSED/' + metadata_csv
 
-    with open(csv_path,'r') as file:
+    with open(csv_path, 'r') as file:
         read = csv.reader(file)
         row_count = sum(1 for _ in read)
 
