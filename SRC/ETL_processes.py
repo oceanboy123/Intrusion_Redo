@@ -79,7 +79,7 @@ def check_duplicate_rows(data_frame):
     return data_frame
 
 
-def normalize_length_data(data: dict,upress: list) -> dict[str, dict | list | any]:
+def normalize_length_data(data: dict,upress: list) -> dict[str, dict | list ]:
     print('Nomalizing depths and filling with NaN')
     for key, values in data.items():
         data_frame = values
