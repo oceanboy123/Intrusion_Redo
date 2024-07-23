@@ -92,6 +92,7 @@ class Intrusion_ETL:
 
         # Recording ETL strategy characteristics as metadata
         stat_info = os.stat(self.original_file_name)
+        self.output_data = {}
         self.metadata['Date_created'] = time.ctime(stat_info.st_birthtime)
         self.metadata['Target_variables'] = str(self.target_variables)
         self.metadata['Deep_averages'] = [self.deep_depth]
