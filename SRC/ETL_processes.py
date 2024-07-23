@@ -121,7 +121,7 @@ class Intrusion_ETL:
     def group_data(self) -> None:
         """Group data by timestamps, aka separate data by profile"""
 
-        print('Updating target data and grouping by day')
+        print('Updating target data and grouping by profile')
         grouped_by_date = self.target_data.groupby(self.groupby_datename)
 
         nested_groups = {}
