@@ -78,6 +78,8 @@ class Intrusion_ETL:
         self.deep_depth = deep_depth
         self.mid_depth = mid_depth
         self.date_format = date_format
+        print('Reading CSV file')
+        self.raw_data = pd.read_csv(self.original_file_name)
 
         # Key data storages within ETL process (including metadata)
         self.target_data = {}
@@ -102,12 +104,9 @@ class Intrusion_ETL:
     def get_target_data(self)-> None:
         """Read data from csv file and records target variables
         as a pandas DataFrame"""
-
-        print('Reading CSV file')
-        bbmp_data = pd.read_csv(self.original_file_name)
         
         print('Extrating target data')
-        target_data = bbmp_data.loc[:, self.target_variables]
+        target_data = self.raw_data.loc[:, self.target_variables]
 
         dates_type_datetime = pd.to_datetime(target_data.iloc[:, 0], format = self.date_format)
         target_data[self.original_datename] = dates_type_datetime
