@@ -89,6 +89,11 @@ class Intrusion_ETL:
         self.normalized_depth = []
         self.normalized_dates = []
         self.variables_matrices = []
+        self.interpolated0_data = []
+        self.interpolated_data = []
+        self.interpolated_diff_data = []
+        self.avg_below = []
+        self.avg_btw = []
         self.transform_data = {}
         self.metadata = {}
 
@@ -147,19 +152,11 @@ class Intrusion_ETL:
 
         for p in upress:
             if p not in data_frame.iloc[:, 1].values:
+                
                 head = [data_frame.iloc[0,0], p]
                 body = [float('nan')]*len(self.target_variables[2:])
                 tail = [data_frame.iloc[0,-1]]
                 new_row = head + body + tail
-                
-                # new_row = [ 
-                #     data_frame.iloc[0,0],
-                #     p,
-                #     float('nan'), 
-                #     float('nan'),
-                #     float('nan'),
-                #     data_frame.iloc[0,-1]
-                # ]
 
                 new_df_row = pd.DataFrame(new_row).T
                 new_df_row.columns = data_frame.columns.tolist()
@@ -228,6 +225,28 @@ class Intrusion_ETL:
         # NParray for all target variables
         self.variables_matrices = [self.separate_target_variables(names) for names in self.target_variables[2:]]
 
+    
+    def interpolation_2D(self, pandas_matrix) -> None:
+        self.interpolated0_data = pandas_matrix.interpolate(axis=0).replace(0, np.nan)
+        self.interpolated_data = self.interpolated0_data.interpolate(axis=1).replace(0, np.nan)
+
+
+    def discrete_diff_bydate(self) -> None:
+        self.interpolated_diff_data = pd.DataFrame(np.diff(self.interpolated_data, axis=1)).replace(0, np.nan)
+
+
+    def depth_averages(self) -> None:
+        normal_depths = np.array(self.normalized_depth)
+        rows_bellow60 = list(np.where(normal_depths > self.deep_depth)[0])
+
+        rows_over35 = list(np.where(normal_depths < self.mid_depth[1])[0])
+        rows_under20 = list(np.where(normal_depths > self.mid_depth[0])[0])
+        rows_btw20_35 = sorted(list(set(rows_over35+rows_under20)))
+
+        matrix_diff = self.interpolated_diff_data
+        self.avg_below = matrix_diff.iloc[rows_bellow60, :].mean(axis=0) # Deep depth average
+        self.avg_btw = matrix_diff.iloc[rows_btw20_35, :].mean(axis=0) # Mid depth average
+
 
     def data_transformations(self) -> None:
         """Performs trasnformations of values. Incluiding 2D
@@ -247,30 +266,22 @@ class Intrusion_ETL:
             pandas_matrix = pd.DataFrame(matrix)
 
             # 2D interpolation
-            matrix_interpolated_axis0 = pandas_matrix.interpolate(axis=0).replace(0, np.nan)
-            matrix_interpolated_axis10 = matrix_interpolated_axis0.interpolate(axis=1).replace(0, np.nan)
+            self.interpolation_2D(pandas_matrix)
 
             # Discrete difference calculation
-            matrix_diff = pd.DataFrame(np.diff(matrix_interpolated_axis10, axis=1)).replace(0, np.nan)
+            self.discrete_diff_bydate()
 
             # Calculate depth averages
-            normal_depths = np.array(self.normalized_depth)
-            rows_bellow60 = list(np.where(normal_depths > self.deep_depth)[0])
-
-            rows_over35 = list(np.where(normal_depths < self.mid_depth[1])[0])
-            rows_under20 = list(np.where(normal_depths > self.mid_depth[0])[0])
-            rows_btw20_35 = sorted(list(set(rows_over35+rows_under20)))
-
-            matrix_avg_below = matrix_diff.iloc[rows_bellow60, :].mean(axis=0) # Deep depth average
-            matrix_avg_btw = matrix_diff.iloc[rows_btw20_35, :].mean(axis=0) # Mid depth average
+            self.depth_averages()
 
             t_names = self.transformation_names
+            v_names = self.target_variables
 
-            transform_data[self.target_variables[count]+t_names[0]] = matrix_interpolated_axis0
-            transform_data[self.target_variables[count]+t_names[1]] = matrix_interpolated_axis10
-            transform_data[self.target_variables[count]+t_names[2]] = matrix_diff
-            transform_data[self.target_variables[count]+t_names[3]] = matrix_avg_below
-            transform_data[self.target_variables[count]+t_names[4]] = matrix_avg_btw
+            transform_data[v_names[count]+t_names[0]] = self.interpolated0_data
+            transform_data[v_names[count]+t_names[1]] = self.interpolated_data
+            transform_data[v_names[count]+t_names[2]] = self.interpolated_diff_data
+            transform_data[v_names[count]+t_names[3]] = self.avg_below
+            transform_data[v_names[count]+t_names[4]] = self.avg_btw
             
             count += 1
 
