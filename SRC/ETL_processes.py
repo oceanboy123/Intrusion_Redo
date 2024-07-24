@@ -147,15 +147,19 @@ class Intrusion_ETL:
 
         for p in upress:
             if p not in data_frame.iloc[:, 1].values:
-
-                new_row = [ 
-                    data_frame.iloc[0,0],
-                    p,
-                    float('nan'), 
-                    float('nan'),
-                    float('nan'),
-                    data_frame.iloc[0,-1]
-                ]
+                head = [data_frame.iloc[0,0], p]
+                body = [float('nan')]*len(self.target_variables[2:])
+                tail = [data_frame.iloc[0,-1]]
+                new_row = head + body + tail
+                
+                # new_row = [ 
+                #     data_frame.iloc[0,0],
+                #     p,
+                #     float('nan'), 
+                #     float('nan'),
+                #     float('nan'),
+                #     data_frame.iloc[0,-1]
+                # ]
 
                 new_df_row = pd.DataFrame(new_row).T
                 new_df_row.columns = data_frame.columns.tolist()
