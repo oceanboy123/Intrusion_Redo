@@ -59,13 +59,13 @@ from scipy.optimize import minimize
 
 
 def get_command_line_args():
-    file_name = 'BBMP_salected_data_test.pkl'
+    file_name = 'BBMP_salected_data0.pkl'
     intrusion_type = 'Normal'
     id_type = 'MANUAL'
     manual_type='MANUAL'
     coefficients=[0.5, 0.5]
     save_manual='OFF'
-    manual_input='manual_intrusions_all_noO2.pkl'
+    manual_input='manualID_MID1720009644.pkl'
     # Command line arguments
     parser = argparse.ArgumentParser(description='Arguments')
     parser.add_argument('file_name', type=str, help="""TBD""", default=file_name)
