@@ -228,8 +228,6 @@ class Intrusions:
         self.table_coefficients_error_comb = {}
 
         # Dates from the BBMP Profile Data
-        self.dates_stamp = []
-        self.dates = []
         self.uyears  = []
 
         # Dates and Effects from Manually Identified Intrusion Events
@@ -251,6 +249,8 @@ class Intrusions:
         stat_info = os.stat(path)
         self.metadata_intrusions['Date_created'] = time.ctime(stat_info.st_birthtime) # Record Time
         self.data = import_joblib(path) # Import profile data
+        self.dates_stamp = self.data[self.dates_name]
+        self.dates = timestamp2datetime_lists(self.dates_stamp)
 
     
     def separate_yearly_profiles(self) -> dict[dict]:
@@ -259,12 +259,16 @@ class Intrusions:
 
         grouped_years, self.uyears  = separate_yearly_dates(self.dates)
 
-        self.metadata_intrusions['Init_year'] = [self.uyears[0]] # Record Initial Year
-        self.metadata_intrusions['End_year'] = [self.uyears[-1]] # Record Final Year
+        # Record Initial Year
+        self.metadata_intrusions['Init_year'] = [self.uyears[0]]
+        # Record Final Year 
+        self.metadata_intrusions['End_year'] = [self.uyears[-1]]
 
+        # Create dictionary with yearly profiles indices
         by_year_indices = {year: [self.dates.index(dt) for dt in grouped_years[year]] 
                         for year in self.uyears}
 
+        # Extract yearly profiles of temperature and salinity
         yearly_profiles_temp, yearly_profiles_salt = create_yearly_matrices(self.data, by_year_indices)
             
         return {'Yearly Temp Profile': yearly_profiles_temp, 
@@ -278,6 +282,7 @@ class Intrusions:
         last_date_index = year_data['Indices by Year'][yr][-1]
         datetime_list = self.dates[init_date_index:last_date_index]
 
+        # Extract specific year data
         fig, axs = plt.subplots(2)
         year_temp_data = year_data['Yearly Temp Profile'][yr]
         year_salt_data = year_data['Yearly Salt Profile'][yr]
@@ -335,7 +340,7 @@ class Intrusions:
             plt.show()
 
         intrusion_dates = list(np.array(get_points())[:,0])
-        self.manualID_dates = [self.from_1970(dt) for dt in intrusion_dates]\
+        self.manualID_dates = [self.from_1970(dt) for dt in intrusion_dates]
         
         self.table_IDeffects['Dates'] = self.manualID_dates # Record intrusion dates
         print(self.lin+'Intrusion identification completed')
@@ -378,7 +383,7 @@ class Intrusions:
         set1 = set(dates2)
         set2 = set(matching_estimated)
         # Extra Intrusions
-        unmatched_ed = set1-set2
+        unmatched_ed = list(set1-set2)
 
         return {
             'Matched':matching,
@@ -580,21 +585,17 @@ class Intrusions:
 
         if row_num == 0:
             index = 1
-            self.table_IDeffects['ID'] = [index]*rows_intrusion
-            self.table_coefficients_error_comb['Error'] = [index]*rows_error
-            dataf_ideffects = pd.DataFrame(self.table_IDeffects)
-            dataf_error = pd.DataFrame(self.table_coefficients_error_comb)
-            dataf_ideffects.to_csv(self.meta_path+self.intrusions_table,mode='a', header=True, index=False)
-            dataf_error.to_csv(self.meta_path+self.coeff_error_table,mode='a', header=True, index=False)
-            
+            head = True
         else:
             index = row_num
-            self.table_IDeffects['ID'] = [index]*rows_intrusion
-            self.table_coefficients_error_comb['Error'] = [index]*rows_error
-            dataf_ideffects = pd.DataFrame(self.table_IDeffects)
-            dataf_error = pd.DataFrame(self.table_coefficients_error_comb)
-            dataf_ideffects.to_csv(self.meta_path+self.intrusions_table,mode='a', header=False, index=False)
-            dataf_error.to_csv(self.meta_path+self.coeff_error_table,mode='a', header=False, index=False)
+            head = False
+
+        self.table_IDeffects['ID'] = [index]*rows_intrusion
+        self.table_coefficients_error_comb['Error'] = [index]*rows_error
+        dataf_ideffects = pd.DataFrame(self.table_IDeffects)
+        dataf_error = pd.DataFrame(self.table_coefficients_error_comb)
+        dataf_ideffects.to_csv(self.meta_path+self.intrusions_table,mode='a', header=head, index=False)
+        dataf_error.to_csv(self.meta_path+self.coeff_error_table,mode='a', header=head, index=False)
         
         self.record_single(self.meta_table, self.metadata_intrusions)
         self.record_single(self.coeff_table, self.table_coefficients)
