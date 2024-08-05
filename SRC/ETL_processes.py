@@ -224,11 +224,29 @@ class Intrusion_ETL:
 
         # NParray for all target variables
         self.variables_matrices = [self.separate_target_variables(names) for names in self.target_variables[2:]]
-
+    
     
     def interpolation_2D(self, pandas_matrix) -> None:
-        self.interpolated0_data = pandas_matrix.interpolate(axis=0).replace(0, np.nan)
-        self.interpolated_data = self.interpolated0_data.interpolate(axis=1).replace(0, np.nan)
+        # Then check for interpolation where the is no change, this highlight
+        # interpolation with NaNs such as near the ends of profiles.
+
+        # Column interpolation
+        interpolated0_data = pandas_matrix.interpolate(axis=0).replace(0, np.nan)
+
+        # diff
+        inter0_diff = pd.DataFrame(np.diff(interpolated0_data, axis=0))
+        zero_diff = inter0_diff == 0
+        mask_diff = np.zeros_like(interpolated0_data, dtype=bool)
+        mask_diff[1:] = zero_diff
+
+        interpolated0_data[mask_diff] = np.nan
+        self.interpolated0_data = interpolated0_data
+
+
+        # Row interpolation
+        self.interpolated_data = interpolated0_data
+
+        # diff
 
 
     def discrete_diff_bydate(self) -> None:
@@ -261,7 +279,7 @@ class Intrusion_ETL:
         print('Interpolating Data')
 
         transform_data = {}
-        count = 0
+        count = 2
         for matrix in self.variables_matrices:
             pandas_matrix = pd.DataFrame(matrix)
 
@@ -303,14 +321,19 @@ class Intrusion_ETL:
         'sample_diff_midrow_salt': transformed_data['salinity_avgmid_diff1_inter10'],
         'sample_diff_row_salt': transformed_data['salinity_avg_diff1_inter10'],
         'sample_matrix_salt': transformed_data['salinity_interpolated_axis10'],
-        
-        'sample_diff_midrow_oxy': transformed_data['oxygen_avgmid_diff1_inter10'],
-        'sample_diff_row_oxy': transformed_data['oxygen_avg_diff1_inter10'],
-        'sample_matrix_oxy': transformed_data['oxygen_interpolated_axis10'],
 
         'sample_timestamps': self.normalized_dates,
         'sample_depth': self.normalized_depth,
-    }
+        }
+        
+        try:
+            self.output_data['sample_diff_midrow_oxy'] = transformed_data['oxygen_avgmid_diff1_inter10']
+            self.output_data['sample_diff_row_oxy'] = transformed_data['oxygen_avg_diff1_inter10']
+            self.output_data['sample_matrix_oxy'] = transformed_data['oxygen_interpolated_axis10']
+        except:
+            self.output_data['sample_diff_midrow_oxy'] = []
+            self.output_data['sample_diff_row_oxy'] = []
+            self.output_data['sample_matrix_oxy'] = []
         
 
     def record_output_metadata(self) -> None:
