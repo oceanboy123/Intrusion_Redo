@@ -1,119 +1,17 @@
-"""This code represents the translation of my master thesis work
-from MATLAB to Python. The code allows you to identify ocean water
-intrusion events in Bedford Basin (BB), Halifax, NS.
-
-Halifax Habour is composed of 3 main sections, the Outer Harbour,
-the Narrows and Bedford Basin. The Outer Harbour is dirrectly connected
-to the North Atlantic Ocean and it's connected to BB through a shallow
-and narrow channel called the Narrows. For comparison, The Narrows
-is about 20m deep in average, and BB is bowl shaped and reaches depths
-of about 70m
-
-Intrusion events are water parcels from the Outer Harbour that climb
-the slope from the open ocean to the Narrows and then spill into BB
-The reason why we care is because these events affect BB stratification,
-nutrient concentrations, oxygen concentrations at depths, and more.
-
-This code allows you to identify intrusion events both MANUALLY and
-and AUTOMATICALLY.
-
-MANUAL Identification: Allows you to identify these events using data from
-the Bedford Basin Monitoring Program (BBMP) station, which collects oceanographic
-variables at different depths of the water column. For identification only
-temperture and salinity are used, however, future updates will include oxygen at least.
-Using the intrusions you identified, the script will determine the best possible
-coefficients for automated intrusion identification using the variables provided
-(i.e., temperature and salinity), and it will also provide the performance of these
-coefficients
-
-AUTOMATED Indetification: Allows you to skip the manual identification and focus on
-testing different coefficients and their performance against a set of intrusions
-that were manually identified and saved in file fromat(.pkl)
-
-All metadata data lineage documentation colleted from automated and manual intrusion events are
-recorded in .csv files located in the DATA/ directory.
-
-Future Funtinalities: MySQL database, Apache Airflow, and Distribution to compile
-data from multiple Users
-
-Data Source: https://www.bio.gc.ca/science/monitoring-monitorage/bbmp-pobb/bbmp-pobb-en.php
-
-For more information check my paper here: http://hdl.handle.net/10222/83180
-
- """
-
-
 # Imports
 import joblib
 import os
 import time
 import csv
-import argparse
-import sys
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 import numpy as np
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.optimize import minimize
+from misc import create_logger, get_command_line_args
 
-
-def get_command_line_args():
-    file_name = 'BBMP_salected_data0.pkl'
-    intrusion_type = 'Normal'
-    id_type = 'MANUAL'
-    manual_type='MANUAL'
-    coefficients=[0.5, 0.5]
-    save_manual='OFF'
-    manual_input='manualID_MID1720009644.pkl'
-    # Command line arguments
-    parser = argparse.ArgumentParser(description='Arguments')
-    parser.add_argument('file_name', type=str, help="""TBD""", default=file_name)
-    parser.add_argument('--intrusion_type', type=str, help='TBD')
-    parser.add_argument('--ID_type', type=str, help='TBD')
-    parser.add_argument('--manual_type', type=str, help='TBD')
-    parser.add_argument('--coefficients', type=list[int], help='TBD')
-    parser.add_argument('--save_manual', type=str, help='TBD')
-    parser.add_argument('--manual_input', type=str, help='TBD')
-
-    # Parse and read arguments and assign them to variables if exists
-    args, _ = parser.parse_known_args()
-
-    # Check if no arguments were provided and print help if so
-    if len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit(0)
-
-    data_name = file_name
-    if args.file_name:
-        data_name = args.file_name
-
-    int_type = intrusion_type
-    if args.intrusion_type:
-        int_type = args.intrusion_type
-
-    idtype = id_type
-    if args.ID_type:
-        idtype = args.ID_type
-
-    man_type = manual_type
-    if args.manual_type:
-        man_type=args.manual_type
-
-    coeff = coefficients
-    if args.coefficients:
-        coeff=args.coefficients
-
-    s_manual = save_manual
-    if args.save_manual:
-        s_manual=args.save_manual
-
-    i_manual = manual_input
-    if args.manual_input:
-        i_manual=args.manual_input
-
-    return data_name, int_type, idtype, man_type, coeff, s_manual, i_manual
-
+logger = create_logger('Intrusion_log', 'intrusion.log')
 
 def save_joblib(data:any,file_name: str) -> any:
     file_path = '../data/PROCESSED/' + file_name
@@ -603,7 +501,17 @@ class Intrusions:
 
 def main() -> Intrusions:
     # Get command line arguments
-    file_name, intrusion_type, id_type, manual_type, coefficients, save_manual, manual_input = get_command_line_args()
+    varsin = {
+            'file_name': 'BBMP_salected_data0.pkl',
+            'intrusion_type': 'Normal',
+            'ID_type': 'MANUAL',
+            'manual_type': 'MANUAL',
+            'coefficients': [0.5, 0.5],
+            'save_manual': 'OFF',
+            'manual_input': 'manualID_MID1720009644.pkl'
+        }
+
+    file_name, intrusion_type, id_type, manual_type, coefficients, save_manual, manual_input = get_command_line_args(varsin)
 
     path_data = '../data/PROCESSED/'
     file_dirpath = path_data + file_name

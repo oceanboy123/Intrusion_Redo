@@ -1,0 +1,622 @@
+2024-08-11 21:23:17,416 - test_log - INFO - This is an info message
+2024-08-11 22:47:02,278 - test_log - INFO - This is an info message
+2024-08-11 22:49:33,564 - test_log - INFO - This is an info message
+2024-08-11 22:50:00,015 - test_log - INFO - This is an info message
+2024-08-11 22:50:00,053 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 22:50:00,054 - test_log - INFO - file_name
+2024-08-11 22:51:23,776 - test_log - INFO - This is an info message
+2024-08-11 22:51:23,811 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 22:51:23,812 - test_log - INFO - file_name
+2024-08-11 22:51:23,813 - test_log - INFO - intrusion_type
+2024-08-11 22:51:23,815 - test_log - INFO - ID_type
+2024-08-11 22:51:23,816 - test_log - INFO - manual_type
+2024-08-11 22:51:23,817 - test_log - INFO - coefficients
+2024-08-11 22:51:23,818 - test_log - INFO - save_manual
+2024-08-11 22:51:23,819 - test_log - INFO - manual_input
+2024-08-11 22:51:23,820 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 22:54:01,589 - test_log - INFO - This is an info message
+2024-08-11 22:54:01,624 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 22:54:01,625 - test_log - INFO - file_name
+2024-08-11 22:54:01,626 - test_log - INFO - intrusion_type
+2024-08-11 22:54:01,627 - test_log - INFO - ID_type
+2024-08-11 22:54:01,628 - test_log - INFO - manual_type
+2024-08-11 22:54:01,629 - test_log - INFO - coefficients
+2024-08-11 22:54:01,630 - test_log - INFO - save_manual
+2024-08-11 22:54:01,631 - test_log - INFO - manual_input
+2024-08-11 22:54:01,632 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 22:54:56,908 - test_log - INFO - This is an info message
+2024-08-11 22:54:56,945 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 22:54:56,946 - test_log - INFO - file_name
+2024-08-11 22:54:56,947 - test_log - INFO - intrusion_type
+2024-08-11 22:54:56,948 - test_log - INFO - ID_type
+2024-08-11 22:54:56,949 - test_log - INFO - manual_type
+2024-08-11 22:54:56,951 - test_log - INFO - coefficients
+2024-08-11 22:54:56,951 - test_log - INFO - save_manual
+2024-08-11 22:54:56,952 - test_log - INFO - manual_input
+2024-08-11 22:54:56,954 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 22:54:56,955 - test_log - INFO - None
+2024-08-11 22:55:22,962 - test_log - INFO - This is an info message
+2024-08-11 22:55:23,000 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 22:55:23,001 - test_log - INFO - file_name
+2024-08-11 22:55:23,002 - test_log - INFO - intrusion_type
+2024-08-11 22:55:23,003 - test_log - INFO - ID_type
+2024-08-11 22:55:23,004 - test_log - INFO - manual_type
+2024-08-11 22:55:23,005 - test_log - INFO - coefficients
+2024-08-11 22:55:23,006 - test_log - INFO - save_manual
+2024-08-11 22:55:23,007 - test_log - INFO - manual_input
+2024-08-11 22:55:23,008 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 22:55:23,009 - test_log - INFO - None
+2024-08-11 22:57:14,295 - test_log - INFO - This is an info message
+2024-08-11 22:57:14,331 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 22:57:14,332 - test_log - INFO - file_name
+2024-08-11 22:57:14,333 - test_log - INFO - intrusion_type
+2024-08-11 22:57:14,334 - test_log - INFO - ID_type
+2024-08-11 22:57:14,335 - test_log - INFO - manual_type
+2024-08-11 22:57:14,336 - test_log - INFO - coefficients
+2024-08-11 22:57:14,337 - test_log - INFO - save_manual
+2024-08-11 22:57:14,338 - test_log - INFO - manual_input
+2024-08-11 22:57:14,340 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 22:57:14,340 - test_log - INFO - None
+2024-08-11 22:57:59,329 - test_log - INFO - This is an info message
+2024-08-11 22:57:59,367 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 22:57:59,368 - test_log - INFO - file_name
+2024-08-11 22:57:59,369 - test_log - INFO - intrusion_type
+2024-08-11 22:57:59,370 - test_log - INFO - ID_type
+2024-08-11 22:57:59,371 - test_log - INFO - manual_type
+2024-08-11 22:57:59,371 - test_log - INFO - coefficients
+2024-08-11 22:57:59,372 - test_log - INFO - save_manual
+2024-08-11 22:57:59,373 - test_log - INFO - manual_input
+2024-08-11 22:57:59,375 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 22:57:59,376 - test_log - INFO - None
+2024-08-11 22:57:59,376 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 22:57:59,377 - test_log - INFO - None
+2024-08-11 22:57:59,378 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 22:57:59,379 - test_log - INFO - None
+2024-08-11 22:57:59,380 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 22:57:59,381 - test_log - INFO - None
+2024-08-11 22:57:59,382 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 22:57:59,382 - test_log - INFO - ['[', '1', ',', '1', ']']
+2024-08-11 22:57:59,383 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF']
+2024-08-11 22:57:59,384 - test_log - INFO - None
+2024-08-11 22:57:59,385 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 22:57:59,386 - test_log - INFO - None
+2024-08-11 23:00:44,251 - test_log - INFO - This is an info message
+2024-08-11 23:00:44,290 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:00:44,291 - test_log - INFO - file_name
+2024-08-11 23:00:44,292 - test_log - INFO - intrusion_type
+2024-08-11 23:00:44,293 - test_log - INFO - ID_type
+2024-08-11 23:00:44,294 - test_log - INFO - manual_type
+2024-08-11 23:00:44,295 - test_log - INFO - coefficients
+2024-08-11 23:00:44,296 - test_log - INFO - save_manual
+2024-08-11 23:00:44,297 - test_log - INFO - manual_input
+2024-08-11 23:00:44,299 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:00:44,300 - test_log - INFO - None
+2024-08-11 23:00:44,301 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:00:44,302 - test_log - INFO - None
+2024-08-11 23:00:44,303 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:00:44,304 - test_log - INFO - None
+2024-08-11 23:00:44,304 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:00:44,305 - test_log - INFO - None
+2024-08-11 23:00:44,306 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:00:44,307 - test_log - INFO - ['1', ',', '1']
+2024-08-11 23:00:44,307 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF']
+2024-08-11 23:00:44,308 - test_log - INFO - None
+2024-08-11 23:00:44,309 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:00:44,311 - test_log - INFO - None
+2024-08-11 23:00:57,403 - test_log - INFO - This is an info message
+2024-08-11 23:00:57,441 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:00:57,442 - test_log - INFO - file_name
+2024-08-11 23:00:57,443 - test_log - INFO - intrusion_type
+2024-08-11 23:00:57,444 - test_log - INFO - ID_type
+2024-08-11 23:00:57,445 - test_log - INFO - manual_type
+2024-08-11 23:00:57,446 - test_log - INFO - coefficients
+2024-08-11 23:00:57,448 - test_log - INFO - save_manual
+2024-08-11 23:00:57,449 - test_log - INFO - manual_input
+2024-08-11 23:00:57,450 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:00:57,452 - test_log - INFO - None
+2024-08-11 23:00:57,452 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:00:57,453 - test_log - INFO - None
+2024-08-11 23:00:57,454 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:00:57,455 - test_log - INFO - None
+2024-08-11 23:00:57,456 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:00:57,457 - test_log - INFO - None
+2024-08-11 23:00:57,458 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:00:57,459 - test_log - INFO - ['1']
+2024-08-11 23:00:57,460 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF']
+2024-08-11 23:00:57,461 - test_log - INFO - None
+2024-08-11 23:00:57,461 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:00:57,462 - test_log - INFO - None
+2024-08-11 23:01:33,576 - test_log - INFO - This is an info message
+2024-08-11 23:01:33,614 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:01:33,615 - test_log - INFO - file_name
+2024-08-11 23:01:33,616 - test_log - INFO - intrusion_type
+2024-08-11 23:01:33,617 - test_log - INFO - ID_type
+2024-08-11 23:01:33,618 - test_log - INFO - manual_type
+2024-08-11 23:01:33,619 - test_log - INFO - coefficients
+2024-08-11 23:01:33,620 - test_log - INFO - save_manual
+2024-08-11 23:01:33,621 - test_log - INFO - manual_input
+2024-08-11 23:01:33,622 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:01:33,623 - test_log - INFO - None
+2024-08-11 23:01:33,623 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:01:33,624 - test_log - INFO - None
+2024-08-11 23:01:33,625 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:01:33,626 - test_log - INFO - None
+2024-08-11 23:01:33,627 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:01:33,627 - test_log - INFO - None
+2024-08-11 23:01:33,628 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:01:33,629 - test_log - INFO - ['1', ',', '1']
+2024-08-11 23:01:33,630 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF']
+2024-08-11 23:01:33,631 - test_log - INFO - None
+2024-08-11 23:01:33,632 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:01:33,632 - test_log - INFO - None
+2024-08-11 23:02:41,429 - test_log - INFO - This is an info message
+2024-08-11 23:02:41,467 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:02:41,467 - test_log - INFO - file_name
+2024-08-11 23:02:41,468 - test_log - INFO - intrusion_type
+2024-08-11 23:02:41,469 - test_log - INFO - ID_type
+2024-08-11 23:02:41,470 - test_log - INFO - manual_type
+2024-08-11 23:02:41,471 - test_log - INFO - coefficients
+2024-08-11 23:02:41,472 - test_log - INFO - save_manual
+2024-08-11 23:02:41,473 - test_log - INFO - manual_input
+2024-08-11 23:02:41,474 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:02:41,475 - test_log - INFO - None
+2024-08-11 23:02:41,476 - test_log - INFO - <class 'str'>
+2024-08-11 23:02:41,477 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:02:41,478 - test_log - INFO - None
+2024-08-11 23:02:41,478 - test_log - INFO - <class 'str'>
+2024-08-11 23:02:41,479 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:02:41,481 - test_log - INFO - None
+2024-08-11 23:02:41,482 - test_log - INFO - <class 'str'>
+2024-08-11 23:02:41,483 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:02:41,483 - test_log - INFO - None
+2024-08-11 23:02:41,484 - test_log - INFO - <class 'str'>
+2024-08-11 23:02:41,485 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:02:41,485 - test_log - INFO - ['1', ',', '1']
+2024-08-11 23:02:41,486 - test_log - INFO - <class 'str'>
+2024-08-11 23:02:41,487 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF']
+2024-08-11 23:02:41,488 - test_log - INFO - None
+2024-08-11 23:02:41,489 - test_log - INFO - <class 'str'>
+2024-08-11 23:02:41,491 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:02:41,524 - test_log - INFO - None
+2024-08-11 23:02:41,530 - test_log - INFO - <class 'str'>
+2024-08-11 23:03:31,171 - test_log - INFO - This is an info message
+2024-08-11 23:03:31,208 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:03:31,209 - test_log - INFO - file_name
+2024-08-11 23:03:31,210 - test_log - INFO - intrusion_type
+2024-08-11 23:03:31,211 - test_log - INFO - ID_type
+2024-08-11 23:03:31,212 - test_log - INFO - manual_type
+2024-08-11 23:03:31,213 - test_log - INFO - coefficients
+2024-08-11 23:03:31,214 - test_log - INFO - save_manual
+2024-08-11 23:03:31,215 - test_log - INFO - manual_input
+2024-08-11 23:03:31,216 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:03:31,217 - test_log - INFO - None
+2024-08-11 23:03:31,218 - test_log - INFO - False
+2024-08-11 23:03:31,219 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:03:31,220 - test_log - INFO - None
+2024-08-11 23:03:31,221 - test_log - INFO - False
+2024-08-11 23:03:31,221 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:03:31,222 - test_log - INFO - None
+2024-08-11 23:03:31,223 - test_log - INFO - False
+2024-08-11 23:03:31,224 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:03:31,225 - test_log - INFO - None
+2024-08-11 23:03:31,226 - test_log - INFO - False
+2024-08-11 23:03:31,226 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:03:31,227 - test_log - INFO - ['1', ',', '1']
+2024-08-11 23:03:31,228 - test_log - INFO - False
+2024-08-11 23:03:31,229 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF']
+2024-08-11 23:03:31,230 - test_log - INFO - None
+2024-08-11 23:03:31,231 - test_log - INFO - False
+2024-08-11 23:03:31,232 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:03:31,233 - test_log - INFO - None
+2024-08-11 23:03:31,234 - test_log - INFO - False
+2024-08-11 23:03:57,920 - test_log - INFO - This is an info message
+2024-08-11 23:03:57,957 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:03:57,958 - test_log - INFO - file_name
+2024-08-11 23:03:57,959 - test_log - INFO - intrusion_type
+2024-08-11 23:03:57,960 - test_log - INFO - ID_type
+2024-08-11 23:03:57,961 - test_log - INFO - manual_type
+2024-08-11 23:03:57,961 - test_log - INFO - coefficients
+2024-08-11 23:03:57,963 - test_log - INFO - save_manual
+2024-08-11 23:03:57,964 - test_log - INFO - manual_input
+2024-08-11 23:03:57,965 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:03:57,966 - test_log - INFO - None
+2024-08-11 23:03:57,966 - test_log - INFO - manualID_MID1720009644.pkl
+2024-08-11 23:03:57,967 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:03:57,968 - test_log - INFO - None
+2024-08-11 23:03:57,969 - test_log - INFO - manualID_MID1720009644.pkl
+2024-08-11 23:03:57,969 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:03:57,970 - test_log - INFO - None
+2024-08-11 23:03:57,971 - test_log - INFO - manualID_MID1720009644.pkl
+2024-08-11 23:03:57,972 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:03:57,973 - test_log - INFO - None
+2024-08-11 23:03:57,974 - test_log - INFO - manualID_MID1720009644.pkl
+2024-08-11 23:03:57,975 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:03:57,976 - test_log - INFO - ['1', ',', '1']
+2024-08-11 23:03:57,976 - test_log - INFO - manualID_MID1720009644.pkl
+2024-08-11 23:03:57,977 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF']
+2024-08-11 23:03:57,978 - test_log - INFO - None
+2024-08-11 23:03:57,979 - test_log - INFO - manualID_MID1720009644.pkl
+2024-08-11 23:03:57,980 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:03:57,981 - test_log - INFO - None
+2024-08-11 23:03:57,982 - test_log - INFO - manualID_MID1720009644.pkl
+2024-08-11 23:04:50,442 - test_log - INFO - This is an info message
+2024-08-11 23:04:50,480 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:04:50,481 - test_log - INFO - file_name
+2024-08-11 23:04:50,482 - test_log - INFO - intrusion_type
+2024-08-11 23:04:50,483 - test_log - INFO - ID_type
+2024-08-11 23:04:50,483 - test_log - INFO - manual_type
+2024-08-11 23:04:50,484 - test_log - INFO - coefficients
+2024-08-11 23:04:50,485 - test_log - INFO - save_manual
+2024-08-11 23:04:50,486 - test_log - INFO - manual_input
+2024-08-11 23:04:50,487 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:04:50,488 - test_log - INFO - Att: None
+2024-08-11 23:04:50,489 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:04:50,490 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:04:50,491 - test_log - INFO - Att: None
+2024-08-11 23:04:50,492 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:04:50,493 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:04:50,494 - test_log - INFO - Att: None
+2024-08-11 23:04:50,495 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:04:50,495 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:04:50,496 - test_log - INFO - Att: None
+2024-08-11 23:04:50,497 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:04:50,498 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:04:50,499 - test_log - INFO - Att: ['1', ',', '1']
+2024-08-11 23:04:50,499 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:04:50,500 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF']
+2024-08-11 23:04:50,501 - test_log - INFO - Att: None
+2024-08-11 23:04:50,501 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:04:50,502 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:04:50,503 - test_log - INFO - Att: None
+2024-08-11 23:04:50,504 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:05:24,111 - test_log - INFO - This is an info message
+2024-08-11 23:05:24,149 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:05:24,150 - test_log - INFO - file_name
+2024-08-11 23:05:24,151 - test_log - INFO - intrusion_type
+2024-08-11 23:05:24,152 - test_log - INFO - ID_type
+2024-08-11 23:05:24,153 - test_log - INFO - manual_type
+2024-08-11 23:05:24,154 - test_log - INFO - coefficients
+2024-08-11 23:05:24,155 - test_log - INFO - save_manual
+2024-08-11 23:05:24,156 - test_log - INFO - manual_input
+2024-08-11 23:05:24,158 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:05:24,158 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:24,159 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:05:24,160 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:05:24,161 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:24,162 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:05:24,163 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:05:24,164 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:24,164 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:05:24,165 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:05:24,166 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:24,167 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:05:24,167 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:05:24,168 - test_log - INFO - Att: <class 'list'>
+2024-08-11 23:05:24,169 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:05:24,170 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF']
+2024-08-11 23:05:24,170 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:24,171 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:05:24,172 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:05:24,173 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:24,174 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:05:42,874 - test_log - INFO - This is an info message
+2024-08-11 23:05:42,912 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:05:42,913 - test_log - INFO - file_name
+2024-08-11 23:05:42,914 - test_log - INFO - intrusion_type
+2024-08-11 23:05:42,916 - test_log - INFO - ID_type
+2024-08-11 23:05:42,916 - test_log - INFO - manual_type
+2024-08-11 23:05:42,917 - test_log - INFO - coefficients
+2024-08-11 23:05:42,918 - test_log - INFO - save_manual
+2024-08-11 23:05:42,919 - test_log - INFO - manual_input
+2024-08-11 23:05:42,921 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:05:42,921 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:42,922 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:05:42,923 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:05:42,924 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:42,924 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:05:42,925 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:05:42,926 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:42,927 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:05:42,928 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:05:42,929 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:42,930 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:05:42,931 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:05:42,932 - test_log - INFO - Att: <class 'list'>
+2024-08-11 23:05:42,932 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:05:42,933 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF']
+2024-08-11 23:05:42,934 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:42,935 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:05:42,936 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:05:42,937 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:05:42,938 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:06:30,865 - test_log - INFO - This is an info message
+2024-08-11 23:06:30,903 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:06:30,904 - test_log - INFO - file_name
+2024-08-11 23:06:30,905 - test_log - INFO - intrusion_type
+2024-08-11 23:06:30,907 - test_log - INFO - ID_type
+2024-08-11 23:06:30,908 - test_log - INFO - manual_type
+2024-08-11 23:06:30,909 - test_log - INFO - coefficients
+2024-08-11 23:06:30,910 - test_log - INFO - save_manual
+2024-08-11 23:06:30,911 - test_log - INFO - manual_input
+2024-08-11 23:06:30,912 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:06:30,913 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:06:30,914 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:06:30,914 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:06:30,915 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:06:30,916 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:06:30,917 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:06:30,918 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:06:30,918 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:06:30,919 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:06:30,920 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:06:30,921 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:06:30,922 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:06:30,923 - test_log - INFO - Att: <class 'list'>
+2024-08-11 23:06:30,923 - test_log - INFO - Var: <class 'list'>
+2024-08-11 23:06:30,924 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['1', ',', '1'], 'OFF']
+2024-08-11 23:06:30,925 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:06:30,927 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:06:30,929 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['1', ',', '1'], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:06:30,930 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:06:30,931 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:08:37,662 - test_log - INFO - This is an info message
+2024-08-11 23:08:37,700 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:08:37,701 - test_log - INFO - file_name
+2024-08-11 23:08:37,702 - test_log - INFO - intrusion_type
+2024-08-11 23:08:37,703 - test_log - INFO - ID_type
+2024-08-11 23:08:37,704 - test_log - INFO - manual_type
+2024-08-11 23:08:37,705 - test_log - INFO - coefficients
+2024-08-11 23:08:37,706 - test_log - INFO - save_manual
+2024-08-11 23:08:37,707 - test_log - INFO - manual_input
+2024-08-11 23:08:37,708 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:08:37,709 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:08:37,709 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:08:37,710 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:08:37,711 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:08:37,711 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:08:37,712 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:08:37,713 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:08:37,714 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:08:37,715 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:08:37,716 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:08:37,716 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:08:37,717 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:08:37,718 - test_log - INFO - Att: <class 'list'>
+2024-08-11 23:08:37,719 - test_log - INFO - Var: <class 'list'>
+2024-08-11 23:08:37,720 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['1'], 'OFF']
+2024-08-11 23:08:37,720 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:08:37,721 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:08:37,722 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['1'], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:08:37,723 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:08:37,723 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:06,400 - test_log - INFO - This is an info message
+2024-08-11 23:09:06,436 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:09:06,437 - test_log - INFO - file_name
+2024-08-11 23:09:06,438 - test_log - INFO - intrusion_type
+2024-08-11 23:09:06,439 - test_log - INFO - ID_type
+2024-08-11 23:09:06,440 - test_log - INFO - manual_type
+2024-08-11 23:09:06,441 - test_log - INFO - coefficients
+2024-08-11 23:09:06,442 - test_log - INFO - save_manual
+2024-08-11 23:09:06,443 - test_log - INFO - manual_input
+2024-08-11 23:09:06,444 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:09:06,445 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:06,446 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:06,447 - test_log - INFO - Var: BBMP_salected_data0.pkl
+2024-08-11 23:09:06,447 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:09:06,448 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:06,449 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:06,450 - test_log - INFO - Var: Normal
+2024-08-11 23:09:06,450 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:09:06,451 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:06,452 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:06,453 - test_log - INFO - Var: MANUAL
+2024-08-11 23:09:06,453 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:09:06,454 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:06,455 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:06,456 - test_log - INFO - Var: MANUAL
+2024-08-11 23:09:06,456 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:09:06,457 - test_log - INFO - Att: <class 'list'>
+2024-08-11 23:09:06,458 - test_log - INFO - Var: <class 'list'>
+2024-08-11 23:09:06,458 - test_log - INFO - Var: [0.5, 0.5]
+2024-08-11 23:09:06,459 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['1'], 'OFF']
+2024-08-11 23:09:06,460 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:06,461 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:06,462 - test_log - INFO - Var: OFF
+2024-08-11 23:09:06,462 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['1'], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:09:06,463 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:06,464 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:06,465 - test_log - INFO - Var: manualID_MID1720009644.pkl
+2024-08-11 23:09:31,714 - test_log - INFO - This is an info message
+2024-08-11 23:09:31,841 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:09:31,842 - test_log - INFO - file_name
+2024-08-11 23:09:31,843 - test_log - INFO - intrusion_type
+2024-08-11 23:09:31,845 - test_log - INFO - ID_type
+2024-08-11 23:09:31,846 - test_log - INFO - manual_type
+2024-08-11 23:09:31,847 - test_log - INFO - coefficients
+2024-08-11 23:09:31,848 - test_log - INFO - save_manual
+2024-08-11 23:09:31,849 - test_log - INFO - manual_input
+2024-08-11 23:09:31,850 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:09:31,851 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:31,852 - test_log - INFO - Att: None
+2024-08-11 23:09:31,852 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:31,853 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:09:31,854 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:31,855 - test_log - INFO - Att: None
+2024-08-11 23:09:31,856 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:31,911 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:09:31,912 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:31,913 - test_log - INFO - Att: None
+2024-08-11 23:09:31,913 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:31,914 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:09:31,914 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:31,915 - test_log - INFO - Att: None
+2024-08-11 23:09:31,916 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:31,916 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:09:31,917 - test_log - INFO - Att: <class 'list'>
+2024-08-11 23:09:31,918 - test_log - INFO - Att: ['1']
+2024-08-11 23:09:31,919 - test_log - INFO - Var: <class 'list'>
+2024-08-11 23:09:31,920 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['1'], 'OFF']
+2024-08-11 23:09:31,921 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:31,921 - test_log - INFO - Att: None
+2024-08-11 23:09:31,923 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:09:31,923 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['1'], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:09:31,924 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:09:31,925 - test_log - INFO - Att: None
+2024-08-11 23:09:31,926 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:03,326 - test_log - INFO - This is an info message
+2024-08-11 23:11:03,365 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:11:03,366 - test_log - INFO - file_name
+2024-08-11 23:11:03,367 - test_log - INFO - intrusion_type
+2024-08-11 23:11:03,368 - test_log - INFO - ID_type
+2024-08-11 23:11:03,369 - test_log - INFO - manual_type
+2024-08-11 23:11:03,370 - test_log - INFO - coefficients
+2024-08-11 23:11:03,370 - test_log - INFO - save_manual
+2024-08-11 23:11:03,371 - test_log - INFO - manual_input
+2024-08-11 23:11:03,373 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:11:03,373 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:03,374 - test_log - INFO - Att: None
+2024-08-11 23:11:03,375 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:03,375 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:11:03,376 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:03,377 - test_log - INFO - Att: None
+2024-08-11 23:11:03,378 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:03,379 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:11:03,379 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:03,380 - test_log - INFO - Att: None
+2024-08-11 23:11:03,381 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:03,382 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:11:03,383 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:03,384 - test_log - INFO - Att: None
+2024-08-11 23:11:03,385 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:03,385 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:11:03,386 - test_log - INFO - Att: <class 'list'>
+2024-08-11 23:11:03,387 - test_log - INFO - Att: ['1', ',', '1']
+2024-08-11 23:11:03,388 - test_log - INFO - Var: <class 'list'>
+2024-08-11 23:11:03,389 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['1', ',', '1'], 'OFF']
+2024-08-11 23:11:03,390 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:03,390 - test_log - INFO - Att: None
+2024-08-11 23:11:03,391 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:03,392 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['1', ',', '1'], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:11:03,393 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:03,394 - test_log - INFO - Att: None
+2024-08-11 23:11:03,395 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:19,572 - test_log - INFO - This is an info message
+2024-08-11 23:11:19,612 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:11:19,613 - test_log - INFO - file_name
+2024-08-11 23:11:19,614 - test_log - INFO - intrusion_type
+2024-08-11 23:11:19,615 - test_log - INFO - ID_type
+2024-08-11 23:11:19,616 - test_log - INFO - manual_type
+2024-08-11 23:11:19,617 - test_log - INFO - coefficients
+2024-08-11 23:11:19,618 - test_log - INFO - save_manual
+2024-08-11 23:11:19,619 - test_log - INFO - manual_input
+2024-08-11 23:11:19,620 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:11:19,621 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:19,622 - test_log - INFO - Att: None
+2024-08-11 23:11:19,623 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:19,624 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:11:19,625 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:19,626 - test_log - INFO - Att: None
+2024-08-11 23:11:19,627 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:19,628 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:11:19,629 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:19,630 - test_log - INFO - Att: None
+2024-08-11 23:11:19,631 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:19,632 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:11:19,633 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:19,634 - test_log - INFO - Att: None
+2024-08-11 23:11:19,635 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:19,636 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:11:19,637 - test_log - INFO - Att: <class 'list'>
+2024-08-11 23:11:19,638 - test_log - INFO - Att: ['[', '1']
+2024-08-11 23:11:19,638 - test_log - INFO - Var: <class 'list'>
+2024-08-11 23:11:19,639 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['[', '1'], 'OFF']
+2024-08-11 23:11:19,640 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:19,641 - test_log - INFO - Att: None
+2024-08-11 23:11:19,642 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:11:19,643 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', ['[', '1'], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:11:19,644 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:11:19,645 - test_log - INFO - Att: None
+2024-08-11 23:11:19,646 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:13:26,873 - test_log - INFO - This is an info message
+2024-08-11 23:13:26,912 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:13:26,913 - test_log - INFO - file_name
+2024-08-11 23:13:26,914 - test_log - INFO - intrusion_type
+2024-08-11 23:13:26,915 - test_log - INFO - ID_type
+2024-08-11 23:13:26,916 - test_log - INFO - manual_type
+2024-08-11 23:13:26,917 - test_log - INFO - coefficients
+2024-08-11 23:13:26,918 - test_log - INFO - save_manual
+2024-08-11 23:13:26,920 - test_log - INFO - manual_input
+2024-08-11 23:13:26,921 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:13:26,922 - test_log - INFO - Att: <class 'str'>
+2024-08-11 23:13:26,923 - test_log - INFO - Att: test.pkl
+2024-08-11 23:13:26,923 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:13:26,924 - test_log - INFO - ['test.pkl', 'Normal']
+2024-08-11 23:13:26,925 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:13:26,926 - test_log - INFO - Att: None
+2024-08-11 23:13:26,927 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:13:26,927 - test_log - INFO - ['test.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:13:26,928 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:13:26,929 - test_log - INFO - Att: None
+2024-08-11 23:13:26,930 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:13:26,931 - test_log - INFO - ['test.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:13:26,932 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:13:26,932 - test_log - INFO - Att: None
+2024-08-11 23:13:26,933 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:13:26,934 - test_log - INFO - ['test.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:13:26,935 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:13:26,936 - test_log - INFO - Att: None
+2024-08-11 23:13:26,936 - test_log - INFO - Var: <class 'list'>
+2024-08-11 23:13:26,937 - test_log - INFO - ['test.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF']
+2024-08-11 23:13:26,938 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:13:26,939 - test_log - INFO - Att: None
+2024-08-11 23:13:26,939 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:13:26,940 - test_log - INFO - ['test.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:13:26,941 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:13:26,942 - test_log - INFO - Att: None
+2024-08-11 23:13:26,943 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:17:17,940 - test_log - INFO - This is an info message
+2024-08-11 23:17:18,009 - test_log - INFO - ['file_name', 'intrusion_type', 'ID_type', 'manual_type', 'coefficients', 'save_manual', 'manual_input']
+2024-08-11 23:17:18,009 - test_log - INFO - file_name
+2024-08-11 23:17:18,010 - test_log - INFO - intrusion_type
+2024-08-11 23:17:18,011 - test_log - INFO - ID_type
+2024-08-11 23:17:18,012 - test_log - INFO - manual_type
+2024-08-11 23:17:18,013 - test_log - INFO - coefficients
+2024-08-11 23:17:18,014 - test_log - INFO - save_manual
+2024-08-11 23:17:18,015 - test_log - INFO - manual_input
+2024-08-11 23:17:18,017 - test_log - INFO - ['BBMP_salected_data0.pkl']
+2024-08-11 23:17:18,018 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:17:18,018 - test_log - INFO - Att: None
+2024-08-11 23:17:18,019 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:17:18,020 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal']
+2024-08-11 23:17:18,021 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:17:18,022 - test_log - INFO - Att: None
+2024-08-11 23:17:18,023 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:17:18,024 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL']
+2024-08-11 23:17:18,025 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:17:18,026 - test_log - INFO - Att: None
+2024-08-11 23:17:18,026 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:17:18,027 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL']
+2024-08-11 23:17:18,028 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:17:18,029 - test_log - INFO - Att: None
+2024-08-11 23:17:18,030 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:17:18,039 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [0.5, 0.5]]
+2024-08-11 23:17:18,040 - test_log - INFO - Att: <class 'list'>
+2024-08-11 23:17:18,042 - test_log - INFO - Att: ['1']
+2024-08-11 23:17:18,043 - test_log - INFO - Var: <class 'list'>
+2024-08-11 23:17:18,044 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [1, 1], 'OFF']
+2024-08-11 23:17:18,046 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:17:18,047 - test_log - INFO - Att: None
+2024-08-11 23:17:18,050 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:17:18,053 - test_log - INFO - ['BBMP_salected_data0.pkl', 'Normal', 'MANUAL', 'MANUAL', [1, 1], 'OFF', 'manualID_MID1720009644.pkl']
+2024-08-11 23:17:18,056 - test_log - INFO - Att: <class 'NoneType'>
+2024-08-11 23:17:18,060 - test_log - INFO - Att: None
+2024-08-11 23:17:18,062 - test_log - INFO - Var: <class 'str'>
+2024-08-11 23:32:05,074 - test_log - INFO - This is an info message
+2024-08-11 23:32:33,799 - test_log - INFO - This is an info message
+2024-08-11 23:40:29,432 - test_log - INFO - This is an info message
+2024-08-11 23:41:06,161 - test_log - INFO - This is an info message
+2024-08-11 23:41:39,876 - test_log - INFO - This is an info message
+2024-08-11 23:45:30,700 - test_log - INFO - This is an info message
+2024-08-11 23:46:36,034 - test_log - INFO - This is an info message
+2024-08-11 23:48:25,820 - test_log - INFO - This is an info message
+2024-08-11 23:51:00,372 - test_log - INFO - This is an info message
