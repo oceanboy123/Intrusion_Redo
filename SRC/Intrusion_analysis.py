@@ -17,34 +17,41 @@ bottom_avg_names = ['sample_diff_row_temp', 'sample_diff_row_salt']
 mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt'] 
 
 
-@runtime_checkable
-class method(Protocol):
-    dataset : dataset
-    intrusion_type : str
+# @runtime_checkable
+# class method(Protocol):
 
-    def injection(self) -> None:
-        ...
+#     intrusion_type : str
 
-@runtime_checkable
-class intrusion_method(Protocol):
-    dataset : dataset
-    manualID_indices : List[int] = field(default_factory=list)
-    manualID_temp_effects : List[int] = field(default_factory=list)
-    manualID_salt_effects : List[int] = field(default_factory=list)
+#     def fill_request_info(self, dataset) -> None:
+#         ...
 
-@runtime_checkable
-class main_analysis(Protocol):
-    dataset : dataset
-    manualID_type : str
+# @runtime_checkable
+# class intrusion_method(Protocol):
 
+#     manualID_indices : List[int] = field(default_factory=list)
+#     manualID_temp_effects : List[int] = field(default_factory=list)
+#     manualID_salt_effects : List[int] = field(default_factory=list)
+
+# @runtime_checkable
+# class main_analysis(Protocol):
+
+#     OP_temp_coeff : int = field(default_factory=int)
+#     OP_salt_coeff : int = field(default_factory=int)
+#     OP_performance : int = field(default_factory=int)
+#     OP_performance_spec : Dict[str, Any] = field(default_factory=dict)
+
+def empty() -> None:
+    ...
 
 @dataclass
 class dataset:
   path : str
 
   metadata_intrusions : Dict[str, Any] = field(default_factory=dict)
-  identification : object = field(default_factory=method)
-  analysis : object = field(default_factory=main_analysis)
+  identification : object = field(default_factory=empty)
+  analysis : object = field(default_factory=empty)
+
+  dates_name = 'sample_timestamps'
   
   def __post_init__(self) -> None:
     self.data = import_joblib(self.path)
@@ -59,7 +66,7 @@ class manual_identification:
 
     manualID_dates : List[int] = field(default_factory=list)
     table_IDeffects : Dict[str, Any] = field(default_factory=dict)
-    effects : object = field(default_factory=intrusion_method)
+    effects : object = field(default_factory=empty)
 
     lin = "-"*6+' ' # For printing purposes
     depth_name = 'sample_depth'
@@ -182,7 +189,7 @@ class manual_identification:
         logger.info(self.lin+'Intrusion identification completed')
 
     def save_identification(self, dataset) -> None:
-        man_name = '../data/PROCESSED/manualID_' + self.intrusion_type + str(int(time.time())) + '.pkl'
+        man_name = 'manualID_' + self.intrusion_type + str(int(time.time())) + '.pkl'
         save_joblib(self.manualID_dates, man_name)
         self.save = man_name
 
@@ -208,7 +215,7 @@ class imported_identification:
     save : str = 'OFF'
     manualID_dates : List[int] = field(default_factory=list)
     table_IDeffects : Dict[str, Any] = field(default_factory=dict)
-    effects : object = field(default_factory=intrusion_method)
+    effects : object = field(default_factory=empty)
 
     def fill_request_info(self, dataset) -> None:
         self.uyears  = np.unique([dt.year for dt in dataset.dates])
@@ -309,6 +316,7 @@ class intrusion_analysis:
     def intrusion_id_performance(self, package: list) -> int:
         """Compares the manually identified intrusion and the estimated intrusions
         to evaluate the coefficient performance"""
+        logger.debug(f'Package: {package}')
         dataset = package[0]
         lst = package[1]
 
@@ -351,6 +359,7 @@ class intrusion_analysis:
         for temp_guess in temp_range:
             for salt_guess in salt_range:
                 initial_guess = [dataset,[temp_guess, salt_guess]]
+                logger.debug(f'Initial Guess: {initial_guess}')
                 result = minimize(self.intrusion_id_performance, initial_guess)
                 result_final.append((result.x, result.fun))
 
@@ -366,12 +375,12 @@ class intrusion_analysis:
 
     def known_coefficients(self, dataset):
 
-        self.OP_temp_coeff = [self.coefficients[0]] 
-        self.OP_salt_coeff = [self.coefficients[1]]
+        self.OP_temp_coeff = self.coefficients[0] 
+        self.OP_salt_coeff = self.coefficients[1]
 
-        self.OP_performance = self.intrusion_ID_performance(self.coefficients)
+        self.OP_performance = self.intrusion_id_performance([dataset,self.coefficients])
         
-        self.OP_performance_spec = date_comparison(self.manualID_dates, 
+        self.OP_performance_spec = date_comparison(dataset.identification.manualID_dates, 
                                                 self.intrusion_identification(self.coefficients, dataset))
 
     def extract(self, dataset) -> None:
@@ -443,8 +452,8 @@ class meta:
 
         result_comp = dataset.analysis.OP_performance_spec
         dataset.analysis.table_coefficients_error['Missed'] = result_comp['Only Manual'] # Record Intrusions missed based on manual
-        dataset.analysisf.table_coefficients_error['Extra'] = result_comp['Only Estimated'] # Record False positives based on manual
-        dataset.analysisf.table_coefficients_error['Found'] = result_comp['Matched'] # Record Correct identification based on manual
+        dataset.analysis.table_coefficients_error['Extra'] = result_comp['Only Estimated'] # Record False positives based on manual
+        dataset.analysis.table_coefficients_error['Found'] = result_comp['Matched'] # Record Correct identification based on manual
     
 
     def record_metadata(self, dataset) -> None:
@@ -505,7 +514,7 @@ def main() -> None:
     if id_type.upper() == 'MANUAL':
         intrusion_identification = manual_identification(intrusion_type, save_manual)
     else:
-        intrusion_identification = imported_identification(intrusion_type, manual_input)
+        intrusion_identification = imported_identification(intrusion_type, path_data +manual_input)
 
     intrusion_identification.run(bbmp)
 
