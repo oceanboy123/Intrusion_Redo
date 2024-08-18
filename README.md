@@ -1,9 +1,8 @@
 # Oceanic Water Intrusion Identification in Bedford Basin (BB), NS, using the BB Monitoring Program dataset
 
 This project represent the reproduction of my MSc Thesis code orignally developed in MATLAB. The tools you will
-find in this repository allow you to download the 
-profile data from the BBMP dataset, manipulate and transform the data, and analyze the profiles to identify
-oceanic water intrusion events into BB, NS. 
+find in this repository allow you to download the profile data from the BBMP dataset, manipulate and transform the 
+data, and analyze the profiles to identify oceanic water intrusion events into BB, NS. 
 
 Data Source: https://www.bio.gc.ca/science/monitoring-monitorage/bbmp-pobb/bbmp-pobb-en.php
 
@@ -58,8 +57,8 @@ variables measured at the Compass Bouy
 
 ### ETL data manipulation
 - Description: Extraction of variables of interest. Normalizes profiles’ depths and 
-fills with NaNs. Integrate profile arrays into a matrix the dimensions correspond to depth 
-and date of measurements.Horizontal and vertical interpolation of profiles. And calculation 
+fills with NaNs. Integrate profile arrays into a matrix where the dimensions correspond to depth 
+and date of measurements. Horizontal and vertical interpolation of profiles. And calculation 
 of depth range averages for identification of deep and mid-depth intrusions.
 
 ```bash
