@@ -35,3 +35,6 @@ Input_dataset,Date_created,Init_year,End_year,ID_type,Current_time,Intrusion_typ
 ../data/PROCESSED/BBMP_salected_data0.pkl,Sun Aug 18 11:51:30 2024,1999,2024,NORMAL,IMPORTED,../data/PROCESSED/manualID_NORMAL1723679472.pkl,OFF,"['salinity', 'temperature']",34
 ../data/PROCESSED/BBMP_salected_data0.pkl,Sun Aug 18 11:52:56 2024,1999,2024,NORMAL,IMPORTED,../data/PROCESSED/manualID_NORMAL1723679472.pkl,OFF,"['salinity', 'temperature']",35
 ../data/PROCESSED/BBMP_salected_data0.pkl,Sun Aug 18 11:55:04 2024,1999,2024,NORMAL,IMPORTED,../data/PROCESSED/manualID_NORMAL1723679472.pkl,OFF,"['salinity', 'temperature']",36
+../data/PROCESSED/BBMP_salected_data0.pkl,Sun Aug 18 12:14:37 2024,1999,2024,NORMAL,IMPORTED,../data/PROCESSED/manualID_MID1720009644.pkl,OFF,"['salinity', 'temperature']",37
+../data/PROCESSED/BBMP_salected_data0.pkl,Sun Aug 18 12:22:18 2024,1999,2024,NORMAL,IMPORTED,../data/PROCESSED/manualID_MID1720009644.pkl,OFF,"['salinity', 'temperature']",38
+../data/PROCESSED/BBMP_salected_data0.pkl,Sun Aug 18 12:27:57 2024,1999,2024,NORMAL,IMPORTED,../data/PROCESSED/manualID_MID1720009644.pkl,OFF,"['salinity', 'temperature']",39
