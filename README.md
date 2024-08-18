@@ -46,7 +46,8 @@ Intrusion_Redo/
 ## Usage
 
 ### Data Ingestion from BBMP
-- Description: Download data from the BBMP fts server. With profiles of oceanographic variables measured at the Compass Bouy
+- Description: Download data from the BBMP fts server. With profiles of oceanographic 
+variables measured at the Compass Bouy
 
 ```bash
 ./get_BBMP_csv.sh
@@ -56,7 +57,10 @@ Intrusion_Redo/
 - It wil download the file to `RAW/` as `bbmp_aggregated_profiles.csv`
 
 ### ETL data manipulation
-- Description: Extraction of variables of interest. Normalizes profiles’ depths and fills with NaNs. Integrate profile arrays into a matrix the dimensions correspond to depth and date of measurements.Horizontal and vertical interpolation of profiles. And calculation of depth range averages for identification of deep and mid-depth intrusions.
+- Description: Extraction of variables of interest. Normalizes profiles’ depths and 
+fills with NaNs. Integrate profile arrays into a matrix the dimensions correspond to depth 
+and date of measurements.Horizontal and vertical interpolation of profiles. And calculation 
+of depth range averages for identification of deep and mid-depth intrusions.
 
 ```bash
 usage: python ETL_processess.py [-h] [--file_name FILE_NAME] [--deep_depth DEEP_DEPTH] 
