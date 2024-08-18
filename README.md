@@ -72,12 +72,12 @@ optional arguments:
                             	            the file name exists in RAW/
   --deep_depth DEEP_DEPTH   	            Default is 60. This will calculate depth averages
                             	            from 60m to the bottom of BB (~70m) 
-  --mid_depths_top MID_DEPTHS_TOP          Default is 20. This will calculate depth averages
+  --mid_depths_top MID_DEPTHS_TOP        Default is 20. This will calculate depth averages
                             	            from 20m to MID_DEPTH_BOTTOM
-  --mid_depths_bottom  MID_DEPTHS_BOTTOM   Default is 35. This will calculate depth averages
-                                           from MID_DEPTH_TOP to 35m
+  --mid_depths_bottom  MID_DEPTHS_BOTTOM Default is 35. This will calculate depth averages
+                                         from MID_DEPTH_TOP to 35m
   --date_format DATE_FORMAT 	            Default is %Y-%m-%d %H:%M:%S. This is mainly used to read
-                                           dates from raw data
+                                         dates from raw data
 ```
 
 - It wil create the output named `BBMP_salected_data0.pkl` at '/data/PROCESSED/'
@@ -121,12 +121,12 @@ optional arguments:
                                              manual and imported intrusion identification. 
                                              OPTIONS: MANUAL and IMPORTED
   --analysis_type ANALYSIS_TYPE              Default is 'GET_COEFFICIENTS'. OPTIONS: GET_COEFFICIENTS
-	               (coefficients estimation) and USE_COEFFICIENTS (coeffients
-	               are provided by the user)
+	               																													(coefficients estimation) and USE_COEFFICIENTS (coeffients
+	               																													are provided by the user)
   --coefficient_temp COEFFICIENTS_TEMP       Default is 0.5. This number represents the change in 
-	              temperature that will be used to flag an intrusion events.
+	              																														temperature that will be used to flag an intrusion events.
   --coefficient_salt COEFFICIENTS_SALT       Default is 0.5. This number represents the change in 
-	              salinity that will be used to flag an intrusion events.  
+	              																														salinity that will be used to flag an intrusion events.  
   --save_manual SAVE_MANUAL                  Default is 'OFF'. This allows you to save (ON) or not
                                              the intrusion you manually identified using the plots
   --manual_input MANUAL_INPUT                Default is 'manual_intrusions_all_noO2.pkl'. This is
