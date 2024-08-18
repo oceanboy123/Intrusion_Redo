@@ -314,13 +314,11 @@ class intrusion_analysis:
         return estimated_intrusion_dates
 
 
-    def intrusion_id_performance(self, package: list) -> int:
+    def intrusion_id_performance(self, init_coeff: list, dataset) -> int:
         """Compares the manually identified intrusion and the estimated intrusions
         to evaluate the coefficient performance"""
-        dataset = package[0]
-        lst = package[1]
 
-        estimated_intrusion_dates = self.intrusion_identification(lst, dataset)
+        estimated_intrusion_dates = self.intrusion_identification(init_coeff, dataset)
         real_intrusion_dates = dataset.identification.manualID_dates
         comparison_dates = date_comparison(real_intrusion_dates, estimated_intrusion_dates)
             
@@ -358,8 +356,8 @@ class intrusion_analysis:
         # Minimize the performance parameter
         for temp_guess in temp_range:
             for salt_guess in salt_range:
-                initial_guess = [dataset,[temp_guess, salt_guess]]
-                result = minimize(self.intrusion_id_performance, initial_guess)
+                initial_guess = [temp_guess, salt_guess]
+                result = minimize(self.intrusion_id_performance, initial_guess, args = (dataset))
                 result_final.append((result.x, result.fun))
 
         best_coefficients = min(result_final, key= lambda x: x[1])
@@ -528,7 +526,7 @@ def main() -> None:
     analysis = intrusion_analysis(analysis_type, coefficients)
     analysis.run(bbmp)
 
-    logger.info(f'Coefficients Used [temp, salt]: {[analysis.OP_temp_coeff, analysis.OP_salt_coeff]} - Performance: {analysis.OP_performance}')
+    logger.info(f'Coefficients Used [temp, salt]: {[analysis.OP_temp_coeff, analysis.OP_salt_coeff]} - Performance: {analysis.OP_performance} - # of missed intrusion: {len(analysis.OP_performance_spec['Only Manual'])} - # of extra intrusions: {len(analysis.OP_performance_spec['Only Estimated'])}')
 
     data_meta = meta()
     data_meta.run(bbmp)

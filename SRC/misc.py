@@ -62,6 +62,7 @@ def proper_logging(funq: object, inp : list[vars]) -> None:
     else:
         return_type = 'Unknown'
 
+    print('')
     logger.debug(f'Type: {type} - Name: {funq_name} - Inputs: {inp} - Expected Outputs: {return_type}')
 
 
@@ -134,7 +135,6 @@ def onclick(event):
             x, y = event.xdata, event.ydata
 
             points.append((x, y))
-
 
 
 def onkey(event):
