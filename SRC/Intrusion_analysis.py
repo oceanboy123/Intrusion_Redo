@@ -9,9 +9,7 @@ import pandas as pd
 from scipy.optimize import minimize
 from misc import *
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Protocol, runtime_checkable
-
-logger = create_logger('Intrusion_log', 'intrusion.log')
+from typing import List, Dict, Any
 
 bottom_avg_names = ['sample_diff_row_temp', 'sample_diff_row_salt'] 
 mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt'] 
@@ -43,6 +41,7 @@ mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt']
 def empty() -> None:
     ...
 
+@function_log
 @dataclass
 class dataset:
   path : str
@@ -58,6 +57,7 @@ class dataset:
     self.dates_stamp = self.data[self.dates_name]
     self.dates = timestamp2datetime_lists(self.dates_stamp)
 
+@function_log
 @dataclass
 class manual_identification:
     
@@ -74,9 +74,8 @@ class manual_identification:
     salt_range = [30.5,31.5] 
     oxy_range = [0,12]
 
-    def fill_request_info(self, dataset) -> None:
-        self.data = dataset.data
-        self.dates = dataset.dates
+    def fill_request_info(self, dates) -> None:
+        self.dates = dates
 
         self.uyears  = np.unique([dt.year for dt in self.dates])
         self.manual_input_type = 'MANUAL'
@@ -113,13 +112,13 @@ class manual_identification:
                         for year in self.uyears}
 
         # Extract yearly profiles of temperature and salinity
-        yearly_profiles_temp, yearly_profiles_salt = self.create_yearly_matrices(self.data, by_year_indices)
+        yearly_profiles_temp, yearly_profiles_salt = self.create_yearly_matrices(dataset.data, by_year_indices)
             
         return {'Yearly Temp Profile': yearly_profiles_temp, 
                 'Yearly Salt Profile': yearly_profiles_salt, 
                 'Indices by Year':by_year_indices}
 
-    def plot_year_profiles(self, year_data: dict[dict], yr: int) -> dict:
+    def plot_year_profiles(self, year_data: dict[dict], yr: int, dataset) -> dict:
 
         init_date_index = year_data['Indices by Year'][yr][0]
         last_date_index = year_data['Indices by Year'][yr][-1]
@@ -131,7 +130,7 @@ class manual_identification:
         year_salt_data = year_data['Yearly Salt Profile'][yr]
 
         # Temperature Plot
-        xmesh,ymesh = np.meshgrid(datetime_list, self.data[self.depth_name])
+        xmesh,ymesh = np.meshgrid(datetime_list, dataset.data[self.depth_name])
         mesh0 = axs[0].pcolormesh(xmesh,ymesh,year_temp_data[:,:len(ymesh[0,:])], cmap='seismic')
         fig.colorbar(mesh0, ax=axs[0])
         axs[0].invert_yaxis()
@@ -168,14 +167,14 @@ class manual_identification:
         return datetime_obj
 
 
-    def user_intrusion_selection(self, dataset) -> None:
+    def user_intrusion_selection(self,dataset) -> None:
         logger.info(self.lin+'Intrusion identification in progress')
 
         yearly_profiles = self.separate_yearly_profiles(dataset)
         # Plots Temperature and Salinity profiles for user to select intrusion dates by year
         for yr in self.uyears:
             fig = self.plot_year_profiles(yearly_profiles, 
-                                yr)
+                                yr, dataset)
 
             fig['Figure'].canvas.mpl_connect('button_press_event', onclick)
 
@@ -188,7 +187,7 @@ class manual_identification:
         
         logger.info(self.lin+'Intrusion identification completed')
 
-    def save_identification(self, dataset) -> None:
+    def save_identification(self) -> None:
         man_name = 'manualID_' + self.intrusion_type + str(int(time.time())) + '.pkl'
         save_joblib(self.manualID_dates, man_name)
         self.save = man_name
@@ -197,15 +196,15 @@ class manual_identification:
         dataset.identification = self
     
     def run(self, dataset):
-        self.fill_request_info(dataset)
+        self.fill_request_info(dataset.dates)
         self.user_intrusion_selection(dataset)
 
         if self.save != 'OFF':
-            self.save_identification(dataset)
+            self.save_identification()
         
         self.extract(dataset)
 
-
+@function_log
 @dataclass
 class imported_identification:
 
@@ -217,18 +216,20 @@ class imported_identification:
     table_IDeffects : Dict[str, Any] = field(default_factory=dict)
     effects : object = field(default_factory=empty)
 
-    def fill_request_info(self, dataset) -> None:
-        self.uyears  = np.unique([dt.year for dt in dataset.dates])
+    def fill_request_info(self, dates) -> None:
+        self.uyears  = np.unique([dt.year for dt in dates])
         self.manualID_dates = import_joblib(self.manual_input)
         self.manual_input_type = 'IMPORTED'
     
     def extract(self, dataset) -> None:
         dataset.identification = self
     
+
     def run(self, dataset):
-        self.fill_request_info(dataset)
+        self.fill_request_info(dataset.dates)
         self.extract(dataset)
 
+@function_log
 @dataclass
 class intrusion_data:
 
@@ -263,7 +264,7 @@ class intrusion_data:
         self.get_intrusion_effects(dataset)
         self.extract(dataset)
 
-
+@function_log
 @dataclass
 class intrusion_analysis:
     
@@ -316,7 +317,6 @@ class intrusion_analysis:
     def intrusion_id_performance(self, package: list) -> int:
         """Compares the manually identified intrusion and the estimated intrusions
         to evaluate the coefficient performance"""
-        logger.debug(f'Package: {package}')
         dataset = package[0]
         lst = package[1]
 
@@ -359,7 +359,6 @@ class intrusion_analysis:
         for temp_guess in temp_range:
             for salt_guess in salt_range:
                 initial_guess = [dataset,[temp_guess, salt_guess]]
-                logger.debug(f'Initial Guess: {initial_guess}')
                 result = minimize(self.intrusion_id_performance, initial_guess)
                 result_final.append((result.x, result.fun))
 
@@ -394,6 +393,7 @@ class intrusion_analysis:
 
         self.extract(dataset)
 
+@function_log
 @dataclass
 class meta:
 
@@ -485,13 +485,14 @@ class meta:
         
         self.record_single(self.meta_table, dataset.metadata_intrusions)
         self.record_single(self.coeff_table, dataset.analysis.table_coefficients)
-
+    
     def run(self, dataset):
         self.integrate_metadata(dataset)
         self.record_metadata(dataset) 
 
 def main() -> None:
-  # Get command line arguments
+    logger = create_logger()
+    # Get command line arguments
     varsin = {
             'file_name': 'BBMP_salected_data0.pkl',
             'intrusion_type': 'NORMAL',
@@ -506,6 +507,8 @@ def main() -> None:
     file_name, intrusion_type, id_type, analysis_type, coefficient_temp, coefficient_salt, save_manual, manual_input = get_command_line_args(varsin)
     coefficients = [coefficient_temp, coefficient_salt]
 
+    logger.info(f'File: {file_name} - Intrusion Type: {intrusion_type} - ID type: {id_type} - Analysis type: {analysis_type} - Coefficients: {coefficients} - Save Intrusions: {save_manual} - Manual Intrusion Input: {manual_input}')
+
     path_data = '../data/PROCESSED/'
     file_dirpath = path_data + file_name
 
@@ -517,12 +520,15 @@ def main() -> None:
         intrusion_identification = imported_identification(intrusion_type, path_data +manual_input)
 
     intrusion_identification.run(bbmp)
+    logger.info(f'Intrusions Identified: {intrusion_identification.manualID_dates}')
 
     intrusion_effects = intrusion_data()
     intrusion_effects.run(bbmp)
 
     analysis = intrusion_analysis(analysis_type, coefficients)
     analysis.run(bbmp)
+
+    logger.info(f'Coefficients Used [temp, salt]: {[analysis.OP_temp_coeff, analysis.OP_salt_coeff]} - Performance: {analysis.OP_performance}')
 
     data_meta = meta()
     data_meta.run(bbmp)

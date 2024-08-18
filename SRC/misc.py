@@ -1,11 +1,18 @@
+import os
+import sys
 import logging
 import argparse
 import joblib
 from datetime import datetime, timedelta
 import numpy as np
 import matplotlib.pyplot as plt
+from functools import wraps
+from typing import get_type_hints
+import inspect
 
-def create_logger(name: str, log_file : str=None, level=logging.DEBUG):
+logger = logging.getLogger(__name__)
+
+def create_logger(log_file=None, level=logging.DEBUG):
     """
     Create and return a logger object.
 
@@ -15,7 +22,7 @@ def create_logger(name: str, log_file : str=None, level=logging.DEBUG):
     :return: Configured logger object.
     """
     # Create a logger
-    logger = logging.getLogger(name)
+    logger = logging.getLogger(__name__)
     logger.setLevel(level)
 
     # Create console handler
@@ -37,6 +44,35 @@ def create_logger(name: str, log_file : str=None, level=logging.DEBUG):
         logger.addHandler(file_handler)
 
     return logger
+
+
+def proper_logging(funq: object, inp : list[vars]) -> None:
+    
+    type = 'Class'
+
+    if inspect.isfunction(funq):
+        type = 'Function'
+
+    funq_name = funq.__name__
+
+    type_hints = get_type_hints(funq)
+
+    if 'return' in type_hints:
+        return_type = type_hints['return']
+    else:
+        return_type = 'Unknown'
+
+    logger.debug(f'Type: {type} - Name: {funq_name} - Inputs: {inp} - Expected Outputs: {return_type}')
+
+
+def function_log(funq):
+    @wraps(funq)
+    def wrapper(*args):
+        inp = list(args)
+        proper_logging(funq, inp)
+        result = funq(*args)
+        return result
+    return wrapper
 
 
 def get_command_line_args(varsin:dict[str, str | int]) -> list:
@@ -99,9 +135,6 @@ def onclick(event):
 
             points.append((x, y))
 
-            print(f"Point selected: ({x}, {y})")
-            event.inaxes.plot(x, y, 'ro')
-            event.canvas.draw()
 
 
 def onkey(event):
