@@ -15,11 +15,6 @@ logger = logging.getLogger(__name__)
 def create_logger(log_file=None, level=logging.DEBUG):
     """
     Create and return a logger object.
-
-    :param name: Name of the logger.
-    :param log_file: File path to log output (optional).
-    :param level: Logging level (e.g., logging.DEBUG).
-    :return: Configured logger object.
     """
     # Create a logger
     logger = logging.getLogger(__name__)
@@ -47,6 +42,9 @@ def create_logger(log_file=None, level=logging.DEBUG):
 
 
 def proper_logging(funq: object, inp : list[vars]) -> None:
+    """
+    Logging function used within a wrapper function for a decorator function
+    """
     
     type = 'Class'
 
@@ -67,6 +65,9 @@ def proper_logging(funq: object, inp : list[vars]) -> None:
 
 
 def function_log(funq):
+    """
+    Decorator function for logging purposes
+    """
     @wraps(funq)
     def wrapper(*args):
         inp = list(args)
@@ -77,6 +78,10 @@ def function_log(funq):
 
 
 def get_command_line_args(varsin:dict[str, str | int]) -> list:
+    """
+    Get arguments from command-line
+    """
+
     parser = argparse.ArgumentParser(description='Arguments')
 
     # Command line arguments
@@ -110,13 +115,17 @@ def import_joblib(file_path: str) -> any:
 
 
 def timestamp2datetime_lists(lst:list[int]) -> list[datetime]:
-    """Takes a list of timestapms and converst it to a list of datetimes"""
+    """
+    Takes a list of timestapms and converst it to a list of datetimes
+    """
     datetime_list:list[datetime] = [datetime.fromtimestamp(ts) for ts in lst]
     return datetime_list
 
 
 def separate_yearly_dates(datetime_list:list[datetime]) -> dict[list]:
-    """Separates a list of datetimes by year by separating indices"""
+    """
+    Separates a list of datetimes by year by separating indices
+    """
     years_extracted:list = np.unique([dt.year for dt in datetime_list])
 
     grouped_years:dict[list] = {year: [] for year in years_extracted}
@@ -128,7 +137,9 @@ def separate_yearly_dates(datetime_list:list[datetime]) -> dict[list]:
 
 points = []   # Creates list to save the points selected
 def onclick(event):
-    """Allows you to select point from plots"""
+    """
+    Allows you to select point from plots
+    """
 
     if event.button == 1:
         if event.inaxes is not None:
@@ -138,7 +149,9 @@ def onclick(event):
 
 
 def onkey(event):
-    """Terminates point selection stage"""
+    """
+    Terminates point selection stage
+    """
 
     if event.key == ' ':
         plt.close(event.canvas.figure)
@@ -148,7 +161,10 @@ def get_points():
     return points
 
 def date_comparison(dates1:list[datetime], dates2:list[datetime], dates_error=10) -> dict[list]:
-    """Compares datetime lists for similar (within self.dates_error) dates"""
+    """
+    Compares datetime lists for similar (within self.dates_error) dates
+    """
+    
     def within_days(dtes1:datetime, dtes2:datetime) ->int:
         calc = abs((dtes2 - dtes1).days)
         return calc

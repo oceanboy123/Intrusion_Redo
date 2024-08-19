@@ -14,7 +14,7 @@ logger = create_logger('ETL_log,' 'etl.log')
 @dataclass
 class data_info:
     """
-    
+    TBD
     """
     original_file_name : str
     target_variables : str
@@ -38,7 +38,7 @@ class data_info:
 @dataclass
 class data_extraction:
     """
-    
+    TBD
     """
     data_info : data_info
     target_data : Dict[str, Any] = field(default_factory=dict)
@@ -93,7 +93,7 @@ class data_extraction:
 @dataclass
 class data_normalization:
     """
-    
+    TBD
     """
     data_info : data_info
     data_extraction : data_extraction
@@ -178,7 +178,7 @@ class data_normalization:
 @dataclass
 class timedepth_space:
     """
-    
+    TBD
     """
     data_info : data_info
     data_normalization : data_normalization
@@ -207,7 +207,7 @@ class timedepth_space:
 @dataclass
 class data_transformation:
     """
-    
+    TBD
     """
     data_info : data_info
     data_normalization : data_normalization
@@ -310,7 +310,7 @@ class data_transformation:
 @dataclass
 class data_loading:
     """
-    
+    TBD
     """
     data_info : data_info
     data_normalization : data_normalization
