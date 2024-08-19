@@ -97,7 +97,7 @@ def get_command_line_args(varsin:dict[str, str | int]) -> list:
         output.append(varsin[gs])
         
         attribute_value = getattr(args, gs, None)
-        if attribute_value != None :
+        if attribute_value is not None:
 
             output[-1] = attribute_value
 

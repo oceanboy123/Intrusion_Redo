@@ -82,12 +82,14 @@ class manual_identification:
     salt_range = [30.5,31.5] 
     oxy_range = [0,12]
 
+    def __init__(self):
+        self.manual_input = 'N/A'
+        self.manual_input_type = 'MANUAL'
+
     def fill_request_info(self, dates) -> None:
         self.dates = dates
 
         self.uyears  = np.unique([dt.year for dt in self.dates])
-        self.manual_input_type = 'MANUAL'
-        self.manual_input = 'N/A'
 
     @staticmethod
     def create_yearly_matrices(selected_data:dict, year_indices:dict[list]) -> dict:
@@ -232,11 +234,13 @@ class imported_identification:
     table_IDeffects : Dict[str, Any] = field(default_factory=dict)
     effects : object = field(default_factory=empty)
 
+    def __init__(self):
+        self.manual_input_type = 'IMPORTED'
+
     def fill_request_info(self, dates) -> None:
         self.uyears  = np.unique([dt.year for dt in dates])
         self.manualID_dates = import_joblib(self.manual_input)
-        self.manual_input_type = 'IMPORTED'
-    
+
     def extract(self, dataset) -> None:
         dataset.identification = self
     
@@ -411,7 +415,7 @@ class intrusion_analysis:
         for temp_guess in temp_range:
             for salt_guess in salt_range:
                 initial_guess = [temp_guess, salt_guess]
-                result = minimize(self.intrusion_id_performance, initial_guess, args = (dataset))
+                result = minimize(self.intrusion_id_performance, initial_guess, args =dataset)
                 result_final.append((result.x, result.fun))
 
         best_coefficients = min(result_final, key= lambda x: x[1])

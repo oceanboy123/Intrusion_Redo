@@ -29,7 +29,7 @@ class data_info:
         self.raw_data = pd.read_csv(self.original_file_name)
 
         # Recording ETL strategy characteristics as metadata
-        stat_info = os.stat(self.original_file_name)
+        os.stat(self.original_file_name)
         self.metadata['Date_created'] = time.ctime()
         self.metadata['Target_variables'] = str(self.target_variables)
         self.metadata['Deep_averages'] = [self.deep_depth]
@@ -110,7 +110,7 @@ class data_normalization:
         values"""
 
         # Ensure that the columns to be filled with NaN are correctly identified
-        num_columns = len(data_frame.columns)
+        len(data_frame.columns)
         
         # Create a DataFrame containing all unique pressures (upress) with NaN values for missing depths
         missing_depths = [p for p in upress if p not in data_frame.iloc[:, 1].values]
