@@ -1,4 +1,4 @@
-from ..other.file_handling import import_joblib
+from ..other.file_handling import *
 from ..other.date_handling import timestamp2datetime_lists
 from .request_info import RequestInfo
 from dataclasses import dataclass, field
@@ -22,15 +22,17 @@ class RequestInfo_Analysis(RequestInfo):
     dir_path = './data/PROCESSED/'
     metadata : Dict[str, Any] = field(default_factory=dict)
     dates_name = 'sample_timestamps'
+    identification : object = field(default_factory=empty)
+    analysis : object = field(default_factory=empty)
 
     def __post_init__(self)-> None:
-        self.file_data_path = self.dir_path + self.file_name
-        self.data = import_joblib(self.file_data_path)
+        self.path = self.dir_path + self.file_name
+        self.data = import_joblib(self.path)
         self.dates_stamp = self.data[self.dates_name]
         self.dates = timestamp2datetime_lists(self.dates_stamp)
         self.coefficients = [self.coefficient_temp, self.coefficient_salt]
 
-        self.metadata['Input_dataset'] = self.file_data_path
+        self.metadata['Input_dataset'] = self.path
         self.metadata['Current_time'] = time.ctime()
         self.metadata['Intrusion_type'] = self.intrusion_type
         self.metadata['Analysis_type'] = self.analysis_type

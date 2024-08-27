@@ -18,10 +18,9 @@ class meta(analysis_step):
 
     NOTE: The results are not saved in dataset
     """
-
     table_coefficients_error_comb : Dict[str, Any] = field(default_factory=dict)
     
-    meta_path = '../data/PROCESSED/TABLES/'
+    meta_path = './data/PROCESSED/TABLES/'
     coeff_error_table = 'coefficients_error.csv'
     coeff_table = 'coefficients.csv'
     intrusions_table = 'intrusionID+effect.csv'
@@ -52,60 +51,72 @@ class meta(analysis_step):
             dataf.to_csv(table_path,mode='a', header=False, index=False)
 
     def integrate_metadata(self, dataset) -> None:
-        dataset.metadata_intrusions['Input_dataset'] = dataset.path
-        dataset.metadata_intrusions['Current_time'] = time.ctime()
-        dataset.metadata_intrusions['Init_year'] = [dataset.identification.uyears[0]]
-        # Record Final Year 
-        dataset.metadata_intrusions['End_year'] = [dataset.identification.uyears[-1]]
-        dataset.metadata_intrusions['Intrusion_type'] = [dataset.identification.intrusion_type]
-        dataset.metadata_intrusions['manual_input_type'] = dataset.identification.manual_input_type
-        dataset.metadata_intrusions['manual_input_path'] = dataset.identification.manual_input
-        dataset.metadata_intrusions['manual_input_save'] = dataset.identification.save 
-        dataset.metadata_intrusions['Variables_used'] = str(['salinity', 'temperature']) # Record Variables used
+        dataset.identification.intrusions = {
+            'Input_dataset' : dataset.path,
+            'Current_time' : time.ctime(),
+            'Init_year' : [dataset.identification.uyears[0]],
+            'End_year' : [dataset.identification.uyears[-1]],
+            'Intrusion_type' : [dataset.identification.intrusion_type],
+            'manual_input_type' : dataset.identification.manual_input_type,
+            'manual_input_path' : dataset.identification.manual_input,
+            'manual_input_save' : dataset.identification.save ,
+            'Variables_used' : str(['salinity', 'temperature'])
+            }
 
-        dataset.identification.table_IDeffects['Dates'] = dataset.identification.manualID_dates
-        dataset.identification.table_IDeffects['Index'] = dataset.identification.effects.manualID_indices # Record Intrusion indices
-        dataset.identification.table_IDeffects['Temp_effects'] = dataset.identification.effects.manualID_temp_effects # Record Intrusion effects
-        dataset.identification.table_IDeffects['Salt_effects'] = dataset.identification.effects.manualID_salt_effects
+        dataset.identification.table_IDeffects = {
+            'Dates' : dataset.identification.manualID_dates,
+            'Index' : dataset.identification.effects.manualID_indices,
+            'Temp_effects' : dataset.identification.effects.manualID_temp_effects,
+            'Salt_effects' : dataset.identification.effects.manualID_salt_effects,
+            }
 
-        dataset.analysis.table_coefficients['Temp_coefficient'] = [dataset.analysis.OP_temp_coeff] # Record Optimized tempewrature coefficient
-        dataset.analysis.table_coefficients['Salt_coefficient'] = [dataset.analysis.OP_salt_coeff] # Record Optimized salinity coefficient
-        dataset.analysis.table_coefficients['Performance'] = [dataset.analysis.OP_performance] # Record performnace of optimized coefficients
+        dataset.analysis.table_coefficients = {
+            'Temp_coefficient' : [dataset.analysis.OP_temp_coeff],
+            'Salt_coefficient' : [dataset.analysis.OP_salt_coeff],
+            'Performance' : [dataset.analysis.OP_performance]
+            }
 
         result_comp = dataset.analysis.OP_performance_spec
-        dataset.analysis.table_coefficients_error['Missed'] = result_comp['Only Manual'] # Record Intrusions missed based on manual
-        dataset.analysis.table_coefficients_error['Extra'] = result_comp['Only Estimated'] # Record False positives based on manual
-        dataset.analysis.table_coefficients_error['Found'] = result_comp['Matched'] # Record Correct identification based on manual
+        dataset.analysis.table_coefficients_error = {
+            'Missed' : result_comp['Only Manual'],
+            'Extra' : result_comp['Only Estimated'],
+            'Found' : result_comp['Matched']
+            }
     
 
     def record_metadata(self, dataset) -> None:
         """Record all the metadata into their corresponding .csv file"""
 
+        error = dataset.analysis.table_coefficients_error
+        rows_missed = len(error['Missed'])
+        rows_extra = len(error['Extra'])
+        rows_found = len(error['Found'])
+        
+        self.table_coefficients_error_comb = {
+            'Type' : ['Missed']*rows_missed + ['Extra']*rows_extra + ['Found']*rows_found,
+            'Dates' : list(error['Missed']) + list(error['Extra']) + [sub[-1] for sub in list(error['Found'])]
+        }
+
+        rows_error = len(self.table_coefficients_error_comb['Dates'])
         row_num = self.count_csv_rows(self.meta_path+self.meta_table)
         rows_intrusion = len(dataset.identification.table_IDeffects['Dates'])
 
-        rows_missed = len(dataset.analysis.table_coefficients_error['Missed'])
-        rows_extra = len(dataset.analysis.table_coefficients_error['Extra'])
-        rows_found = len(dataset.analysis.table_coefficients_error['Found'])
-        self.table_coefficients_error_comb['Type'] = ['Missed']*rows_missed + ['Extra']*rows_extra + ['Found']*rows_found
-        self.table_coefficients_error_comb['Dates'] = list(dataset.analysis.table_coefficients_error['Missed']) + list(dataset.analysis.table_coefficients_error['Extra']) + [sub[-1] for sub in list(dataset.analysis.table_coefficients_error['Found'])]
-        rows_error = len(self.table_coefficients_error_comb['Dates'])
-
+        index = row_num
+        head = False
+        
         if row_num == 0:
             index = 1
             head = True
-        else:
-            index = row_num
-            head = False
 
         dataset.identification.table_IDeffects['ID'] = [index]*rows_intrusion
         self.table_coefficients_error_comb['Error'] = [index]*rows_error
+        
         dataf_ideffects = pd.DataFrame(dataset.identification.table_IDeffects)
         dataf_error = pd.DataFrame(self.table_coefficients_error_comb)
         dataf_ideffects.to_csv(self.meta_path+self.intrusions_table,mode='a', header=head, index=False)
         dataf_error.to_csv(self.meta_path+self.coeff_error_table,mode='a', header=head, index=False)
         
-        self.record_single(self.meta_table, dataset.metadata_intrusions)
+        self.record_single(self.meta_table, dataset.identification.intrusions)
         self.record_single(self.coeff_table, dataset.analysis.table_coefficients)
 
     def extract(self, dataset: object) -> None:

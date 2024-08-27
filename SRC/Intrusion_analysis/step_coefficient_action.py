@@ -151,7 +151,7 @@ class intrusion_analysis(analysis_step):
         self.OP_temp_coeff = self.coefficients[0] 
         self.OP_salt_coeff = self.coefficients[1]
 
-        self.OP_performance = self.intrusion_id_performance([dataset,self.coefficients])
+        self.OP_performance = self.intrusion_id_performance(self.coefficients, dataset)
         
         self.OP_performance_spec = date_comparison(dataset.identification.manualID_dates, 
                                                 self.intrusion_identification(self.coefficients, dataset))
