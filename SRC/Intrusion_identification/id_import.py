@@ -14,6 +14,7 @@ class imported_identification(id_method):
     save : str = 'OFF'
     manualID_dates : List[int] = field(default_factory=list)
     table_IDeffects : Dict[str, Any] = field(default_factory=dict)
+    intrusions : Dict[str, Any] = field(default_factory=dict)
     effects : object = field(default_factory=empty)
 
     def fill_request_info(self, dates) -> None:
