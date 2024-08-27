@@ -22,7 +22,7 @@ class timedepth_space(ETL_method):
         return all_columns
     
 
-    def get_variable_matrices(self) -> None:
+    def run(self) -> None:
         """Creates NParrays for all target variables"""
 
         # NParray for all target variables

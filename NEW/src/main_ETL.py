@@ -1,7 +1,3 @@
-# import sys
-# sys.path.insert(0, r'D:\Projects\Intrusion_Redo\NEW\src\misc')
-
-
 from misc.request_arguments.request_info_ETL import RequestInfo_ETL
 from misc.request_arguments.get_cmdline_args import get_command_line_args
 from ETL_processes import data_extraction, data_normalization, timedepth_space, data_transformation, data_loading

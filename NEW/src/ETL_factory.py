@@ -13,8 +13,8 @@ class ETL_factory(object):
             if isclass(_type) and issubclass(_type, ETL_processes.ETL_method):
                 self.ETL_implementation[name] = _type
 
-    def create(self, method: str):
+    def create(self, method: str, **kargs):
         if method in self.ETL_implementation:
-            return self.ETL_implementation[method]()
+            return self.ETL_implementation[method](**kargs)
         else:
             raise ValueError(f'{method.upper()} is not currently supported as a ETL process')
