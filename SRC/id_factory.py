@@ -9,11 +9,13 @@ class id_factory(object):
 
     def load_id_methods(self):
         implementations = getmembers(Intrusion_identification, lambda m: isclass(m) and not isabstract(m))
+        print(implementations)
         for name, _type in implementations:
             if isclass(_type) and issubclass(_type, Intrusion_identification.id_method):
                 self.id_implementation[name] = _type
 
     def create(self, method: str, **kargs):
+        print(self.id_implementation)
         if method in self.id_implementation:
             return self.id_implementation[method](**kargs)
         else:

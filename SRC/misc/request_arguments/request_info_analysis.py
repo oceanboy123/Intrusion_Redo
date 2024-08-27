@@ -1,5 +1,5 @@
-from other.file_handling import import_joblib
-from other.date_handling import timestamp2datetime_lists
+from ..other.file_handling import import_joblib
+from ..other.date_handling import timestamp2datetime_lists
 from .request_info import RequestInfo
 from dataclasses import dataclass, field
 import time
@@ -21,6 +21,7 @@ class RequestInfo_Analysis(RequestInfo):
     manual_input : str
     dir_path = './data/PROCESSED/'
     metadata : Dict[str, Any] = field(default_factory=dict)
+    dates_name = 'sample_timestamps'
 
     def __post_init__(self)-> None:
         self.file_data_path = self.dir_path + self.file_name
