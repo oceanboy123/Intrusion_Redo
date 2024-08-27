@@ -1,0 +1,3 @@
+Input_dataset,Date_created,Deep_averages,Mid_averages,date_format,Target_variables,Profile_count,Output_dataset_path
+./data/RAW/bbmp_aggregated_profiles.csv,Sun Aug 25 21:27:03 2024,60,"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,./data/PROCESSED/BBMP_salected_data0.pkl
+./data/RAW/bbmp_aggregated_profiles.csv,Tue Aug 27 10:48:20 2024,60,"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,./data/PROCESSED/BBMP_salected_data0.pkl
