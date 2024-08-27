@@ -1,12 +1,9 @@
-from analysis_factory import analysis_factory
-from id_factory import id_factory
 from misc.request_arguments.request_info_analysis import RequestInfo_Analysis
-from misc.other.logging import *
 from misc.request_arguments.get_cmdline_args import get_command_line_args
-
+from Intrusion_analysis import intrusion_analysis, intrusion_data, meta
+from misc.other.logging import create_logger
 
 def main() -> None:
-
     logger = create_logger()
     # varsin = {
     #         'file_name': 'BBMP_salected_data0.pkl',
@@ -42,45 +39,35 @@ def main() -> None:
                             save_manual = save_manual,
                             manual_input = manual_input
                             )
-
-    factory_id = id_factory()
-    varss = {
-            'intrusion_type': request.intrusion_type,
-            }
     
-    if id_type.upper() == 'MANUAL':
-        varss['save_manual'] = save_manual
-        intrusion_identification = factory_id.create('manual_identification', **varss)
-    else:
-        varss['manual_input'] = manual_input
-        intrusion_identification = factory_id.create('imported_identification', **varss)
+    extraction = data_extraction(data_info= request)
+    extraction.run()
 
-    intrusion_identification.run(request)
-    logger.info(f'Intrusions Identified: {intrusion_identification.manualID_dates}')
+    normalization = data_normalization(
+                                    data_info= request,
+                                    data_extraction= extraction
+                                    )
+    normalization.normalize_length_data()
 
-    factory_analysis = analysis_factory()
-    
-    step_list = [
-        'intrusion_data',
-        'intrusion_analysis',
-        'meta',
-    ]
+    matrices = timedepth_space(
+                            data_info= request, 
+                            data_normalization= normalization
+                            )
+    matrices.get_variable_matrices()
 
-    count = 0
-    for step in step_list:
-        count += 1
-        varins = {}
-        if count == 2:
-            varins = {
-                'analysis_type': analysis_type,
-                'coefficients': coefficients                
-            }
+    transformation = data_transformation(
+                                    data_info= request, 
+                                    data_normalization= normalization, 
+                                    timedepth_space= matrices
+                                    )
+    transformation.data_transformations()
 
-        method_product = factory_analysis.create(step, **varins)
-        method_product.run(request)
-
-        # if count == 2:
-        #     logger.info(f'Coefficients Used [temp, salt]: {[method_product.OP_temp_coeff, method_product.OP_salt_coeff]} - Performance: {method_product.OP_performance} - # of missed intrusion: {len(method_product.OP_performance_spec['Only Manual'])} - # of extra intrusions: {len(method_product.OP_performance_spec['Only Estimated'])}')
+    load = data_loading(
+                        data_info= request, 
+                        data_normalization= normalization, 
+                        data_transformation= transformation
+                        )
+    load.run()
 
 
 if __name__ == '__main__':
