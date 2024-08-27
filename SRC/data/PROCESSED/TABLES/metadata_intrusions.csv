@@ -1,0 +1,3 @@
+Input_dataset,Current_time,Init_year,End_year,Intrusion_type,manual_input_type,manual_input_path,manual_input_save,Variables_used,ID
+./data/PROCESSED/BBMP_salected_data0.pkl,Tue Aug 27 19:34:48 2024,1999,2024,NORMAL,MANUAL,N/A,manualID_NORMAL1724798088.pkl,"['salinity', 'temperature']",1
+./data/PROCESSED/BBMP_salected_data0.pkl,Tue Aug 27 19:39:34 2024,1999,2024,NORMAL,IMPORTED,./data/PROCESSED/manualID_NORMAL1724797813.pkl,OFF,"['salinity', 'temperature']",2

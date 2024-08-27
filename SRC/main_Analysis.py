@@ -7,26 +7,19 @@ from misc.other.logging import create_logger
 def main() -> None:
     path_data = './data/PROCESSED/'
     logger = create_logger()
-    # varsin = {
-    #         'file_name': 'BBMP_salected_data0.pkl',
-    #         'intrusion_type': 'NORMAL',
-    #         'ID_type': 'MANUAL',
-    #         'analysis_type': 'GET_COEFFICIENTS',
-    #         'coefficient_temp': 0.5,
-    #         'coefficient_salt': 0.5,
-    #         'save_manual': 'OFF',
-    #         'manual_input': 'manualID_MID1720009644.pkl'
-    #     }
+    varsin = {
+            'file_name': 'BBMP_salected_data0.pkl',
+            'intrusion_type': 'NORMAL',
+            'ID_type': 'MANUAL',
+            'analysis_type': 'GET_COEFFICIENTS',
+            'coefficient_temp': 0.5,
+            'coefficient_salt': 0.5,
+            'save_manual': 'OFF',
+            'manual_input': 'manualID_NORMAL1724797813.pkl'
+        }
         
-    # file_name, intrusion_type, id_type, analysis_type, coefficient_temp, coefficient_salt, save_manual, manual_input = get_command_line_args(varsin)
-    file_name= 'BBMP_salected_data0.pkl'
-    intrusion_type= 'NORMAL'
-    id_type= 'IMPORTED'
-    analysis_type= 'USE_COEFFICIENTS'
-    coefficient_temp= 0.5
-    coefficient_salt= 0.5
-    save_manual= 'OFF'
-    manual_input= 'manualID_MID1720009644.pkl'
+    file_name, intrusion_type, id_type, analysis_type, coefficient_temp, coefficient_salt, save_manual, manual_input = get_command_line_args(varsin)
+
     coefficients = [coefficient_temp, coefficient_salt]
 
     logger.info(f'File: {file_name} - Intrusion Type: {intrusion_type} - ID type: {id_type} - Analysis type: {analysis_type} - Coefficients: {coefficients} - Save Intrusions: {save_manual} - Manual Intrusion Input: {manual_input}')
