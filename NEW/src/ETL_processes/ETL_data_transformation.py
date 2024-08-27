@@ -64,7 +64,7 @@ class data_transformation(ETL_method):
         self.avg_btw = matrix_diff.iloc[rows_btw20_35, :].mean(axis=0)
 
 
-    def data_transformations(self) -> None:
+    def run(self) -> None:
         """Performs trasnformations of values. Incluiding 2D
         interpolation of profile data to fill NaNs, mainly the 
         ones added for depth normalization

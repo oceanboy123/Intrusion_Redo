@@ -65,7 +65,7 @@ class data_normalization(ETL_method):
         return data_frame
 
 
-    def normalize_length_data(self) -> None:
+    def run(self) -> None:
         # logger.info('\nNomalizing depths and filling with NaN')
         data = self.data_extraction.nested_groups
         for key, values in data.items():
