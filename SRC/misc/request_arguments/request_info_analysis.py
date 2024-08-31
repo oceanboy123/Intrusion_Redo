@@ -19,7 +19,7 @@ class RequestInfo_Analysis(RequestInfo):
     coefficient_salt : int
     save_manual : str
     manual_input : str
-    dir_path = './data/PROCESSED/'
+    dir_path = './src/data/PROCESSED/'
     metadata : Dict[str, Any] = field(default_factory=dict)
     dates_name = 'sample_timestamps'
     identification : object = field(default_factory=empty)

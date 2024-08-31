@@ -71,8 +71,11 @@ class manual_identification(id_method):
                 'Yearly Salt Profile': yearly_profiles_salt, 
                 'Indices by Year':by_year_indices}
 
-    def plot_year_profiles(self, year_data: dict[dict], yr: int, dataset) -> dict:
+    def plot_year_profiles(self, year_data: dict[dict], yr: int, dataset, yr2: int = 0) -> dict:
 
+        if yr2 == 0:
+            yr2 = yr + 1
+        
         init_date_index = year_data['Indices by Year'][yr][0]
         last_date_index = year_data['Indices by Year'][yr][-1]
         datetime_list = self.dates[init_date_index:last_date_index]
