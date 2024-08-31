@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
+from matplotlib import gridspec
 import time
 from dataclasses import dataclass, field
 from typing import Dict, Any, List
@@ -80,34 +81,81 @@ class manual_identification(id_method):
         last_date_index = year_data['Indices by Year'][yr][-1]
         datetime_list = self.dates[init_date_index:last_date_index]
 
+        temp_line = dataset.data[bottom_avg_names[0]][init_date_index:last_date_index]
+        salt_line = dataset.data[bottom_avg_names[1]][init_date_index:last_date_index]
+        oxy_line = dataset.data['sample_diff_row_oxy'][init_date_index:last_date_index]
+
         # Extract specific year data
-        fig, axs = plt.subplots(2)
+        # fig, axs = plt.subplots(3)
         year_temp_data = year_data['Yearly Temp Profile'][yr]
         year_salt_data = year_data['Yearly Salt Profile'][yr]
 
+        # Define grid specification with room for colorbars
+        fig = plt.figure(figsize=(10,6))
+        gs = gridspec.GridSpec(3, 2, width_ratios=[1, 0.05], height_ratios=[1, 1, 1], wspace=0.1)
+
+        # Create subplots
+        ax1 = fig.add_subplot(gs[0, 0])
+        ax2 = fig.add_subplot(gs[1, 0])
+        ax3 = fig.add_subplot(gs[2, 0])
+        cax1 = fig.add_subplot(gs[0, 1])
+        cax2 = fig.add_subplot(gs[1, 1])
+
         # Temperature Plot
-        xmesh,ymesh = np.meshgrid(datetime_list, dataset.data[self.depth_name])
-        mesh0 = axs[0].pcolormesh(xmesh,ymesh,year_temp_data[:,:len(ymesh[0,:])], cmap='seismic')
-        fig.colorbar(mesh0, ax=axs[0])
-        axs[0].invert_yaxis()
+        xmesh, ymesh = np.meshgrid(datetime_list, dataset.data[self.depth_name])
+        mesh0 = ax1.pcolormesh(xmesh, ymesh, year_temp_data[:, :len(ymesh[0, :])], cmap='seismic')
+        cb0 = fig.colorbar(mesh0, cax=cax1)
+        cb0.set_label('Temperature (°C)')
+        ax1.invert_yaxis()
         mesh0.set_clim(self.temp_range)
-        axs[0].set_xticks([])
+        ax1.set_xticks([])
+        ax1.set_ylabel("Depth (m)")
 
         # Salinity Plot
-        mesh1 = axs[1].pcolormesh(xmesh,ymesh,year_salt_data[:,:len(ymesh[0,:])], cmap='seismic')
-        fig.colorbar(mesh1, ax=axs[1])
-        axs[1].invert_yaxis()
+        mesh1 = ax2.pcolormesh(xmesh, ymesh, year_salt_data[:, :len(ymesh[0, :])], cmap='seismic')
+        cb1 = fig.colorbar(mesh1, cax=cax2)
+        cb1.set_label('Salinity (PSU)')
+        ax2.invert_yaxis()
         mesh1.set_clim(self.salt_range)
-        axs[1].xaxis.set_major_formatter(mdates.DateFormatter("%m"))
+        ax2.xaxis.set_major_formatter(mdates.DateFormatter("%m"))
+        ax2.set_xticks([])
+        ax2.set_ylabel("Depth (m)")
+
+        # Third Plot: Line plots for Temperature, Oxygen, and Salinity
+        ax4 = ax3.twinx()  # Create a secondary y-axis for salinity
+
+        # Plot temperature and oxygen on the primary y-axis
+        ax3.plot(datetime_list, temp_line, color='r', label='Temperature')
+        ax3.plot(datetime_list, oxy_line, color='g', label='Oxygen')
+
+        # Plot salinity on the secondary y-axis
+        ax4.plot(datetime_list, salt_line, color='b', label='Salinity')
+
+        # Add labels, legends, and titles
+        ax3.set_ylabel("Temperature (°C) / \nOxygen (mg/L)")
+        ax4.set_ylabel("Salinity (PSU)")
+        ax3.set_xlabel("Month")
+        ax3.xaxis.set_major_formatter(mdates.DateFormatter("%m"))
+
+        # Legends
+        ax3.legend(loc='upper left')
+        ax4.legend(loc='upper right')
+
+        # Set the same x-axis range for all plots
+        common_xlim = [datetime_list[0], datetime_list[-1]]
+        ax1.set_xlim(common_xlim)
+        ax2.set_xlim(common_xlim)
+        ax3.set_xlim(common_xlim)
+        ax3.xaxis.set_major_formatter(mdates.DateFormatter("%m"))
 
         fig.tight_layout()
-        axs[0].text(0.02,0.85,str(yr), transform=axs[0].transAxes,fontsize=14,
-                    verticalalignment='bottom',horizontalalignment='left',
-                    bbox=dict(facecolor='white',alpha=0.5))
+        ax1.text(0.02, 0.80, str(yr), transform=ax1.transAxes, fontsize=14,
+                verticalalignment='bottom', horizontalalignment='left',
+                bbox=dict(facecolor='white', alpha=0.5))
 
         return {
             'Figure':fig,
-            'Axes':axs,
+            'Axes':ax1,
             'Mesh':[mesh0,mesh1]
         }
 
