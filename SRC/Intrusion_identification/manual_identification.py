@@ -72,21 +72,42 @@ class manual_identification(id_method):
     @staticmethod
     def vertical_line(datetime) -> None:
         years = pd.to_datetime(datetime).year.unique()
-        for year in years:
-            plt.axvline(
-                pd.Timestamp(f'{year}'), 
-                color='black', 
-                linestyle='--', 
-                linewidth=1
-                )
+        if not len(years) == 1:
+            for year in years:
+                plt.axvline(
+                    pd.Timestamp(f'{year}'), 
+                    color='grey', 
+                    linestyle='-', 
+                    linewidth=1
+                    )
 
-    def plot_year_profiles(self, year_data: dict[dict], yr: int, dataset, yr2: int = 0) -> dict:
+    def plot_year_profiles(self, year_data: dict[dict], yr: int, dataset, yr2: int = 0, dtm = []) -> dict:
+        byear_indices = year_data['Indices by Year']
 
         if yr2 == 0:
             yr2 = yr
-        
-        init_date_index = year_data['Indices by Year'][yr][0]
-        last_date_index = year_data['Indices by Year'][yr2][-1]
+            ini_year_indices = end_year_indices = byear_indices[yr] 
+        else:
+            ini_year_indices = byear_indices[yr]
+            end_year_indices = byear_indices[yr2]
+
+        if dtm:
+            yr = dtm[0].year
+            yr2 = dtm[1].year
+            ini_year_indices = byear_indices[yr]
+            end_year_indices = byear_indices[yr2]
+
+            dt1 = self.dates.index(dtm[0])
+            dt2 = self.dates.index(dtm[1])
+            
+            ini_year_day = ini_year_indices.index(dt1)
+            end_year_day = end_year_indices.index(dt2)
+        else:
+            ini_year_day = 0
+            end_year_day = -1
+
+        init_date_index = ini_year_indices[ini_year_day]
+        last_date_index = end_year_indices[end_year_day]
         datetime_list = self.dates[init_date_index:last_date_index]
 
         temp_line = dataset.data[bottom_avg_names[0]][init_date_index:last_date_index]
@@ -95,13 +116,22 @@ class manual_identification(id_method):
 
         # Extract specific year data
         # fig, axs = plt.subplots(3)
-        year_temp_data = year_data['Yearly Temp Profile'][yr]
-        year_salt_data = year_data['Yearly Salt Profile'][yr]
+        year_temp_data = year_data['Yearly Temp Profile'][yr][ini_year_day:end_year_day]
+        year_salt_data = year_data['Yearly Salt Profile'][yr][ini_year_day:end_year_day]
 
         if not yr == yr2:
-            for ano in list(range(yr+1, yr2+1)):
-                year_temp_data = np.concatenate((year_temp_data, year_data['Yearly Temp Profile'][ano]), axis= 1)
-                year_salt_data = np.concatenate((year_salt_data, year_data['Yearly Salt Profile'][ano]), axis= 1)
+            count = -1
+            temp_ini_index = 0
+            temp_end_index = -1
+            year_list = list(range(yr+1, yr2+1))
+            for ano in year_list:
+                count += 1
+                if count == len(year_list):
+                    temp_ini_index = ini_year_day
+                    temp_end_index = end_year_day
+
+                year_temp_data = np.concatenate((year_temp_data, year_data['Yearly Temp Profile'][ano][temp_ini_index:temp_end_index]), axis= 1)
+                year_salt_data = np.concatenate((year_salt_data, year_data['Yearly Salt Profile'][ano][temp_ini_index:temp_end_index]), axis= 1)
 
         # Define grid specification with room for colorbars
         fig = plt.figure(figsize=(10,6))
@@ -115,8 +145,19 @@ class manual_identification(id_method):
         cax2 = fig.add_subplot(gs[1, 1])
 
         # Temperature Plot
-        xmesh, ymesh = np.meshgrid(datetime_list, dataset.data[self.depth_name])
-        mesh0 = ax1.pcolormesh(xmesh, ymesh, year_temp_data[:, :len(ymesh[0, :])], cmap='seismic')
+        xmesh, ymesh = np.meshgrid(datetime_list, dataset.data[self.depth_name][0:-2])
+        error = [len(xmesh[:, 0]), len(ymesh[0, :])]
+        temp_matrix = year_temp_data[:error[0], :error[1]]
+        salt_matrix = year_salt_data[:error[0], :error[1]]
+
+        mesh0 = ax1.pcolormesh(
+            xmesh, 
+            ymesh, 
+            temp_matrix, 
+            cmap='seismic',
+            shading='nearest'
+            )
+        
         cb0 = fig.colorbar(mesh0, cax=cax1)
         cb0.set_label('Temperature (°C)')
         ax1.invert_yaxis()
@@ -125,7 +166,13 @@ class manual_identification(id_method):
         ax1.set_ylabel("Depth (m)")
 
         # Salinity Plot
-        mesh1 = ax2.pcolormesh(xmesh, ymesh, year_salt_data[:, :len(ymesh[0, :])], cmap='seismic')
+        mesh1 = ax2.pcolormesh(
+            xmesh, 
+            ymesh, 
+            salt_matrix, 
+            cmap='seismic'
+            )
+        
         cb1 = fig.colorbar(mesh1, cax=cax2)
         cb1.set_label('Salinity (PSU)')
         ax2.invert_yaxis()
@@ -138,15 +185,31 @@ class manual_identification(id_method):
         ax4 = ax3.twinx()  # Create a secondary y-axis for salinity
 
         # Plot temperature and oxygen on the primary y-axis
-        ax3.plot(datetime_list, temp_line, color='r', label='Temperature')
-        ax3.plot(datetime_list, oxy_line, color='g', label='Oxygen')
+        ax3.plot(
+            datetime_list, 
+            temp_line, 
+            color='r', 
+            label='Temperature'
+            )
+        
+        ax3.plot(
+            datetime_list, 
+            oxy_line, 
+            color='g', 
+            label='Oxygen'
+            )
 
         # Plot salinity on the secondary y-axis
-        ax4.plot(datetime_list, salt_line, color='b', label='Salinity')
+        ax4.plot(
+            datetime_list, 
+            salt_line, 
+            color='b', 
+            label='Salinity'
+            )
 
         # Add labels, legends, and titles
-        ax3.set_ylabel("Temperature (°C) / \nOxygen (mg/L)")
-        ax4.set_ylabel("Salinity (PSU)")
+        ax3.set_ylabel(r"$\overline{\Delta}$ Temperature (°C)"+"\n" r"$\overline{\Delta}$ Oxygen (mg/L)")
+        ax4.set_ylabel(r"$\overline{\Delta}$ Salinity (PSU)")
         ax3.set_xlabel("Month")
         ax3.xaxis.set_major_formatter(mdates.DateFormatter("%m"))
 
