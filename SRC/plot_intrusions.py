@@ -22,6 +22,7 @@ request = RequestInfo_Analysis(
                             manual_input = manual_input
                             )
 
-XX = manual_identification(request)
+XX = manual_identification('NORMAL','OFF')
+XX.fill_request_info(request.dates)
 yearly_profiles = XX.separate_yearly_profiles(request)
 fig = XX.plot_year_profiles(yearly_profiles, 2021, request, yr2= 2024)
