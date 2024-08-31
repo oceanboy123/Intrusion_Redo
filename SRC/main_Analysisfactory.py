@@ -40,7 +40,7 @@ def main() -> None:
                             coefficient_temp = coefficient_temp,
                             coefficient_salt = coefficient_salt,
                             save_manual = save_manual,
-                            manual_input = manual_input
+                            manual_input = manual_input,
                             )
 
     factory_id = id_factory()
