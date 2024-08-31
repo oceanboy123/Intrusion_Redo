@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
@@ -11,6 +12,9 @@ from misc.other.file_handling import *
 from misc.other.plot_interact import *
 from misc.other.date_handling import separate_yearly_dates
 from datetime import datetime, timedelta
+
+bottom_avg_names = ['sample_diff_row_temp', 'sample_diff_row_salt'] 
+mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt'] 
 
 @function_log
 @dataclass
@@ -39,22 +43,15 @@ class manual_identification(id_method):
     def create_yearly_matrices(selected_data:dict, year_indices:dict[list]) -> dict:
         """Use separated indices from separate_yearly_dates() by year and create matrices
         with the data ready for plotting"""
-
-        temp_dataframe = selected_data['sample_matrix_temp']
-        salt_dataframe = selected_data['sample_matrix_salt']
-        
-        selected_data_temp = temp_dataframe.to_numpy()
-        selected_data_salt = salt_dataframe.to_numpy()
-
         yearly_profiles_temp: dict = {}
         yearly_profiles_salt: dict = {}
 
-        for year, indices in year_indices.items():
-            yearly_profile_temp = selected_data_temp[:, indices]
-            yearly_profiles_temp[year] = yearly_profile_temp
+        selected_data_temp = selected_data['sample_matrix_temp'].to_numpy()
+        selected_data_salt = selected_data['sample_matrix_salt'].to_numpy()
 
-            yearly_profile_salt = selected_data_salt[:, indices]
-            yearly_profiles_salt[year] = yearly_profile_salt
+        for year, indices in year_indices.items():
+            yearly_profiles_temp[year] = selected_data_temp[:, indices]
+            yearly_profiles_salt[year] = selected_data_salt[:, indices]
 
         return yearly_profiles_temp, yearly_profiles_salt
 
@@ -71,14 +68,25 @@ class manual_identification(id_method):
         return {'Yearly Temp Profile': yearly_profiles_temp, 
                 'Yearly Salt Profile': yearly_profiles_salt, 
                 'Indices by Year':by_year_indices}
+    
+    @staticmethod
+    def vertical_line(datetime) -> None:
+        years = pd.to_datetime(datetime).year.unique()
+        for year in years:
+            plt.axvline(
+                pd.Timestamp(f'{year}'), 
+                color='black', 
+                linestyle='--', 
+                linewidth=1
+                )
 
     def plot_year_profiles(self, year_data: dict[dict], yr: int, dataset, yr2: int = 0) -> dict:
 
         if yr2 == 0:
-            yr2 = yr + 1
+            yr2 = yr
         
         init_date_index = year_data['Indices by Year'][yr][0]
-        last_date_index = year_data['Indices by Year'][yr][-1]
+        last_date_index = year_data['Indices by Year'][yr2][-1]
         datetime_list = self.dates[init_date_index:last_date_index]
 
         temp_line = dataset.data[bottom_avg_names[0]][init_date_index:last_date_index]
@@ -89,6 +97,11 @@ class manual_identification(id_method):
         # fig, axs = plt.subplots(3)
         year_temp_data = year_data['Yearly Temp Profile'][yr]
         year_salt_data = year_data['Yearly Salt Profile'][yr]
+
+        if not yr == yr2:
+            for ano in list(range(yr+1, yr2+1)):
+                year_temp_data = np.concatenate((year_temp_data, year_data['Yearly Temp Profile'][ano]), axis= 1)
+                year_salt_data = np.concatenate((year_salt_data, year_data['Yearly Salt Profile'][ano]), axis= 1)
 
         # Define grid specification with room for colorbars
         fig = plt.figure(figsize=(10,6))
@@ -137,6 +150,8 @@ class manual_identification(id_method):
         ax3.set_xlabel("Month")
         ax3.xaxis.set_major_formatter(mdates.DateFormatter("%m"))
 
+        self.vertical_line(datetime_list)
+
         # Legends
         ax3.legend(loc='upper left')
         ax4.legend(loc='upper right')
@@ -149,7 +164,12 @@ class manual_identification(id_method):
         ax3.xaxis.set_major_formatter(mdates.DateFormatter("%m"))
 
         fig.tight_layout()
-        ax1.text(0.02, 0.80, str(yr), transform=ax1.transAxes, fontsize=14,
+
+        box_ = str(yr)
+        if not yr == yr2:
+            box_ = str(yr) + '-' + str(yr2)
+
+        ax1.text(0.02, 0.80, box_, transform=ax1.transAxes, fontsize=14,
                 verticalalignment='bottom', horizontalalignment='left',
                 bbox=dict(facecolor='white', alpha=0.5))
 
