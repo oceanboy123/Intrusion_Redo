@@ -1,34 +1,49 @@
 import numpy as np
+import pandas as pd
+from numpy import ndarray
 from dataclasses import dataclass, field
-from typing import List, Dict, Any
+from typing import List
 from .ETL_method import ETL_method
+from logging import Logger
 
 @dataclass
 class timedepth_space(ETL_method):
     """
-    TBD
+    Creates matrix for all target variables where the y-axis represents depth 
+    and the x-axis represents date
+
+    Inputs
+    - data_info : Acquired using the RequestInfo_ETL(RequestInfo) class
+    - data_normalization : Acquired using the data_normalization(ETL_method) class
+
+    Important class attributes
+    - variables_matrices : Matrices for each target variable [date, depth]
     """
     data_normalization : ETL_method
     variables_matrices : List[int] = field(default_factory=list)
 
-    def separate_target_variables(self, string_name: str):
-        """Creates an NParray for one of the target variables where
-        the y-axis represents depth and the x-axis represents
-        date"""
 
-        # logger.info('Creating Target Variable Matrices')
-        all_columns = np.transpose([values[string_name] for key, values in self.data_normalization.normalized_data.items()])
+    def __post_init__(self) -> None:
+        self.run()
 
-        return all_columns
+
+    def separate_target_variables(self, string_name: str) -> ndarray:
+        """Creates matrix for one of the target variables"""
+        profile = self.data_normalization.normalized_data.items()
+
+        return np.transpose([values[string_name] for key, values in profile])
     
 
     def run(self) -> None:
-        """Creates NParrays for all target variables"""
+        """Creates matrix for all target variables"""
+        var_n = self.data_info.target_variables[2:]
+        all_matrices = [self.separate_target_variables(names) for names in var_n]
+        self.variables_matrices = all_matrices
 
-        # NParray for all target variables
-        self.variables_matrices = [self.separate_target_variables(names) for names in self.data_info.target_variables[2:]]
 
-        # logger.debug(f'\nVariable Matrix: \n{pd.DataFrame(self.variables_matrices[0]).head()}')
-
-    def GenerateMetadata(self) -> None:
-        return "Metadata Generated"
+    def GenerateLog(self, logger: Logger) -> None:
+        """
+        Log self.data_info.metadata
+        """
+        first_matrix = pd.DataFrame(self.variables_matrices[0])
+        logger.info(f'\nVariable Matrix: \n{first_matrix.head()}')

@@ -13,5 +13,5 @@ class ETL_method(ABC):
     #     return f'Request Info: {string_separated}'
     
     @abstractmethod
-    def GenerateMetadata(self) -> None:
+    def GenerateLog(self) -> None:
         ...
