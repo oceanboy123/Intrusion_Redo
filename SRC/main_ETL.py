@@ -1,8 +1,10 @@
 from misc.request_arguments.request_info_ETL import RequestInfo_ETL
 from misc.request_arguments.get_cmdline_args import get_command_line_args
 from ETL_processes import data_extraction, data_normalization, timedepth_space, data_transformation, data_loading
+from misc.other.logging import create_logger
 
 def main() -> None:
+    logger = create_logger()
     varsin = {
             'file_name': 'bbmp_aggregated_profiles.csv',
             'deep_depth': 60,
@@ -22,33 +24,33 @@ def main() -> None:
                             )
     
     extraction = data_extraction(data_info= request)
-    extraction.run()
+    extraction.GenerateLog(logger)
 
     normalization = data_normalization(
                                     data_info= request,
                                     data_extraction= extraction
                                     )
-    normalization.normalize_length_data()
+    normalization.GenerateLog(logger)
 
     matrices = timedepth_space(
                             data_info= request, 
                             data_normalization= normalization
                             )
-    matrices.get_variable_matrices()
+    matrices.GenerateLog(logger)
 
     transformation = data_transformation(
                                     data_info= request, 
                                     data_normalization= normalization, 
                                     timedepth_space= matrices
                                     )
-    transformation.data_transformations()
+    transformation.GenerateLog(logger)
 
     load = data_loading(
                         data_info= request, 
                         data_normalization= normalization, 
                         data_transformation= transformation
                         )
-    load.run()
+    load.GenerateLog(logger)
 
 
 if __name__ == '__main__':
