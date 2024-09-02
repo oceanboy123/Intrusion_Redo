@@ -1,10 +1,4 @@
-import pandas as pd
-import numpy as np
-from pandas import DataFrame
-from dataclasses import dataclass, field
-from typing import Dict, Any, List
-from .ETL_method import ETL_method
-from logging import Logger
+from .config import *
 from misc.other.data_handling import check_duplicate_rows
 
 @dataclass

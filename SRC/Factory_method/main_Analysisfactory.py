@@ -1,5 +1,5 @@
-from analysis_factory import analysis_factory
-from id_factory import id_factory
+from Factory_method.analysis_factory import analysis_factory
+from Factory_method.id_factory import id_factory
 from misc.request_arguments.request_info_analysis import RequestInfo_Analysis
 from misc.other.logging import *
 from misc.request_arguments.get_cmdline_args import get_command_line_args

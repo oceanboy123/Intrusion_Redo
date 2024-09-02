@@ -1,10 +1,7 @@
-import numpy as np
-import pandas as pd
 from numpy import ndarray
-from dataclasses import dataclass, field
-from typing import List
-from .ETL_method import ETL_method
-from logging import Logger
+
+from .config import *
+
 
 @dataclass
 class timedepth_space(ETL_method):

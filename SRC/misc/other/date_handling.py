@@ -1,26 +1,29 @@
 import numpy as np
 from datetime import datetime
 
+
 def timestamp2datetime_lists(lst:list[int]) -> list[datetime]:
     """
     Takes a list of timestapms and converst it to a list of datetimes
     """
-    datetime_list:list[datetime] = [datetime.fromtimestamp(ts) for ts in lst]
-    return datetime_list
+    return [datetime.fromtimestamp(ts) for ts in lst]
+
 
 def separate_yearly_dates(datetime_list:list[datetime]) -> dict[list]:
     """
     Separates a list of datetimes by year by separating indices
     """
     years_extracted:list = np.unique([dt.year for dt in datetime_list])
-
-    grouped_years:dict[list] = {year: [] for year in years_extracted}
+    grouped_years= {year: [] for year in years_extracted}
     for i in datetime_list:
         grouped_years[i.year].append(i)
 
     return grouped_years
 
-def date_comparison(dates1:list[datetime], dates2:list[datetime], dates_error=10) -> dict[list]:
+
+def date_comparison(dates1:list[datetime], 
+                    dates2:list[datetime], 
+                    dates_error=10) -> dict[list]:
     """
     Compares datetime lists for similar (within self.dates_error) dates
     """
@@ -49,7 +52,9 @@ def date_comparison(dates1:list[datetime], dates2:list[datetime], dates_error=10
             # Intrusions Found
             if len(single_match) > 1:
                 diff_list = [match[0] for match in single_match]
-                min_index = [idx for idx, value in enumerate(diff_list) if value == min(diff_list)]
+                soonest = min(diff_list)
+                min_index = [idx for idx, 
+                             value in enumerate(diff_list) if value == soonest]
                 matching.append([single_match[min_index]])
             else:
                 matching.append(single_match) 

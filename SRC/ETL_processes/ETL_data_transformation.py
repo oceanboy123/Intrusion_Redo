@@ -1,10 +1,4 @@
-import numpy as np
-import pandas as pd
-from pandas import DataFrame
-from dataclasses import dataclass, field
-from typing import Dict, Any
-from .ETL_method import ETL_method
-from logging import Logger
+from .config import *
 
 @dataclass
 class data_transformation(ETL_method):
