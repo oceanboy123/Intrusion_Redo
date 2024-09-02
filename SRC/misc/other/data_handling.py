@@ -7,7 +7,6 @@ def check_duplicate_rows(data_frame: DataFrame) -> DataFrame:
         """
         column_names = data_frame.columns.tolist()
 
-        # Check for duplicated data
         column_index = 1
         seen = set()
         unique_data = []

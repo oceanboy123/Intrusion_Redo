@@ -1,16 +1,18 @@
 import logging
 import inspect
-from typing import get_type_hints
+from logging import Logger
+from typing import get_type_hints, Callable, Any
 from functools import wraps
 
 logger = logging.getLogger(__name__)
 
-def create_logger(log_file=None, level=logging.DEBUG):
+
+def create_logger(log_file=None, level=logging.DEBUG) -> Logger:
     """
-    Create and return a logger object.
+    Create and return a personalized logger object.
     """
     # Create a logger
-    logger = logging.getLogger(__name__)
+    logger: Logger = logging.getLogger(__name__)
     logger.setLevel(level)
 
     # Create console handler
@@ -18,7 +20,8 @@ def create_logger(log_file=None, level=logging.DEBUG):
     console_handler.setLevel(level)
 
     # Create a formatter and set it for the handler
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     console_handler.setFormatter(formatter)
 
     # Add the console handler to the logger
@@ -34,11 +37,10 @@ def create_logger(log_file=None, level=logging.DEBUG):
     return logger
 
 
-def proper_logging(funq: object, inp : list[vars]) -> None:
+def proper_logging(funq: Callable[..., Any], inp : list[vars]) -> None:
     """
-    Logging function used within a wrapper function for a decorator function
+    Logging function 
     """
-    
     type = 'Class'
 
     if inspect.isfunction(funq):
@@ -54,10 +56,12 @@ def proper_logging(funq: object, inp : list[vars]) -> None:
         return_type = 'Unknown'
 
     print('')
-    logger.debug(f'Type: {type} - Name: {funq_name} - Inputs: {inp} - Expected Outputs: {return_type}')
+    logger.debug(
+        f'Type: {type} - Name: {funq_name} - Inputs: {inp}' + 
+        f' - Expected Outputs: {return_type}')
 
 
-def function_log(funq):
+def function_log(funq: Callable[..., Any]):
     """
     Decorator function for logging purposes
     """

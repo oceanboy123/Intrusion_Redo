@@ -1,4 +1,4 @@
-from ETL_factory import ETL_factory
+from Factory_method.ETL_factory import ETL_factory
 from misc.request_arguments.request_info_ETL import RequestInfo_ETL
 from misc.request_arguments.get_cmdline_args import get_command_line_args
 

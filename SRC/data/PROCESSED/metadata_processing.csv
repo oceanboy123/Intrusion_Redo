@@ -3,3 +3,4 @@ Input_dataset,Date_created,Deep_averages,Mid_averages,date_format,Target_variabl
 ./data/RAW/bbmp_aggregated_profiles.csv,Tue Aug 27 10:48:20 2024,60,"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,./data/PROCESSED/BBMP_salected_data0.pkl
 ./data/RAW/bbmp_aggregated_profiles.csv,Mon Sep  2 11:08:23 2024,60,"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,./data/PROCESSED/BBMP_salected_data0.pkl
 ./data/RAW/bbmp_aggregated_profiles.csv,Mon Sep  2 11:11:20 2024,60,"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,./data/PROCESSED/BBMP_salected_data0.pkl
+./data/RAW/bbmp_aggregated_profiles.csv,Mon Sep  2 15:26:10 2024,60,"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,./data/PROCESSED/BBMP_salected_data0.pkl
