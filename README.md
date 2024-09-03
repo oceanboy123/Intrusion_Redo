@@ -1,7 +1,5 @@
 # Oceanic Water Intrusion Identification in Bedford Basin (BB), NS, using the BB Monitoring Program dataset
 
-'NOT UPDATED'
-
 This project represent the reproduction of my MSc Thesis code orignally developed 
 in MATLAB. The tools you will find in this repository allow you to download the 
 profile data from the BBMP dataset, manipulate and transform the data, and analyze 
