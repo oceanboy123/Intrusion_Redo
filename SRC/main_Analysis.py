@@ -2,7 +2,7 @@ from misc.request_arguments.request_info_analysis import RequestInfo_Analysis
 from Intrusion_analysis import intrusion_analysis, intrusion_data, meta
 from Intrusion_identification import (manual_identification, 
                                       imported_identification)
-from .config import create_logger, get_command_line_args
+from config import create_logger, get_command_line_args
 
 def main() -> None:
     """
