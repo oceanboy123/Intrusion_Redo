@@ -1,7 +1,7 @@
 from misc.request_arguments.request_info_ETL import RequestInfo_ETL
 from ETL_processes import (data_extraction, data_normalization, timedepth_space, 
                            data_transformation, data_loading)
-from .config import create_logger, get_command_line_args
+from config import create_logger, get_command_line_args
 
 def main() -> None:
     """
@@ -32,41 +32,31 @@ def main() -> None:
 
     # -> Create RequestInfo
     request = RequestInfo_ETL(
-                            file_name= raw_name, 
-                            deep_depth= deep_depth,
-                            mid_depth1= mid_depth1,
-                            mid_depth2= mid_depth2,
-                            date_format= date_format
-                            )
+                            file_name= raw_name
+    )
     
     # -> Extraction
-    extraction = data_extraction(data_info= request).GenerateLog(logger)
+    data_extraction(data_info=request).GenerateLog(logger)
 
     # -> Normalization and Modeling 
-    normalization = data_normalization(
-                                    data_info= request,
-                                    data_extraction= extraction
-                                    ).GenerateLog(logger)
+    data_normalization(
+        data_info=request
+    ).GenerateLog(logger)
 
     # -> Construct Time Depth Space
-    matrices = timedepth_space(
-                            data_info= request, 
-                            data_normalization= normalization
-                            ).GenerateLog(logger)
+    timedepth_space(
+        data_info=request
+    ).GenerateLog(logger)
 
     # -> Interpolation and Depth-Averages
-    transformation = data_transformation(
-                                    data_info= request, 
-                                    data_normalization= normalization, 
-                                    timedepth_space= matrices
-                                    ).GenerateLog(logger)
+    data_transformation(
+        data_info=request
+    ).GenerateLog(logger)
 
     # -> Conform to Schema and Record Metadata
-    load = data_loading(
-                        data_info= request, 
-                        data_normalization= normalization, 
-                        data_transformation= transformation
-                        ).GenerateLog(logger)
+    data_loading(
+        data_info=request
+    ).GenerateLog(logger)
 
 
 if __name__ == '__main__':

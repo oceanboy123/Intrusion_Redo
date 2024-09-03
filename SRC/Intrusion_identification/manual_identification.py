@@ -44,6 +44,10 @@ class manual_identification(id_method):
     salt_range = [30.5,31.5] 
     oxy_range = [0,12]
 
+    def __init__(self):
+        self.manual_input = 'N/A'
+        self.manual_input_type = 'MANUAL'
+
     def fill_request_info(self, dates: list[datetime]) -> None:
         """
         Extract required fields from identification request
@@ -51,9 +55,6 @@ class manual_identification(id_method):
         self.dates = dates
 
         self.uyears  = np.unique([dt.year for dt in self.dates])
-        self.manual_input_type = 'MANUAL'
-        self.manual_input = 'N/A'
-
 
     @staticmethod
     def create_yearly_matrices(selected_data:dict, 
@@ -116,12 +117,14 @@ class manual_identification(id_method):
 
 
     def format_data_plot(self, year_data: dict[dict], yr: int, 
-                         dataset: RequestInfo_Analysis, yr2: int = 0, 
-                         dtm = []) -> list[list]:
+                         dataset: RequestInfo_Analysis, yr2: int = 0,
+                         dtm=None) -> list[list]:
         """
         This function allows the user to plot 1 year, multiple years, or more
         specific time windows
         """
+        if dtm is None:
+            dtm = []
         yd = year_data
         dd = dataset.data
         byear_indices = yd['Indices by Year']

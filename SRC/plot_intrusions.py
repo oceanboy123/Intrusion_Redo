@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 from Intrusion_identification.manual_identification import manual_identification
 from misc.request_arguments.request_info_analysis import RequestInfo_Analysis
-from .config import get_command_line_args
+from config import get_command_line_args
 
 def main() -> None:
     """
@@ -28,15 +28,8 @@ def main() -> None:
     manual_input= 'manualID_NORMAL1724797813.pkl'
 
     request = RequestInfo_Analysis(
-                                file_name = file_name,
-                                intrusion_type = intrusion_type, 
-                                id_type = id_type,
-                                analysis_type = analysis_type,
-                                coefficient_temp = coefficient_temp,
-                                coefficient_salt = coefficient_salt,
-                                save_manual = save_manual,
-                                manual_input = manual_input
-                                )
+                                file_name = file_name
+    )
 
     XX = manual_identification('NORMAL','OFF')
     XX.fill_request_info(request.dates)
@@ -46,7 +39,7 @@ def main() -> None:
     formated_data = XX.format_data_plot(yearly_profiles, i_year, request, yr2= f_year)
 
     # -> Plotting template
-    fig = XX.plot_year_profiles(formated_data)
+    XX.plot_year_profiles(formated_data)
     plt.show()
 
 
