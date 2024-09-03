@@ -44,6 +44,10 @@ class manual_identification(id_method):
     salt_range = [30.5,31.5] 
     oxy_range = [0,12]
 
+    def __init__(self):
+        self.manual_input = 'N/A'
+        self.manual_input_type = 'MANUAL'
+
     def fill_request_info(self, dates: list[datetime]) -> None:
         """
         Extract required fields from identification request
@@ -51,9 +55,6 @@ class manual_identification(id_method):
         self.dates = dates
 
         self.uyears  = np.unique([dt.year for dt in self.dates])
-        self.manual_input_type = 'MANUAL'
-        self.manual_input = 'N/A'
-
 
     @staticmethod
     def create_yearly_matrices(selected_data:dict, 

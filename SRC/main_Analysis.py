@@ -45,15 +45,8 @@ def main() -> None:
 
     # -> Create RequestInfo
     request = RequestInfo_Analysis(
-                            file_name = file_name,
-                            intrusion_type = intrusion_type, 
-                            id_type = id_type,
-                            analysis_type = analysis_type,
-                            coefficient_temp = coefficient_temp,
-                            coefficient_salt = coefficient_salt,
-                            save_manual = save_manual,
-                            manual_input = manual_input
-                            )
+                            file_name = file_name
+    )
     
     # -> Intrusion Identification
     if id_type.upper() == 'MANUAL':
@@ -70,7 +63,7 @@ def main() -> None:
     intrusion_data().run(request)
 
     # -> Apply Intrusion Analysis
-    analysis = intrusion_analysis(analysis_type, coefficients).run(request)
+    intrusion_analysis(analysis_type, coefficients).run(request)
 
     logger.info(
         f'Coefficients Used [temp, salt]: '+
