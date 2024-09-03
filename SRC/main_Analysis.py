@@ -18,7 +18,13 @@ def main() -> None:
             'manual_input': 'manualID_NORMAL1724797813.pkl'
         }
         
-    file_name, intrusion_type, id_type, analysis_type, coefficient_temp, coefficient_salt, save_manual, manual_input = get_command_line_args(varsin)
+    _ = (file_name, 
+         intrusion_type, 
+         id_type, analysis_type, 
+         coefficient_temp, 
+         coefficient_salt, 
+         save_manual, 
+         manual_input) = get_command_line_args(varsin)
 
     coefficients = [coefficient_temp, coefficient_salt]
 
