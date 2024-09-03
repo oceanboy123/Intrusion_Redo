@@ -16,7 +16,7 @@ class imported_identification(id_method):
    ----------------Important class attributes
     - manualID_dates : Dates identified
     - table_IDeffects : Table for intrusion effects ('intrusionID+effect.csv')
-    - intrusions : Characteristics of the Analysis request 
+    - intrusions : Table for haracteristics of the Analysis request 
                    ('metadata_intrusions.csv')
     - effects : Class(id_method(ABC))
     """
@@ -29,7 +29,7 @@ class imported_identification(id_method):
 
     save : str = 'OFF'
 
-    def fill_request_info(self, dates) -> None:
+    def fill_request_info(self, dates: list[datetime]) -> None:
         """
         Extract required fields from Analysis request
         """
@@ -38,14 +38,14 @@ class imported_identification(id_method):
         self.manual_input_type = 'IMPORTED'
     
 
-    def extract(self, dataset) -> None:
+    def extract(self, dataset: RequestInfo_Analysis) -> None:
         """
         Injects class into dataset
         """
         dataset.identification = self
     
 
-    def run(self, dataset):
+    def run(self, dataset: RequestInfo_Analysis):
         """
         Steps: fill_request_info -> extract
         """

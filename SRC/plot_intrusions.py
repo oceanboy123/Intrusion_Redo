@@ -2,8 +2,7 @@ import matplotlib.pyplot as plt
 
 from Intrusion_identification.manual_identification import manual_identification
 from misc.request_arguments.request_info_analysis import RequestInfo_Analysis
-from misc.request_arguments.get_cmdline_args import get_command_line_args
-
+from .config import get_command_line_args
 
 def main() -> None:
     """

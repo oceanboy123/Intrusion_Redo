@@ -13,5 +13,7 @@ class RequestInfo(ABC):
 
     abstractmethod
     def GenerateMetadata(self) -> None:
-        # Record request characteristics and metadata
+        """
+        Record request characteristics and metadata
+        """
         ...

@@ -44,7 +44,7 @@ class manual_identification(id_method):
     salt_range = [30.5,31.5] 
     oxy_range = [0,12]
 
-    def fill_request_info(self, dates) -> None:
+    def fill_request_info(self, dates: list[datetime]) -> None:
         """
         Extract required fields from identification request
         """
@@ -75,7 +75,8 @@ class manual_identification(id_method):
         return [yearly_profiles_temp, yearly_profiles_salt]
 
 
-    def separate_yearly_profiles(self, dataset) -> dict[dict]:
+    def separate_yearly_profiles(self, 
+                                 dataset: RequestInfo_Analysis) -> dict[dict]:
         """
         Separates the profiles by year, so that create_yearly_matrices can 
         can create the Time-Depth space of each variable for each year
@@ -99,7 +100,7 @@ class manual_identification(id_method):
     
 
     @staticmethod
-    def vertical_line(datetime) -> None:
+    def vertical_line(datetime: datetime) -> None:
         """
         Creates vertical lines at the start of the year
         """
@@ -114,8 +115,9 @@ class manual_identification(id_method):
                     )
 
 
-    def format_data_plot(self, year_data: dict[dict], yr: int, dataset, 
-                           yr2: int = 0, dtm = []) -> list[list]:
+    def format_data_plot(self, year_data: dict[dict], yr: int, 
+                         dataset: RequestInfo_Analysis, yr2: int = 0, 
+                         dtm = []) -> list[list]:
         """
         This function allows the user to plot 1 year, multiple years, or more
         specific time windows
@@ -319,7 +321,7 @@ class manual_identification(id_method):
         return datetime(1970, 1, 1) + timedelta(days=date)
 
 
-    def user_intrusion_selection(self,dataset) -> None:
+    def user_intrusion_selection(self,dataset: RequestInfo_Analysis) -> None:
         """
         Triggers identification stage. Plots for user to select intrusion dates 
         by year. 
@@ -351,14 +353,14 @@ class manual_identification(id_method):
         self.save = man_name
 
 
-    def extract(self, dataset) -> None:
+    def extract(self, dataset: RequestInfo_Analysis) -> None:
         """
         Injects class into dataset
         """
         dataset.identification = self
     
 
-    def run(self, dataset):
+    def run(self, dataset: RequestInfo_Analysis):
         """
         Steps: fill_request_info -> user_intrusion_selection -> 
         save_identification? -> extract
