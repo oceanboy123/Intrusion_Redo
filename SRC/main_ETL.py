@@ -1,7 +1,7 @@
 from misc.request_arguments.request_info_ETL import RequestInfo_ETL
 from ETL_processes import (data_extraction, data_normalization, timedepth_space, 
                            data_transformation, data_loading)
-from .config import create_logger, get_command_line_args
+from config import create_logger, get_command_line_args
 
 def main() -> None:
     """

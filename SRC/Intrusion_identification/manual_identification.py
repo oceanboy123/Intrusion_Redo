@@ -117,7 +117,7 @@ class manual_identification(id_method):
 
     def format_data_plot(self, year_data: dict[dict], yr: int, 
                          dataset: RequestInfo_Analysis, yr2: int = 0, 
-                         dtm = []) -> list[list]:
+                         dtm = [datetime, datetime]) -> list[list]:
         """
         This function allows the user to plot 1 year, multiple years, or more
         specific time windows
