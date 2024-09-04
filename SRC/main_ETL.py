@@ -40,33 +40,38 @@ def main() -> None:
                             )
     
     # -> Extraction
-    extraction = data_extraction(data_info= request).GenerateLog(logger)
+    extraction = data_extraction(data_info= request)
+    extraction.GenerateLog(logger)
 
     # -> Normalization and Modeling 
     normalization = data_normalization(
                                     data_info= request,
                                     data_extraction= extraction
-                                    ).GenerateLog(logger)
+                                    )
+    normalization.GenerateLog(logger)
 
     # -> Construct Time Depth Space
     matrices = timedepth_space(
                             data_info= request, 
                             data_normalization= normalization
-                            ).GenerateLog(logger)
+                            )
+    matrices.GenerateLog(logger)
 
     # -> Interpolation and Depth-Averages
     transformation = data_transformation(
                                     data_info= request, 
                                     data_normalization= normalization, 
                                     timedepth_space= matrices
-                                    ).GenerateLog(logger)
+                                    )
+    transformation.GenerateLog(logger)
 
     # -> Conform to Schema and Record Metadata
     load = data_loading(
                         data_info= request, 
                         data_normalization= normalization, 
                         data_transformation= transformation
-                        ).GenerateLog(logger)
+                        )
+    load.GenerateLog(logger)
 
 
 if __name__ == '__main__':

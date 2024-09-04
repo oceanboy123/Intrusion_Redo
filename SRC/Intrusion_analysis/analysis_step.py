@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from .config import RequestInfo_Analysis
+from misc.request_arguments.request_info_analysis import RequestInfo_Analysis
 
 class analysis_step(ABC):
     """

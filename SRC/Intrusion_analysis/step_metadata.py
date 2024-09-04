@@ -120,10 +120,17 @@ class meta(analysis_step):
             index = 1
             head = True
 
+        
         dataset.identification.table_IDeffects['ID'] = [index]*rows_intrusion
+        
+        
         self.table_coefficients_error_comb['Error'] = [index]*rows_error
 
-        dataf_ideffects = pd.DataFrame(dataset.identification.table_IDeffects)
+        try:
+            dataf_ideffects = pd.DataFrame(dataset.identification.table_IDeffects)
+        except:
+            return
+        
         dataf_error = pd.DataFrame(self.table_coefficients_error_comb)
 
         dataf_ideffects.to_csv(self.meta_path+self.intrusions_table,

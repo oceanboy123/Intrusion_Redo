@@ -15,7 +15,7 @@ def main() -> None:
                 'file_name': 'BBMP_salected_data0.pkl',
                 'initial_yr': 2018,
                 'final_yr': 0,
-                'datetimes': [],
+                'datetimes': False,
                 }
         
     raw_name, i_year, f_year, dtm_ = get_command_line_args(varsin)
