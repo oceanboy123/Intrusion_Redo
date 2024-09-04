@@ -117,7 +117,7 @@ class manual_identification(id_method):
 
     def format_data_plot(self, year_data: dict[dict], yr: int, 
                          dataset: RequestInfo_Analysis, yr2: int = 0, 
-                         dtm = [datetime, datetime]) -> list[list]:
+                         dtm = False) -> list[list]:
         """
         This function allows the user to plot 1 year, multiple years, or more
         specific time windows
@@ -338,9 +338,12 @@ class manual_identification(id_method):
 
             plt.show()
 
-        intrusion_dates = list(np.array(get_points())[:,0])
+        try:
+            intrusion_dates = list(np.array(get_points())[:,0])
+        except:
+            intrusion_dates = [0.01]
+
         self.manualID_dates = [self.from_1970(dt) for dt in intrusion_dates]
-        
 
     def save_identification(self) -> None:
         """

@@ -54,7 +54,6 @@ def main() -> None:
                             save_manual = save_manual,
                             manual_input = manual_input
                             )
-    
     # -> Intrusion Identification
     if id_type.upper() == 'MANUAL':
         intrusion_identification = manual_identification(
@@ -62,9 +61,8 @@ def main() -> None:
     else:
         intrusion_identification = imported_identification(
                         intrusion_type, path_data + manual_input).run(request)
-
     logger.info(
-        f'Intrusions Identified: {intrusion_identification.manualID_dates}')
+        f'Intrusions Identified: {request.identification.manualID_dates}')
 
     # -> Retrieve Intrusion effects 
     intrusion_data().run(request)
@@ -72,6 +70,7 @@ def main() -> None:
     # -> Apply Intrusion Analysis
     analysis = intrusion_analysis(analysis_type, coefficients).run(request)
 
+    analysis = request.analysis
     logger.info(
         f'Coefficients Used [temp, salt]: '+
             f'{[analysis.OP_temp_coeff, analysis.OP_salt_coeff]} - '+
