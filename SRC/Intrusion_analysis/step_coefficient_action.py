@@ -152,8 +152,8 @@ class intrusion_analysis(analysis_step):
         for temp_guess in temp_range:
             for salt_guess in salt_range:
                 initial_guess = [temp_guess, salt_guess]
-                result = minimize(self.intrusion_id_performance, 
-                                  initial_guess, args = (dataset))
+                result = minimize(self.intrusion_id_performance,
+                                  initial_guess, args =dataset)
                 result_final.append((result.x, result.fun))
 
         best_coefficients = min(result_final, key= lambda x: x[1])

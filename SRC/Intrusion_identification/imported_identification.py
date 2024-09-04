@@ -29,14 +29,15 @@ class imported_identification(id_method):
 
     save : str = 'OFF'
 
+    def __init__(self):
+        self.manual_input_type = 'IMPORTED'
+
     def fill_request_info(self, dates: list[datetime]) -> None:
         """
         Extract required fields from Analysis request
         """
         self.uyears  = np.unique([dt.year for dt in dates])
         self.manualID_dates = import_joblib(self.manual_input)
-        self.manual_input_type = 'IMPORTED'
-    
 
     def extract(self, dataset: RequestInfo_Analysis) -> None:
         """

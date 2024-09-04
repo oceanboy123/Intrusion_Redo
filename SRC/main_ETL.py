@@ -32,12 +32,8 @@ def main() -> None:
 
     # -> Create RequestInfo
     request = RequestInfo_ETL(
-                            file_name= raw_name, 
-                            deep_depth= deep_depth,
-                            mid_depth1= mid_depth1,
-                            mid_depth2= mid_depth2,
-                            date_format= date_format
-                            )
+                            file_name= raw_name
+    )
     
     # -> Extraction
     extraction = data_extraction(data_info= request)
@@ -45,32 +41,26 @@ def main() -> None:
 
     # -> Normalization and Modeling 
     normalization = data_normalization(
-                                    data_info= request,
-                                    data_extraction= extraction
-                                    )
+                                    data_info= request
+    )
     normalization.GenerateLog(logger)
 
     # -> Construct Time Depth Space
     matrices = timedepth_space(
-                            data_info= request, 
-                            data_normalization= normalization
-                            )
+                            data_info= request
+    )
     matrices.GenerateLog(logger)
 
     # -> Interpolation and Depth-Averages
     transformation = data_transformation(
-                                    data_info= request, 
-                                    data_normalization= normalization, 
-                                    timedepth_space= matrices
-                                    )
+                                    data_info= request
+    )
     transformation.GenerateLog(logger)
 
     # -> Conform to Schema and Record Metadata
     load = data_loading(
-                        data_info= request, 
-                        data_normalization= normalization, 
-                        data_transformation= transformation
-                        )
+                        data_info= request
+    )
     load.GenerateLog(logger)
 
 

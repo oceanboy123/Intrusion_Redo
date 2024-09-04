@@ -45,22 +45,15 @@ def main() -> None:
 
     # -> Create RequestInfo
     request = RequestInfo_Analysis(
-                            file_name = file_name,
-                            intrusion_type = intrusion_type, 
-                            id_type = id_type,
-                            analysis_type = analysis_type,
-                            coefficient_temp = coefficient_temp,
-                            coefficient_salt = coefficient_salt,
-                            save_manual = save_manual,
-                            manual_input = manual_input
-                            )
+                            file_name = file_name
+    )
     # -> Intrusion Identification
     if id_type.upper() == 'MANUAL':
-        intrusion_identification = manual_identification(
-                                    intrusion_type, save_manual).run(request)
+        manual_identification(
+            intrusion_type, save_manual).run(request)
     else:
-        intrusion_identification = imported_identification(
-                        intrusion_type, path_data + manual_input).run(request)
+        imported_identification(
+            intrusion_type, path_data + manual_input).run(request)
     logger.info(
         f'Intrusions Identified: {request.identification.manualID_dates}')
 
@@ -68,7 +61,7 @@ def main() -> None:
     intrusion_data().run(request)
 
     # -> Apply Intrusion Analysis
-    analysis = intrusion_analysis(analysis_type, coefficients).run(request)
+    intrusion_analysis(analysis_type, coefficients).run(request)
 
     analysis = request.analysis
     logger.info(
