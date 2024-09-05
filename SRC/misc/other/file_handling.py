@@ -1,4 +1,16 @@
 import joblib
+import csv
+
+
+def count_csv_rows(path: str) -> int:
+        """
+        Count number of rows to identify the new recording's index
+        """
+        with open(path,'r') as file:
+            read = csv.reader(file)
+            row_count = sum(1 for _ in read)
+
+        return row_count
 
 
 def save_joblib(data:any,file_name: str) -> any:

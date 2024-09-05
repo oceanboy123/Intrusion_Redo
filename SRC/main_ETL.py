@@ -65,6 +65,27 @@ def main() -> None:
                                     )
     transformation.GenerateLog(logger)
 
+    dep_avg_list = [
+        transformation['temperature_avg_diff1_inter10'],
+        transformation['sainity_avg_diff1_inter10'],
+        transformation['oxygen_avg_diff1_inter10']
+    ]
+
+    interpolated_list = [
+        transformation['temperature_avgmid_diff1_inter10'],
+        transformation['salinity_avgmid_diff1_inter10'],
+        transformation['oxygen_avgmid_diff1_inter10']
+    ]
+
+    request.metadata['lineage'] = {
+            'normalized': matrices.variables_matrices,
+            'interpolated': interpolated_list,
+            'dates': data_normalization.normalized_dates,
+            'depths': data_normalization.normalized_depth,
+            'depth_avg': dep_avg_list,
+            'etl_process': ''
+            }
+
     # -> Conform to Schema and Record Metadata
     load = data_loading(
                         data_info= request, 

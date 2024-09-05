@@ -73,7 +73,7 @@ class data_extraction(ETL_method):
 
         # Separated profiles
         self.nested_groups: dict = nested_groups
-        self.data_info.metadata['Profile_count'] = [len(self.nested_groups)]
+        self.data_info.metadata['profile_count'] = [len(self.nested_groups)]
 
 
     def run(self) -> None:

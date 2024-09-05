@@ -48,6 +48,7 @@ class intrusion_analysis(analysis_step):
     analysis_type : str
     coefficients : List[int]
 
+    table_IDeffects : Dict[str, Any] = field(default_factory=dict)
     OP_temp_coeff : int = field(default_factory=int)
     OP_salt_coeff : int = field(default_factory=int)
     OP_performance : int = field(default_factory=int)
