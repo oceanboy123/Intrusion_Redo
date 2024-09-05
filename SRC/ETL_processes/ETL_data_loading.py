@@ -1,6 +1,7 @@
 import csv
 import joblib
 
+from misc.other.file_handling import count_csv_rows
 from .config import *
 
 @dataclass
@@ -68,18 +69,18 @@ class data_loading(ETL_method):
         Record metadata and save file for analysis
         """
 
-        self.data_info.metadata['Output_dataset_path'] = self.output_file_path
-        meta_processing = pd.DataFrame(self.data_info.metadata)
-
-        with open(self.metadata_csv_path, 'r') as file:
-            read = csv.reader(file)
-            row_count = sum(1 for _ in read)
+        self.data_info.metadata['output_dataset_path'] = self.output_file_path
+        row_count = count_csv_rows(self.metadata_csv_path)
 
         # Record metadata
         if row_count == 0:
+            self.data_info.metadata['processing_ID'] = 1
+            meta_processing = pd.DataFrame(self.data_info.metadata)
             meta_processing.to_csv(self.metadata_csv_path, 
                                    mode='a', header=True, index=False)
         else:
+            self.data_info.metadata['processing_ID'] = row_count
+            meta_processing = pd.DataFrame(self.data_info.metadata)
             meta_processing.to_csv(self.metadata_csv_path, 
                                    mode='a', header=False, index=False)
 

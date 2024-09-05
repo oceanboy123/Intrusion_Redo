@@ -1,3 +1,4 @@
+from datetime import datetime
 from .config import *
 
 @dataclass
@@ -45,9 +46,11 @@ class RequestInfo_ETL(RequestInfo):
 
     def GenerateMetadata(self) -> None:
         # Recording ETL strategy characteristics as metadata
-        self.metadata['Input_dataset'] = self.file_data_path
-        self.metadata['Date_created'] = time.ctime()
-        self.metadata['Deep_averages'] = [self.deep_depth]
-        self.metadata['Mid_averages'] = str(self.mid_depth)
+        self.metadata['input_dataset'] = self.file_data_path
+        self.metadata['date_created'] = datetime.strptime(time.ctime(), 
+                                                          "%a %b %d %H:%M:%S %Y"
+                                                          )
+        self.metadata['deep_averages'] = [self.deep_depth]
+        self.metadata['mid_averages'] = str(self.mid_depth)
         self.metadata['date_format'] = self.date_format
-        self.metadata['Target_variables'] = str(self.target_variables)
+        self.metadata['target_variables'] = str(self.target_variables)
