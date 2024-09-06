@@ -73,7 +73,7 @@ class meta(analysis_step):
             }
         
         dataset.analysis.table_IDeffects = {
-            'dates': [datetime(1,1,)],
+            'dates': [datetime(1,1,1)],
             'index': [-999],
             'temp_effects': [-999],
             'salt_effects': [-999],
