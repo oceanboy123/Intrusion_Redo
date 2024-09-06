@@ -57,13 +57,14 @@ class RequestInfo_Analysis(RequestInfo):
 
     def GenerateMetadata(self) -> None:
         # Recording Intrusion analysis characteristics as metadata
-        self.metadata['Input_dataset'] = self.path
-        self.metadata['Current_time'] = time.ctime()
-        self.metadata['Intrusion_type'] = self.intrusion_type
-        self.metadata['Analysis_type'] = self.analysis_type
-        self.metadata['Coefficients'] = self.coefficients
-        self.metadata['Save_manual'] = self.save_manual
-        self.metadata['Manual_input'] = self.manual_input
-        self.metadata['Variables_used'] = str(['salinity', 'temperature'])
+        self.metadata['input_dataset'] = self.path
+        self.metadata['date_created'] = time.ctime()
+        self.metadata['intrusion_type'] = self.intrusion_type
+        self.metadata['analysis_type'] = self.analysis_type
+        self.metadata['coefficients'] = self.coefficients
+        self.metadata['save_manual'] = self.save_manual
+        self.metadata['manual_input'] = self.manual_input
+        self.metadata['variables_used'] = str(['salinity', 'temperature'])
+        self.matadata['date_error'] = 10
     
 
