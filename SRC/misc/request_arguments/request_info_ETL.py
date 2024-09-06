@@ -8,19 +8,20 @@ class RequestInfo_ETL(RequestInfo):
     data itself, the metadata, and the ETL request parameters.
     
     ----------------Inputs
-          file_name :   .csv file path with profile data
-          deep_depth:   Depth used to calculate depth-averages for bottom time
-                        series (Check data_transformations.depth_averages in 
-                        ETL_processes/ETL_data_transformation.py)
-                        Imported (File generated from Manual)
-          mid_depth1:   Depth used to calculate depth-averages for mid time
-                        series. Specifically the top boundary
-          mid_depth2:   Depth used to calculate depth-averages for mid time
-                        series. Specifically the bottom boundary
-         date_format:   Date format of the .csv file
+    file_name   : .csv file path with profile data
+    deep_depth  : Depth used to calculate depth-averages for bottom time
+                    series (Check data_transformations.depth_averages in 
+                    ETL_processes/ETL_data_transformation.py)
+                    Imported (File generated from Manual)
+    mid_depth1  : Depth used to calculate depth-averages for mid time
+                    series. Specifically the top boundary
+    mid_depth2  : Depth used to calculate depth-averages for mid time
+                    series. Specifically the bottom boundary
+    date_format : Date format of the .csv file
 
-    ----------------Important class attributes
-    metadata : Dictionary used to contruct metadata tables
+    ----------------Important class attributes\
+    lineage     : Dictionary used to contruct metadata tables
+    metadata    : Dictionary used to contruct metadata tables
     """
     
     deep_depth : str
@@ -29,6 +30,7 @@ class RequestInfo_ETL(RequestInfo):
     date_format : str
 
     metadata : Dict[str, Any] = field(default_factory=dict)
+    lineage : Dict[str, Any] = field(default_factory=dict)
 
     dir_path = './data/RAW/' # Raw data path
     target_variables = ['time_string',
