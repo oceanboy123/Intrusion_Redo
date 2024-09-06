@@ -37,38 +37,48 @@ def create_logger(log_file=None, level=logging.DEBUG) -> Logger:
     return logger
 
 
-def proper_logging(funq: Callable[..., Any], inp : list[vars]) -> None:
+def proper_logging(funq: Callable[..., Any], args : list[Any]) -> None:
     """
-    Logging function 
+    Logging function to log function type, name, input arguments, and expected 
+    return type.
     """
-    type = 'Class'
-
+    # Determine if it's a function or a method
     if inspect.isfunction(funq):
         type = 'Function'
-
+    elif inspect.ismethod(funq):
+        type = 'Instance Method'
+    elif inspect.isclass(funq):
+        type = 'Class'
+    else:
+        type = 'Unknown'
+        
     funq_name = funq.__name__
 
-    type_hints = get_type_hints(funq)
+    # Get the signature for input types and return type
+    signature = inspect.signature(funq)
+    params = signature.parameters
+    return_type = (signature.return_annotation 
+                   if signature.return_annotation != inspect.Signature.empty 
+                   else 'Unknown')
 
-    if 'return' in type_hints:
-        return_type = type_hints['return']
-    else:
-        return_type = 'Unknown'
+    # Log function type, name, and input arguments
+    input_info = ', '.join(f'{name}={value}' 
+                           for name, value in zip(params, args))
 
     print('')
     logger.debug(
-        f'Type: {type} - Name: {funq_name} - Inputs: {inp}' + 
+        f'Type: {type} - Name: {funq_name} - Inputs: {input_info}' + 
         f' - Expected Outputs: {return_type}')
 
 
 def function_log(funq: Callable[..., Any]):
     """
-    Decorator function for logging purposes
+    Decorator function for logging purposes, logs input arguments and function 
+    details.
     """
     @wraps(funq)
-    def wrapper(*args):
-        inp = list(args)
-        proper_logging(funq, inp)
-        result = funq(*args)
+    def wrapper(*args, **kwargs):
+        proper_logging(funq, list(args) + list(kwargs.values()))
+        result = funq(*args, **kwargs)
         return result
     return wrapper

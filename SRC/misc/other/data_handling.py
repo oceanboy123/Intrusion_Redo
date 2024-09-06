@@ -1,22 +1,14 @@
 import pandas as pd
 from pandas import DataFrame
 
-def check_duplicate_rows(data_frame: DataFrame) -> DataFrame:
+def check_duplicate_rows(data_frame: DataFrame, 
+                         column_index: int = 1) -> DataFrame:
         """
-        As named
+        Removes duplicate rows from the DataFrame based on the values in the 
+        specified column.
         """
-        column_names = data_frame.columns.tolist()
+        # Get the column name from the column index
+        column_name = data_frame.columns[column_index]
 
-        column_index = 1
-        seen = set()
-        unique_data = []
-
-        for row in data_frame.values.tolist():
-            value = row[column_index]
-            if value not in seen:
-                seen.add(value)
-                unique_data.append(row)
-
-        data_frame = pd.DataFrame(unique_data, columns=column_names)
-
-        return data_frame
+        # Drop duplicates based on the specified column
+        return data_frame.drop_duplicates(subset=[column_name], keep='first')

@@ -1,74 +1,87 @@
 import numpy as np
 from datetime import datetime
+from collections import defaultdict
 
 
 def timestamp2datetime_lists(lst:list[int]) -> list[datetime]:
     """
-    Takes a list of timestapms and converst it to a list of datetimes
+    Takes a list of timestamps (in seconds since epoch) and converts it to a 
+    list of datetime objects.
     """
     return [datetime.fromtimestamp(ts) for ts in lst]
 
 
-def separate_yearly_dates(datetime_list:list[datetime]) -> dict[list]:
+def separate_yearly_dates(datetime_list: list[datetime]) -> dict[int, 
+                                                                 list[datetime]]:
     """
-    Separates a list of datetimes by year by separating indices
+    Separates a list of datetime objects by year, returning a dictionary where 
+    the keys are years and the values are lists of datetime objects from that 
+    year.
     """
-    years_extracted:list = np.unique([dt.year for dt in datetime_list])
-    grouped_years= {year: [] for year in years_extracted}
-    for i in datetime_list:
-        grouped_years[i.year].append(i)
+    grouped_years= defaultdict(list)
+    for dt in datetime_list:
+        grouped_years[dt.year].append(dt)
 
-    return grouped_years
+    return dict(grouped_years)
 
 
 def date_comparison(dates1:list[datetime], 
                     dates2:list[datetime], 
                     dates_error=10) -> dict[list]:
     """
-    Compares datetime lists for similar (within self.dates_error) dates
+    Compares two lists of datetime objects and returns a dictionary with matched
+    and unmatched dates. Dates are considered a match if their difference in 
+    days is within `dates_error`.
+    
+    Parameters:
+    - dates1        : List of datetime objects from the first set.
+    - dates2        : List of datetime objects from the second set.
+    - dates_error   : Maximum allowed difference in days between two matching 
+                      dates (default is 10).
+    
+    Returns:
+    - A dictionary containing:
+        - 'Matched'       : List of tuples (difference in days, date from dates1
+                            , matching date from dates2)
+        - 'Only Manual'   : List of dates from dates1 that had no match in 
+                            dates2
+        - 'Only Estimated': List of dates from dates2 that had no match in 
+                            dates1
     """
     
     def within_days(dtes1:datetime, dtes2:datetime) ->int:
-        calc = abs((dtes2 - dtes1).days)
-        return calc
+        return abs((dtes2 - dtes1).days)
 
     matching = []
     unmatched_md = []
-
+    
     for dt1 in dates1:
-        found_match = False
         single_match = []
-
+        
         for dt2 in dates2:
             diff = within_days(dt1, dt2)
             if diff <= dates_error:
                 single_match.append([diff, dt1, dt2])
-                found_match = True
-                break
-        # Intrusions Not Found
-        if not found_match:
-            unmatched_md.append(dt1)
-        else:
-            # Intrusions Found
+        
+        if single_match:
             if len(single_match) > 1:
                 diff_list = [match[0] for match in single_match]
                 soonest = min(diff_list)
-                min_index = [idx for idx, 
-                             value in enumerate(diff_list) if value == soonest]
-                matching.append([single_match[min_index]])
+                min_index = diff_list.index(soonest)
+                matching.append(single_match[min_index])
             else:
-                matching.append(single_match) 
+                matching.append(single_match[0])
+        else:
+            unmatched_md.append(dt1)
     
-    matching = [item for sublist in matching for item in sublist]
-    matching_estimated = [sublist[2] for sublist in matching]
-
-    set1 = set(dates2)
-    set2 = set(matching_estimated)
-    # Extra Intrusions
-    unmatched_ed = list(set1-set2)
+    # Get matched dates from dates2
+    matched_estimated = [match[2] for match in matching]
+    
+    # Calculate unmatched dates in dates2
+    unmatched_ed = list(set(dates2) - set(matched_estimated))
 
     return {
-        'Matched':matching,
-        'Only Manual':unmatched_md,
-        'Only Estimated':unmatched_ed,
+        'Matched': matching,
+        'Only Manual': unmatched_md,
+        'Only Estimated': unmatched_ed,
     }
