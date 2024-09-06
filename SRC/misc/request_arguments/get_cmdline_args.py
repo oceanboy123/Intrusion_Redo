@@ -2,13 +2,14 @@ import argparse
 
 def get_command_line_args(varsin:dict[str, str | int]) -> tuple:
     """
-    Get arguments from command-line
+    Gets arguments from command-line. Uses varsin to create the defaults for
+    each input argument.
 
     ----------------Inputs
-             varsin :   Default values for each argument
+    varsin :   Default values for each argument
     """
-
     parser = argparse.ArgumentParser(description='Arguments')
+
     # Command line arguments
     arguments = list(varsin.keys())
     for ar in arguments:
@@ -22,4 +23,5 @@ def get_command_line_args(varsin:dict[str, str | int]) -> tuple:
         attribute_value = getattr(args, gs, None)
         if attribute_value != None :
             output[-1] = attribute_value
+            
     return tuple(output)

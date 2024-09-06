@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 from .config import *
 
 @dataclass
@@ -19,18 +20,17 @@ class RequestInfo_ETL(RequestInfo):
                     series. Specifically the bottom boundary
     date_format : Date format of the .csv file
 
-    ----------------Important class attributes\
+    ----------------Important class attributes
     lineage     : Dictionary used to contruct metadata tables
     metadata    : Dictionary used to contruct metadata tables
     """
-    
-    deep_depth : str
-    mid_depth1 : int
-    mid_depth2 : int
+    deep_depth  : str
+    mid_depth1  : int
+    mid_depth2  : int
     date_format : str
 
-    metadata : Dict[str, Any] = field(default_factory=dict)
-    lineage : Dict[str, Any] = field(default_factory=dict)
+    metadata    : Dict[str, Any]    = field(default_factory=dict)
+    lineage     : Dict[str, Any]    = field(default_factory=dict)
 
     dir_path = './data/RAW/' # Raw data path
     target_variables = ['time_string',
@@ -41,18 +41,20 @@ class RequestInfo_ETL(RequestInfo):
 
 
     def __post_init__(self)-> None:
-        self.file_data_path = self.dir_path + self.file_name
-        self.raw_data = pd.read_csv(self.file_data_path)
-        self.mid_depth = [self.mid_depth1, self.mid_depth2]
+        self.file_data_path : str           = self.dir_path + self.file_name
+        self.raw_data       : pd.DataFrame  = pd.read_csv(self.file_data_path)
+        self.mid_depth      : List[int]     = [self.mid_depth1, self.mid_depth2]
+
         self.GenerateMetadata()
 
+
     def GenerateMetadata(self) -> None:
+
         # Recording ETL strategy characteristics as metadata
-        self.metadata['input_dataset'] = self.file_data_path
-        self.metadata['date_created'] = datetime.strptime(time.ctime(), 
-                                                          "%a %b %d %H:%M:%S %Y"
-                                                          )
-        self.metadata['deep_averages'] = [self.deep_depth]
-        self.metadata['mid_averages'] = str(self.mid_depth)
-        self.metadata['date_format'] = self.date_format
+        self.metadata['input_dataset'   ] = self.file_data_path
+        self.metadata['date_created'    ] = datetime.strptime(
+                                           time.ctime(), "%a %b %d %H:%M:%S %Y")
+        self.metadata['deep_averages'   ] = [self.deep_depth]
+        self.metadata['mid_averages'    ] = str(self.mid_depth)
+        self.metadata['date_format'     ] = self.date_format
         self.metadata['target_variables'] = str(self.target_variables)
