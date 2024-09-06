@@ -25,12 +25,16 @@ class data_loading(ETL_method):
     output_data : Dict[str, Any] = field(default_factory=dict)
 
     output_file_name = 'BBMP_salected_data0.pkl'
-    output_file_path = './data/PROCESSED/' + 'BBMP_salected_data0.pkl'
+    output_file_name2 = 'Lineage.pkl'
     metadata_csv = 'metadata_processing.csv'
-    metadata_csv_path = './data/PROCESSED/' + 'metadata_processing.csv'
+    file_path = './data/PROCESSED/'
 
     
     def __post_init__(self) -> None:
+        self.output_file_path = self.output_file_name + self.file_path
+        self.output_file_path2 = self.output_file_name2 + self.file_path
+        self.metadata_csv_path = self.metadata_csv + self.file_path
+
         self.run()
 
     
@@ -127,6 +131,7 @@ class data_loading(ETL_method):
 
         # Save .pkl file for analysis
         joblib.dump(self.output_data, self.output_file_path)
+        joblib.dump(self.data_info.lineage, self.output_file_path2)
         
 
     def run(self) -> None:
@@ -134,6 +139,7 @@ class data_loading(ETL_method):
         Steps: conform_schema -> record_output_metadata
         """
         self.conform_schema()
+        self.conform_schemav2()
         self.record_output_metadata()
 
 
