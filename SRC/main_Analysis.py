@@ -13,8 +13,9 @@ def main() -> None:
                     -> Apply Intrusion Analysis
                     -> Generate Metadata
     """
-    path_data = './data/PROCESSED/'
     logger = create_logger()
+
+    path_data = './data/PROCESSED/'
     varsin = {
             'file_name': 'BBMP_salected_data0.pkl',
             'intrusion_type': 'NORMAL',
@@ -26,7 +27,7 @@ def main() -> None:
             'manual_input': 'manualID_NORMAL1724797813.pkl'
         }
     
-    # -> Get CMD line arguments
+    # -----------> Get CMD line arguments
     _ = (file_name, 
          intrusion_type, 
          id_type, analysis_type, 
@@ -43,7 +44,9 @@ def main() -> None:
                 f'Save Intrusions: {save_manual} - '+
                 f'Manual Intrusion Input: {manual_input}')
 
-    # -> Create RequestInfo
+    # -----------> Create RequestInfo
+    # RequestInfo_Analysis(...) -> 
+    #           .metadata : Analysis Table
     request = RequestInfo_Analysis(
                             file_name = file_name,
                             intrusion_type = intrusion_type, 
@@ -54,34 +57,43 @@ def main() -> None:
                             save_manual = save_manual,
                             manual_input = manual_input
                             )
-    # -> Intrusion Identification
+    
+    # -----------> Intrusion Identification
+    # RequestInfo_Analysis(...).id_method(...)->
+    #           .manualID_dates : Dates identified
+    #           .table_IDeffects : Manual Effects Table
+    #           .intrusions : Analysis Request Metadata
     if id_type.upper() == 'MANUAL':
-        intrusion_identification = manual_identification(
-                                    intrusion_type, save_manual).run(request)
+        manual_identification(intrusion_type, save_manual).run(request)
     else:
-        intrusion_identification = imported_identification(
-                        intrusion_type, path_data + manual_input).run(request)
+        imported_identification(intrusion_type, path_data + manual_input
+                                ).run(request)
     logger.info(
         f'Intrusions Identified: {request.identification.manualID_dates}')
 
-    # -> Retrieve Intrusion effects 
+    # -----------> Retrieve Intrusion effects 
     intrusion_data().run(request)
 
-    # -> Apply Intrusion Analysis
-    analysis = intrusion_analysis(analysis_type, coefficients).run(request)
+    # -----------> Apply Intrusion Analysis
+    # RequestInfo_Analysis(...).analysis_step(...)->
+    #           .table_coefficients: Coefficient Table
+    #           .table_IDeffects : Estimated Effects Table
+    #           .estimatedID_dates : Dates estimated
+    intrusion_analysis(analysis_type, coefficients).run(request)
 
-    analysis = request.analysis
+    analysis_ = request.analysis
     logger.info(
         f'Coefficients Used [temp, salt]: '+
-            f'{[analysis.OP_temp_coeff, analysis.OP_salt_coeff]} - '+
-        f'Performance: {analysis.OP_performance} - '+
+            f'{[analysis_.OP_temp_coeff, analysis_.OP_salt_coeff]} - '+
+        f'Performance: {analysis_.OP_performance} - '+
         f'# of missed intrusion: '+
-            f'{len(analysis.OP_performance_spec['Only Manual'])} - '+
+            f'{len(analysis_.OP_performance_spec['Only Manual'])} - '+
         f'# of extra intrusions: '+
-            f'{len(analysis.OP_performance_spec['Only Estimated'])}'
+            f'{len(analysis_.OP_performance_spec['Only Estimated'])}'
             )
     
-    # -> Generate Metadata
+    # -----------> Generate Metadata
+    # meta.table_coefficients_error_comb : More specific coefficient results
     meta().run(request)
 
 
