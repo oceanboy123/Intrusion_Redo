@@ -2,7 +2,6 @@ from misc.request_arguments.request_info_ETL import RequestInfo_ETL
 from ETL_processes import (data_extraction, data_normalization, timedepth_space, 
                            data_transformation, data_loading)
 from config import create_logger, get_command_line_args
-from typing import List, Dict
 
 def main() -> None:
     """
@@ -68,7 +67,8 @@ def main() -> None:
     transformation = data_transformation(
                                     data_info= request, 
                                     data_normalization= normalization, 
-                                    timedepth_space= matrices
+                                    timedepth_space= 
+                                    matrices
                                     )
     transformation.GenerateLog(logger)
 
