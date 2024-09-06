@@ -65,6 +65,6 @@ class RequestInfo_Analysis(RequestInfo):
         self.metadata['save_manual'] = self.save_manual
         self.metadata['manual_input'] = self.manual_input
         self.metadata['variables_used'] = str(['salinity', 'temperature'])
-        self.matadata['date_error'] = 10
+        self.metadata['date_error'] = 10
     
 
