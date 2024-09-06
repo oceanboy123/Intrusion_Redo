@@ -16,7 +16,7 @@ class imported_identification(id_method):
    ----------------Important class attributes
     - manualID_dates : Dates identified
     - table_IDeffects : Table for intrusion effects ('intrusionID+effect.csv')
-    - intrusions : Table for haracteristics of the Analysis request 
+    - intrusions : Table for characteristics of the Analysis request 
                    ('metadata_intrusions.csv')
     - effects : Class(id_method(ABC))
     """

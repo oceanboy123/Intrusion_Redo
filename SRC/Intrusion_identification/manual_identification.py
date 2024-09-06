@@ -31,12 +31,15 @@ class manual_identification(id_method):
    ----------------Important class attributes
     - manualID_dates : Dates identified
     - table_IDeffects : Table for intrusion effects ('intrusionID+effect.csv')
+    - intrusions : Table for characteristics of the Analysis request 
+                   ('metadata_intrusions.csv')
     - effects : Class(id_method(ABC))
     """
     save : str
 
     manualID_dates : List[int] = field(default_factory=list)
     table_IDeffects : Dict[str, Any] = field(default_factory=dict)
+    intrusions : Dict[str, Any] = field(default_factory=dict)
     effects : object = field(default_factory=empty)
 
     depth_name = 'sample_depth' # Depth field name based on ETL_data_loading
