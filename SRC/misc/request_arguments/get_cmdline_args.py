@@ -1,6 +1,7 @@
 import argparse
+from typing import Dict, Union, Tuple
 
-def get_command_line_args(varsin:dict[str, str | int]) -> tuple:
+def get_command_line_args(varsin: Dict[str, Union[str, int]]) -> Tuple:
     """
     Gets arguments from command-line. Uses varsin to create the defaults for
     each input argument.
@@ -8,20 +9,22 @@ def get_command_line_args(varsin:dict[str, str | int]) -> tuple:
     ----------------Inputs
     varsin :   Default values for each argument
     """
-    parser = argparse.ArgumentParser(description='Arguments')
+    parser = argparse.ArgumentParser(description=
+                                     'Command-line arguments parser')
 
     # Command line arguments
-    arguments = list(varsin.keys())
-    for ar in arguments:
-        parser.add_argument('--'+ ar, type= type(varsin[ar]), help='NaN')
+    for arg, default_value in varsin.items():
+        # Determine type based on default value
+        arg_type = type(default_value)
+        parser.add_argument('--' + arg, type=arg_type, default=default_value,
+                            help=f'Default: {default_value}')
 
-    # Parse and read arguments and assign them to variables if exists
-    args, _ = parser.parse_known_args()
+    # Parse arguments
+    args = parser.parse_args()
     output = []
-    for gs in arguments:
-        output.append(varsin[gs])
-        attribute_value = getattr(args, gs, None)
-        if attribute_value != None :
-            output[-1] = attribute_value
+
+    for arg in varsin.keys():
+        value = getattr(args, arg)
+        output.append(value)
             
     return tuple(output)

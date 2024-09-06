@@ -1,7 +1,7 @@
 from .config import *
 from ..other.file_handling import *
 from ..other.date_handling import timestamp2datetime_lists
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 from datetime import datetime
 
 @dataclass
@@ -50,20 +50,35 @@ class RequestInfo_Analysis(RequestInfo):
     dates_name = 'sample_timestamps' # Date field name based on ETL_data_loading
 
     def __post_init__(self)-> None:
-        self.path         : str            = self.dir_path + self.file_name
-        self.data         : Dict[str, Any] = import_joblib(self.path)
-        self.dates_stamp  : List[int]      = self.data[self.dates_name]
-        self.dates        : List[datetime] = timestamp2datetime_lists(
+        self.path: str = self.dir_path + self.file_name
+
+        try:
+            self.data: Dict[str, Any] = import_joblib(self.path)
+            self.dates_stamp: List[int] = self.data[self.dates_name]
+            self.dates: List[datetime] = timestamp2datetime_lists(
                                                                self.dates_stamp)
-        self.coefficients : List[int, int] = [self.coefficient_temp, 
-                                              self.coefficient_salt]
+        except FileNotFoundError:
+            raise FileNotFoundError(f"The file {self.path} does not exist.")
+        except KeyError:
+            raise KeyError(
+                    f"The key '{self.dates_name}' was not found in the data.")
+        except Exception as e:
+            raise RuntimeError(
+                            f"An error occurred while processing the file: {e}")
+        
+        self.coefficients : Tuple[int, int] = (self.coefficient_temp, 
+                                              self.coefficient_salt)
         
         self.GenerateMetadata()
 
     def GenerateMetadata(self) -> None:
-        # Recording Intrusion analysis characteristics as metadata
+        """
+        Recording Intrusion analysis characteristics as metadata
+        """
+    
         self.metadata['input_dataset' ] = self.path
-        self.metadata['date_created'  ] = time.ctime()
+        self.metadata['date_created'  ] = datetime.now().strftime(
+                                                            "%Y-%m-%d %H:%M:%S")
         self.metadata['intrusion_type'] = self.intrusion_type
         self.metadata['analysis_type' ] = self.analysis_type
         self.metadata['coefficients'  ] = self.coefficients

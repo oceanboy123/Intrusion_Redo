@@ -41,19 +41,32 @@ class RequestInfo_ETL(RequestInfo):
 
 
     def __post_init__(self)-> None:
-        self.file_data_path : str           = self.dir_path + self.file_name
-        self.raw_data       : pd.DataFrame  = pd.read_csv(self.file_data_path)
-        self.mid_depth      : List[int]     = [self.mid_depth1, self.mid_depth2]
+        self.file_data_path : str = self.dir_path + self.file_name
+
+        try:
+            self.raw_data: pd.DataFrame  = pd.read_csv(self.file_data_path)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"The file {self.file_data_path} 
+                                    does not exist.")
+        except pd.errors.EmptyDataError:
+            raise ValueError(f"The file {self.file_data_path} 
+                             is empty.")
+        except pd.errors.ParserError:
+            raise ValueError(f"The file {self.file_data_path} 
+                             could not be parsed.")
+        
+        self.mid_depth: List[int] = [self.mid_depth1, self.mid_depth2]
 
         self.GenerateMetadata()
 
 
     def GenerateMetadata(self) -> None:
-
-        # Recording ETL strategy characteristics as metadata
+        """
+        Recording ETL strategy characteristics as metadata
+        """
         self.metadata['input_dataset'   ] = self.file_data_path
-        self.metadata['date_created'    ] = datetime.strptime(
-                                           time.ctime(), "%a %b %d %H:%M:%S %Y")
+        self.metadata['date_created'    ] = datetime.now().strftime(
+                                                            "%Y-%m-%d %H:%M:%S")
         self.metadata['deep_averages'   ] = [self.deep_depth]
         self.metadata['mid_averages'    ] = str(self.mid_depth)
         self.metadata['date_format'     ] = self.date_format
