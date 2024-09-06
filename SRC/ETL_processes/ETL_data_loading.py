@@ -25,15 +25,15 @@ class data_loading(ETL_method):
     output_data : Dict[str, Any] = field(default_factory=dict)
 
     output_file_name = 'BBMP_salected_data0.pkl'
-    output_file_name2 = 'Lineage.pkl'
+    output_file_name2 = 'Lineage0.pkl'
     metadata_csv = 'metadata_processing.csv'
     file_path = './data/PROCESSED/'
 
     
     def __post_init__(self) -> None:
-        self.output_file_path = self.output_file_name + self.file_path
-        self.output_file_path2 = self.output_file_name2 + self.file_path
-        self.metadata_csv_path = self.metadata_csv + self.file_path
+        self.output_file_path = self.file_path + self.output_file_name
+        self.output_file_path2 = self.file_path + self.output_file_name2
+        self.metadata_csv_path = self.file_path + self.metadata_csv
 
         self.run()
 
@@ -79,17 +79,17 @@ class data_loading(ETL_method):
         f'{type(self.transformation).__name__}'
         ]
     
-        transformed_data = self.transformation.output_data
+        transformed_data = self.transformation.transform_data
         dep_avg_list: List[List]= [
             [
                 transformed_data['temperature_avg_diff1_inter10'],
-                transformed_data['sainity_avg_diff1_inter10'],
+                transformed_data['salinity_avg_diff1_inter10'],
                 transformed_data['oxygen_avg_diff1_inter10']
                 ],
             [
-                transformed_data['temperature_midavg_diff1_inter10'],
-                transformed_data['sainity_midavg_diff1_inter10'],
-                transformed_data['oxygen_midavg_diff1_inter10']
+                transformed_data['temperature_avgmid_diff1_inter10'],
+                transformed_data['salinity_avgmid_diff1_inter10'],
+                transformed_data['oxygen_avgmid_diff1_inter10']
                 ]
             ]
 
