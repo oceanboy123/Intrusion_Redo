@@ -18,8 +18,10 @@ class data_loading(ETL_method):
     Important class attributes
     - output_data : Final step of ETL process, as named
     """
-    data_normalization : ETL_method
-    data_transformation : ETL_method
+    normalization : ETL_method
+    transformation : ETL_method
+    matrices : ETL_method
+    extraction : ETL_method
     output_data : Dict[str, Any] = field(default_factory=dict)
 
     output_file_name = 'BBMP_salected_data0.pkl'
@@ -40,7 +42,7 @@ class data_loading(ETL_method):
         the analysis python script
         """
         
-        transformed_data = self.data_transformation.transform_data
+        transformed_data = self.transformation.transform_data
         self.output_data = {
         'sample_diff_midrow_temp': transformed_data['temperature_avgmid_diff1_inter10'],
         'sample_diff_row_temp': transformed_data['temperature_avg_diff1_inter10'],
@@ -50,8 +52,8 @@ class data_loading(ETL_method):
         'sample_diff_row_salt': transformed_data['salinity_avg_diff1_inter10'],
         'sample_matrix_salt': transformed_data['salinity_interpolated_axis10'],
 
-        'sample_timestamps': self.data_normalization.normalized_dates,
-        'sample_depth': self.data_normalization.normalized_depth,
+        'sample_timestamps': self.normalization.normalized_dates,
+        'sample_depth': self.normalization.normalized_depth,
         }
         
         try:
@@ -63,6 +65,45 @@ class data_loading(ETL_method):
             self.output_data['sample_diff_row_oxy'] = []
             self.output_data['sample_matrix_oxy'] = []
         
+
+    def conform_schemav2(self) -> None:
+        etl: List[List] = [
+        f'{type(self.data_info).__name__}'         +' -> '+
+        f'{type(self.extraction).__name__}'      +' -> '+
+        f'{type(self.normalization).__name__}'   +' -> '+
+        f'{type(self.matrices).__name__}'        +' -> '+
+        f'{type(self.transformation).__name__}'
+        ]
+    
+        transformed_data = self.transformation.output_data
+        dep_avg_list: List[List]= [
+            [
+                transformed_data['temperature_avg_diff1_inter10'],
+                transformed_data['sainity_avg_diff1_inter10'],
+                transformed_data['oxygen_avg_diff1_inter10']
+                ],
+            [
+                transformed_data['temperature_midavg_diff1_inter10'],
+                transformed_data['sainity_midavg_diff1_inter10'],
+                transformed_data['oxygen_midavg_diff1_inter10']
+                ]
+            ]
+
+        interpolated_list: List[List]= [
+            transformed_data['temperature_interpolated_axis10'],
+            transformed_data['salinity_interpolated_axis10'],
+            transformed_data['oxygen_interpolated_axis10']
+            ]
+
+        self.data_info.lineage = {
+                'normalized'    : self.matrices.variables_matrices,
+                'interpolated'  : interpolated_list,
+                'dates'         : self.normalization.normalized_dates,
+                'depths'        : self.normalization.normalized_depth,
+                'depth_avg'     : dep_avg_list,
+                'etl_process'   : etl
+                }
+
 
     def record_output_metadata(self) -> None:
         """
