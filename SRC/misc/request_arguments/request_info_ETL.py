@@ -46,14 +46,13 @@ class RequestInfo_ETL(RequestInfo):
         try:
             self.raw_data: pd.DataFrame  = pd.read_csv(self.file_data_path)
         except FileNotFoundError:
-            raise FileNotFoundError(f"The file {self.file_data_path} 
-                                    does not exist.")
+            raise FileNotFoundError(
+                f"The file {self.file_data_path} does not exist.")
         except pd.errors.EmptyDataError:
-            raise ValueError(f"The file {self.file_data_path} 
-                             is empty.")
+            raise ValueError(f"The file {self.file_data_path} is empty.")
         except pd.errors.ParserError:
-            raise ValueError(f"The file {self.file_data_path} 
-                             could not be parsed.")
+            raise ValueError(
+                f"The file {self.file_data_path} could not be parsed.")
         
         self.mid_depth: List[int] = [self.mid_depth1, self.mid_depth2]
 
