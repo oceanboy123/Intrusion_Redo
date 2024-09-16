@@ -8,38 +8,47 @@ class data_extraction(ETL_method):
     all the profiles
     
     Inputs
-    - data_info : Acquired using the RequestInfo_ETL(RequestInfo) class
+     data_info     : Acquired using the RequestInfo_ETL(RequestInfo) class
 
     Important class attributes
-    - target_data : Target Variables
-    - unique_depths : As named
-    - nested_groups : Daily Profiles
+     target_data   : Target Variables
+     unique_depths : As named
+     nested_groups : Daily Profiles
     """
-    target_data : Dict[str, Any] = field(default_factory=dict)
-    nested_groups : Dict[str, Any] = field(default_factory=dict)
-    unique_depths : List[int] = field(default_factory=list)
+    target_data     : DataFrame                 = field(init=False)
+    unique_depths   : List[float]               = field(init=False)
+    nested_groups   : Dict[float, DataFrame]    = field(init=False)
 
     # Field names for tables
-    original_datename = 'time_string'
-    groupby_datename = 'Timestamp'
+    groupby_datename : str = 'Timestamp'
 
 
     def __post_init__(self) -> None:
+        self.original_datename  = self.data_info.target_variables[0]
+        self.original_depthname = self.data_info.target_variables[1]
         self.run()
 
 
     def get_target_data(self)-> None:
         """
-        Records data from target variables as a DataFrame
+        Extracts target variables from raw data and processes date columns.
         """
         
-        target_data = self.data_info.raw_data.loc[:, 
-                                                self.data_info.target_variables]
+        target_data = self.data_info.raw_data[
+                            self.data_info.target_variables].copy()
 
-        dates_type_datetime = pd.to_datetime(target_data.iloc[:, 0], 
-                                            format = self.data_info.date_format)
+        dates_type_datetime = pd.to_datetime(
+            target_data[self.original_datename],
+            format=self.data_info.date_format,
+            errors='coerce'
+        )
         
-        dates_type_int = [days.timestamp() for days in dates_type_datetime]
+        # Check for parsing errors
+        if dates_type_datetime.isnull().any():
+            raise ValueError(
+                "Some date strings could not be parsed.")
+
+        dates_type_int = dates_type_datetime.view('int64') // 10**9
         
         target_data[self.original_datename] = dates_type_datetime
         target_data[self.groupby_datename] = dates_type_int
@@ -50,35 +59,41 @@ class data_extraction(ETL_method):
     
     def get_unique_depths(self) -> None:
         """
-        Records unique depths from all profiles
+        Identifies unique depths from all profiles.
         """
 
-        unique_depths = list(set(list(self.target_data.iloc[:, 1])))
+        unique_depths = self.target_data[self.original_depthname].unique()
         unique_depths.sort()
 
         # Unique depths for all profiles
-        self.unique_depths: list = unique_depths
+        self.unique_depths = unique_depths.tolist()
 
 
     def group_data(self) -> None:
         """
-        Group data by timestamps, in other words separate data by profile/day
+        Groups data by timestamps, effectively separating data by profile/day.
+
+        Steps:
+        - Groups target_data by the 'Timestamp' column.
+        - Stores the grouped data in a dictionary.
+        - Updates metadata with the profile count.
         """
 
         grouped_by_date = self.target_data.groupby(self.groupby_datename)
 
-        nested_groups = {}
-        for group_name, group_data in grouped_by_date:
-            nested_groups[group_name] = group_data
-
         # Separated profiles
-        self.nested_groups: dict = nested_groups
-        self.data_info.metadata['profile_count'] = [len(self.nested_groups)]
+        self.nested_groups = {group_name: group_data 
+                              for group_name, group_data 
+                              in grouped_by_date}
+        self.data_info.metadata['profile_count'] = len(self.nested_groups)
 
 
     def run(self) -> None:
         """
-        Steps: get_target_data -> get_unique_depths -> group_data
+        Steps: 
+        get_target_data   -> 
+        get_unique_depths -> 
+        group_data
         """
         self.get_target_data()
         self.get_unique_depths()
@@ -87,6 +102,6 @@ class data_extraction(ETL_method):
 
     def GenerateLog(self, logger: Logger) -> None:
         """
-        Log self.data_info.metadata
+        Logs the metadata information.
         """
         logger.info(f'{self.data_info.metadata}')
