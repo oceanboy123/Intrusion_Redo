@@ -1,27 +1,30 @@
 from .config import *
 
+
 @dataclass
-class data_extraction(ETL_method):
+class Extract_Type(ABC):
     """
-    Extracts data from target variables for each profile in DATA_INFO, 
+    Important Class attributes
+    - target_data:  DataFrame containing the target variables and 
+                    additional date columns.
+    - unique_depths:Sorted list of unique depths present in all 
+                    profiles.
+    - nested_groups:Dictionary mapping timestamps to 
+                    DataFrames of daily profiles
+    """
+    target_data      : DataFrame                 = field(init=False)
+    unique_depths    : List[float]               = field(init=False)
+    nested_groups    : Dict[float, DataFrame]    = field(init=False)
+    groupby_datename : str                       = 'Timestamp'
+
+
+@dataclass
+class data_extraction(Extract_Type, ETL_method, metaclass=DocInheritMeta):
+    """
+    Extracts data from target variables for each profile in data_info, 
     separates the profiles by day, and identifies the unique depths present in 
     all the profiles
-    
-    Inputs
-     data_info     : Acquired using the RequestInfo_ETL(RequestInfo) class
-
-    Important class attributes
-     target_data   : Target Variables
-     unique_depths : As named
-     nested_groups : Daily Profiles
     """
-    target_data     : DataFrame                 = field(init=False)
-    unique_depths   : List[float]               = field(init=False)
-    nested_groups   : Dict[float, DataFrame]    = field(init=False)
-
-    # Field names for tables
-    groupby_datename : str = 'Timestamp'
-
 
     def __post_init__(self) -> None:
         self.original_datename  = self.data_info.target_variables[0]
@@ -48,7 +51,7 @@ class data_extraction(ETL_method):
             raise ValueError(
                 "Some date strings could not be parsed.")
 
-        dates_type_int = dates_type_datetime.view('int64') // 10**9
+        dates_type_int = dates_type_datetime.astype('int64') // 10**9
         
         target_data[self.original_datename] = dates_type_datetime
         target_data[self.groupby_datename] = dates_type_int
