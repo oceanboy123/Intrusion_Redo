@@ -3,23 +3,32 @@ from numpy import ndarray
 from .config import *
 
 @dataclass
-class timedepth_space(ETL_method):
+class Matrices_Type(ABC):
+    """
+    Inputs
+    - data_normalization: An instance of DataNormalization class, which should 
+    have the following attributes:
+        - normalized_data: Profiles grouped by date (timestamps as keys).
+        - normalized_depth: List of depths after normalization.
+        - normalized_dates: List of profile dates (timestamps).
+
+    Important class attributes
+    - variables_matrices: Dictionary of matrices for each target variable.
+        Each matrix is a 2D numpy array where rows represent depths and columns 
+        represent dates.
+    """
+    data_normalization  : ETL_method
+    variables_matrices  : Dict[str, ndarray]    = field(init=False)
+
+
+@dataclass
+class timedepth_space(Matrices_Type, ETL_method, metaclass=DocInheritMeta):
     """
     Creates matrix for all target variables where the y-axis represents depth 
     and the x-axis represents date
 
-    Inputs
-    - data_info             : An object containing data information. 
-                              Acquired using the RequestInfo_ETL(RequestInfo) class
-    - data_normalization    : An object containing data after normalization.
-                              Acquired using a normalization ETL_method class
-
-    Important class attributes
-    - variables_matrices    : Dictionary of matrices for each target variable
+    Use help() function for more information
     """
-    data_normalization : ETL_method
-    variables_matrices: Dict[str, ndarray] = field(init=False)
-
 
     def __post_init__(self) -> None:
         self.run()
