@@ -24,6 +24,8 @@ class data_extraction(Extract_Type, ETL_method, metaclass=DocInheritMeta):
     Extracts data from target variables for each profile in data_info, 
     separates the profiles by day, and identifies the unique depths present in 
     all the profiles
+
+    Use help() function for more information
     """
 
     def __post_init__(self) -> None:
