@@ -7,16 +7,21 @@ from .config import *
 @dataclass
 class data_loading(ETL_method):
     """
-    Creates an intrusion data schema, records metadata from the ETL, and saves
-    data in ./data/PROCESSED/
+    Final step of the ETL process: creates an intrusion data schema, 
+    records metadata, and saves data to the './data/PROCESSED/' directory.
 
     Inputs
-    - data_info : Acquired using the RequestInfo_ETL(RequestInfo) class
-    - data_normalization : Acquired using the data_normalization(ETL_method) class
-    - data_transformation : Acquired using the data_transformation(ETL_method) class
+    - data_info             :An object containing data information. 
+                             Acquired using the RequestInfo_ETL(RequestInfo) class
+    - data_normalization    : Acquired using the data_normalization(ETL_method) class
+    - data_transformation   : Acquired using the data_transformation(ETL_method) class
 
     Important class attributes
-    - output_data : Final step of ETL process, as named
+    - output_data           : Final data schema to be saved for analysis.
+    - output_file_name      : Name of the primary output file.
+    - output_file_name2     : Name of the secondary output file (lineage information)
+    - metadata_csv          : Name of the CSV file to store metadata.
+    - file_path             : Directory path where output files will be saved.
     """
     normalization : ETL_method
     transformation : ETL_method
@@ -24,10 +29,11 @@ class data_loading(ETL_method):
     extraction : ETL_method
     output_data : Dict[str, Any] = field(default_factory=dict)
 
-    output_file_name = 'BBMP_salected_data0.pkl'
-    output_file_name2 = 'Lineage0.pkl'
-    metadata_csv = 'metadata_processing.csv'
-    file_path = './data/PROCESSED/'
+    # Default file names and paths
+    output_file_name: str = 'BBMP_selected_data0.pkl'
+    output_file_name2: str = 'Lineage0.pkl'
+    metadata_csv: str = 'metadata_processing.csv'
+    file_path: str = './data/PROCESSED/'
 
     
     def __post_init__(self) -> None:
@@ -48,65 +54,76 @@ class data_loading(ETL_method):
         
         transformed_data = self.transformation.transform_data
         self.output_data = {
-        'sample_diff_midrow_temp': transformed_data['temperature_avgmid_diff1_inter10'],
-        'sample_diff_row_temp': transformed_data['temperature_avg_diff1_inter10'],
-        'sample_matrix_temp': transformed_data['temperature_interpolated_axis10'],
-
-        'sample_diff_midrow_salt': transformed_data['salinity_avgmid_diff1_inter10'],
-        'sample_diff_row_salt': transformed_data['salinity_avg_diff1_inter10'],
-        'sample_matrix_salt': transformed_data['salinity_interpolated_axis10'],
-
+        # Temperature
+        'sample_diff_midrow_temp': transformed_data.get(
+                                    'temperature_avgmid_diff1_inter10', []),
+        'sample_diff_row_temp': transformed_data.get(
+                                    'temperature_avg_diff1_inter10', []),
+        'sample_matrix_temp': transformed_data.get(
+                                    'temperature_interpolated_axis10', []),
+        # Salinity
+        'sample_diff_midrow_salt': transformed_data.get(
+                                    'salinity_avgmid_diff1_inter10', []),
+        'sample_diff_row_salt': transformed_data.get(
+                                    'salinity_avg_diff1_inter10', []),
+        'sample_matrix_salt': transformed_data.get(
+                                    'salinity_interpolated_axis10', []),
+        # Oxygen
+        'sample_diff_midrow_oxy': transformed_data.get(
+                                    'oxygen_avgmid_diff1_inter10', []),
+        'sample_diff_row_oxy': transformed_data.get(
+                                    'oxygen_avg_diff1_inter10', []),
+        'sample_matrix_oxy': transformed_data.get(
+                                    'oxygen_interpolated_axis10', []),
+        # Time and Depth
         'sample_timestamps': self.normalization.normalized_dates,
         'sample_depth': self.normalization.normalized_depth,
         }
         
-        try:
-            self.output_data['sample_diff_midrow_oxy'] = transformed_data['oxygen_avgmid_diff1_inter10']
-            self.output_data['sample_diff_row_oxy'] = transformed_data['oxygen_avg_diff1_inter10']
-            self.output_data['sample_matrix_oxy'] = transformed_data['oxygen_interpolated_axis10']
-        except Exception:
-            self.output_data['sample_diff_midrow_oxy'] = []
-            self.output_data['sample_diff_row_oxy'] = []
-            self.output_data['sample_matrix_oxy'] = []
-        
 
     def conform_schemav2(self) -> None:
-        etl: List[List] = [
-        f'{type(self.data_info).__name__}'         +' -> '+
-        f'{type(self.extraction).__name__}'      +' -> '+
-        f'{type(self.normalization).__name__}'   +' -> '+
-        f'{type(self.matrices).__name__}'        +' -> '+
-        f'{type(self.transformation).__name__}'
-        ]
+        """
+        Load data into predifined schema used in Intrusion_analysis.py.
+        
+        NOTE: if this the dict keys chnage, make sure to change them in
+        the analysis python script
+        """
+        etl_process = ' -> '.join([
+            type(self.data_info).__name__,
+            type(self.extraction).__name__,
+            type(self.normalization).__name__,
+            type(self.matrices).__name__,
+            type(self.transformation).__name__
+        ])
     
         transformed_data = self.transformation.transform_data
-        dep_avg_list: List[List]= [
-            [
+        dep_avg_list = [
+            [   # Deep depths averages
                 transformed_data['temperature_avg_diff1_inter10'],
                 transformed_data['salinity_avg_diff1_inter10'],
                 transformed_data['oxygen_avg_diff1_inter10']
                 ],
-            [
+            [   # Mid depths averages
                 transformed_data['temperature_avgmid_diff1_inter10'],
                 transformed_data['salinity_avgmid_diff1_inter10'],
                 transformed_data['oxygen_avgmid_diff1_inter10']
                 ]
-            ]
+        ]
 
-        interpolated_list: List[List]= [
-            transformed_data['temperature_interpolated_axis10'],
-            transformed_data['salinity_interpolated_axis10'],
-            transformed_data['oxygen_interpolated_axis10']
-            ]
+        interpolated_list = [
+            transformed_data.get('temperature_interpolated_axis10', []),
+            transformed_data.get('salinity_interpolated_axis10', []),
+            transformed_data.get('oxygen_interpolated_axis10', [])
+        ]
 
         self.data_info.lineage = {
-                'normalized'    : self.matrices.variables_matrices,
-                'interpolated'  : interpolated_list,
-                'dates'         : self.normalization.normalized_dates,
-                'depths'        : self.normalization.normalized_depth,
-                'depth_avg'     : dep_avg_list,
-                'etl_process'   : etl
-                }
+            'normalized'    : self.matrices.variables_matrices,
+            'interpolated'  : interpolated_list,
+            'dates'         : self.normalization.normalized_dates,
+            'depths'        : self.normalization.normalized_depth,
+            'depth_avg'     : dep_avg_list,
+            'etl_process'   : [etl_process]
+        }
 
 
     def record_output_metadata(self) -> None:
@@ -117,17 +134,18 @@ class data_loading(ETL_method):
         self.data_info.metadata['output_dataset_path'] = self.output_file_path
         row_count = count_csv_rows(self.metadata_csv_path)
 
+        # Assign a processing ID
+        processing_id = row_count + 1 if row_count else 1
+        self.data_info.metadata['processing_ID'] = processing_id
+        meta_processing = pd.DataFrame([self.data_info.metadata])
+
         # Record metadata
-        if row_count == 0:
-            self.data_info.metadata['processing_ID'] = 1
-            meta_processing = pd.DataFrame(self.data_info.metadata)
-            meta_processing.to_csv(self.metadata_csv_path, 
-                                   mode='a', header=True, index=False)
-        else:
-            self.data_info.metadata['processing_ID'] = row_count
-            meta_processing = pd.DataFrame(self.data_info.metadata)
-            meta_processing.to_csv(self.metadata_csv_path, 
-                                   mode='a', header=False, index=False)
+        meta_processing.to_csv(
+            self.metadata_csv_path,
+            mode='a',
+            header=not row_count,
+            index=False
+        )
 
         # Save .pkl file for analysis
         joblib.dump(self.output_data, self.output_file_path)
@@ -136,7 +154,10 @@ class data_loading(ETL_method):
 
     def run(self) -> None:
         """
-        Steps: conform_schema -> record_output_metadata
+        Executes the data loading process:
+        - Conforms the data to the required schema.
+        - Prepares additional data structures for analysis.
+        - Records metadata and saves output files.
         """
         self.conform_schema()
         self.conform_schemav2()
@@ -145,6 +166,7 @@ class data_loading(ETL_method):
 
     def GenerateLog(self, logger: Logger) -> None:
         """
-        Log self.output_file_name
+        Logs the output file names
         """
-        logger.info(f'Saved as {self.output_file_name}')
+        logger.info(f'Saved processed data as {self.output_file_name}')
+        logger.info(f'Saved lineage information as {self.output_file_name2}')
