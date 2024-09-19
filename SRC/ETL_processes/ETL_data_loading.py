@@ -5,29 +5,43 @@ from misc.other.file_handling import count_csv_rows
 from .config import *
 
 @dataclass
-class data_loading(ETL_method):
+class Load_Type(ABC):
+    """
+    Inputs
+    - normalization: An instance of data_normalization class.
+        - Should have attributes:
+            - normalized_dates: List of normalized dates (timestamps).
+            - normalized_depth: List of normalized depths.
+    - transformation: An instance of data_transformation class.
+        - Should have attributes:
+            - transform_data: Dictionary of transformed data.
+    - matrices: An instance of timedepth_space class.
+        - Should have attributes:
+            - variables_matrices: Dictionary of variable matrices.
+    - extraction: An instance of data_extraction class.
+
+    Important class attributes
+    - output_data: Final data schema to be saved for analysis.
+    - output_file_name: Name of the primary output file.
+    - output_file_name2: Name of the secondary output file (lineage information).
+    - metadata_csv: Name of the CSV file to store metadata.
+    - file_path: Directory path where output files will be saved.
+    """
+    normalization   : ETL_method
+    transformation  : ETL_method
+    matrices        : ETL_method
+    extraction      : ETL_method
+    output_data     : Dict[str, Any]    = field(init=False)
+
+
+@dataclass
+class data_loading(Load_Type, ETL_method, metaclass=DocInheritMeta):
     """
     Final step of the ETL process: creates an intrusion data schema, 
     records metadata, and saves data to the './data/PROCESSED/' directory.
 
-    Inputs
-    - data_info             :An object containing data information. 
-                             Acquired using the RequestInfo_ETL(RequestInfo) class
-    - data_normalization    : Acquired using the data_normalization(ETL_method) class
-    - data_transformation   : Acquired using the data_transformation(ETL_method) class
-
-    Important class attributes
-    - output_data           : Final data schema to be saved for analysis.
-    - output_file_name      : Name of the primary output file.
-    - output_file_name2     : Name of the secondary output file (lineage information)
-    - metadata_csv          : Name of the CSV file to store metadata.
-    - file_path             : Directory path where output files will be saved.
+    Use help() function for more information
     """
-    normalization : ETL_method
-    transformation : ETL_method
-    matrices : ETL_method
-    extraction : ETL_method
-    output_data : Dict[str, Any] = field(default_factory=dict)
 
     # Default file names and paths
     output_file_name: str = 'BBMP_selected_data0.pkl'
