@@ -4,7 +4,6 @@ from misc.other.data_handling import check_duplicate_rows
 @dataclass
 class Normalize_Type(ABC):
     """
-    
     Inputs:
     - data_extraction:  An instance of the DataExtraction class, which should 
                         have the following attributes:
@@ -15,8 +14,7 @@ class Normalize_Type(ABC):
     - normalized_data:  Dictionary containing normalized 
                         profiles.
     - normalized_depths:List of unique depths after normalization.
-    - normalized_dates: List of profile dates (timestamps).
-
+    - normalized_dates: List of profile dates (timestamps)
     """
     data_extraction     : ETL_method
     normalized_data     : Dict[str, DataFrame]  = field(init=False)
@@ -27,10 +25,10 @@ class Normalize_Type(ABC):
 @dataclass
 class data_normalization(Normalize_Type, ETL_method, metaclass=DocInheritMeta):
     """
-    
     Normalizes the data by ensuring all profiles have the same depths and checks
     for duplicated measurements.
 
+    Use help() function for more information
     """
     data_extraction     : ETL_method
     normalized_data     : Dict[str, DataFrame]  = field(init=False)
