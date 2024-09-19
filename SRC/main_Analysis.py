@@ -17,7 +17,7 @@ def main() -> None:
 
     path_data = './data/PROCESSED/'
     varsin = {
-            'file_name': 'BBMP_salected_data0.pkl',
+            'file_name': 'BBMP_selected_data0.pkl',
             'intrusion_type': 'NORMAL',
             'ID_type': 'MANUAL',
             'analysis_type': 'GET_COEFFICIENTS',
