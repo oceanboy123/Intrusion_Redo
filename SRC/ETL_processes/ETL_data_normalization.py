@@ -2,19 +2,35 @@ from .config import *
 from misc.other.data_handling import check_duplicate_rows
 
 @dataclass
-class data_normalization(ETL_method):
+class Normalize_Type(ABC):
     """
+    
+    Inputs:
+    - data_extraction:  An instance of the DataExtraction class, which should 
+                        have the following attributes:
+                        - nested_groups: Profiles grouped by date.
+                        - unique_depths: Unique depths across all profiles.
+
+    Important class attributes
+    - normalized_data:  Dictionary containing normalized 
+                        profiles.
+    - normalized_depths:List of unique depths after normalization.
+    - normalized_dates: List of profile dates (timestamps).
+
+    """
+    data_extraction     : ETL_method
+    normalized_data     : Dict[str, DataFrame]  = field(init=False)
+    normalized_depths   : List[float]           = field(init=False)
+    normalized_dates    : List[int]             = field(init=False)
+
+
+@dataclass
+class data_normalization(Normalize_Type, ETL_method, metaclass=DocInheritMeta):
+    """
+    
     Normalizes the data by ensuring all profiles have the same depths and checks
     for duplicated measurements.
 
-    Inputs
-     data_info          : Acquired using the RequestInfo_ETL(RequestInfo) class
-     data_extraction    : Acquired using the data_extraction(ETL_method) class
-
-    Important class attributes
-     normalized_data    : As named
-     normalized_depth   : Unique depths from all profiles
-     normalized_dates   : Profile dates
     """
     data_extraction     : ETL_method
     normalized_data     : Dict[str, DataFrame]  = field(init=False)
