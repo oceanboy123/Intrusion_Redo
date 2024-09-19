@@ -1,22 +1,28 @@
 from .config import *
 
 @dataclass
-class data_transformation(ETL_method):
+class Transform_Type(ABC):
     """
-    Performs data interpolation and calculates depth-averages for mid and bottom
-    depths
-
     Inputs
-    - data_info : Acquired using the RequestInfo_ETL(RequestInfo) class
     - data_normalization : Acquired using the data_normalization(ETL_method) class
     - timedepth_space : Acquired using the timedepth_space(ETL_method) class
 
     Important class attributes
-    - transform_data : Data after transformations
+    - transform_data: Dictionary to store transformed data.
     """
-    data_normalization : ETL_method
-    timedepth_space : ETL_method
-    transform_data : Dict[str, Any] = field(default_factory=dict)
+    data_normalization  : ETL_method
+    timedepth_space     : ETL_method
+    transform_data      : Dict[str, Any]    = field(default_factory=dict)
+
+
+@dataclass
+class data_transformation(Transform_Type, ETL_method, metaclass=DocInheritMeta):
+    """
+    Performs data interpolation and calculates depth-averages for mid and bottom
+    depths
+
+    Use help() function for more information
+    """
 
     # Transformation names per variable
     transformation_names = [
