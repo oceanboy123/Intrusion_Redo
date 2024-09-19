@@ -1,14 +1,12 @@
 from abc import ABC, abstractmethod
-from misc.request_arguments.request_info_ETL import RequestInfo_ETL
 from dataclasses import dataclass
+from misc.request_arguments.request_info_ETL import RequestInfo_ETL
 
 @dataclass
 class ETL_method(ABC):
     """
-    Abstract object representing a ETL method part of an ETL process
-
-    ----------------Input
-              data_info :   Request data
+    Inputs
+    - data_info     : Acquired using the RequestInfo_ETL(RequestInfo) class
     """
     data_info : RequestInfo_ETL
     
