@@ -58,6 +58,7 @@ class data_transformation(Transform_Type, ETL_method, metaclass=DocInheritMeta):
         mask_diff = zero_diff.shift(-1, fill_value=False)
 
         interpolated0_data = interpolated0_data.mask(mask_diff)
+        interpolated0_data.loc[interpolated0_data.index[-1], :] = np.nan
 
         # Row interpolation (Not performed)
         interpolated_data = interpolated0_data
