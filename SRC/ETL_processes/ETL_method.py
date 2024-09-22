@@ -6,7 +6,7 @@ from misc.request_arguments.request_info_ETL import RequestInfo_ETL
 class ETL_method(ABC):
     """
     Inputs
-    - data_info: An object containing the following attributes:
+    - data_info::
         - raw_data: The raw data from which to extract target variables.
         - target_variables: List of target variable column names to extract.
         - date_format: The format of the date strings in the date column.
