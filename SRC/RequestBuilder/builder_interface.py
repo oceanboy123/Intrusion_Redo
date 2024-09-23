@@ -1,68 +1,82 @@
 from abc import ABC, abstractmethod
 
-class Computer:
-    def __init__(self):
-        self.cpu = None
-        self.ram = None
-        self.storage = None
-        self.graphics_card = None
-        self.operating_system = None
 
-    def __str__(self):
+class Process:
+    def __init__(self):
+        self.input: str= None
+        self.start_at: int = None
+        self.duration: int = None
+        self.steps: str = None
+        self.variables_used: str = None
+        self.output: str = None
+        self.id: int = None
+
+    def generate_info(self) -> str:
         components = []
-        if self.cpu:
-            components.append(f"CPU: {self.cpu}")
-        if self.ram:
-            components.append(f"RAM: {self.ram}")
-        if self.storage:
-            components.append(f"Storage: {self.storage}")
-        if self.graphics_card:
-            components.append(f"Graphics Card: {self.graphics_card}")
-        if self.operating_system:
-            components.append(f"OS: {self.operating_system}")
-        return ', '.join(components)
+        if self.input:
+            components.append(
+                f"File Name: {self.input}")
+        if self.start_at:
+            components.append(
+                f"Start time: {self.start_at}")
+        if self.duration:
+            components.append(
+                f"Process Duration: {self.duration}")
+        if self.steps:
+            components.append(f"Process Steps: {self.steps}")
+        if self.variables_used:
+            components.append(
+                f"Variables Used: {self.variables_used}")
+        if self.output:
+            components.append(
+                f"Ouput Name: {self.output}")
+        if self.id:
+            components.append(f"ID #: {self.id}")
+
+        return components
+    
+    def __str__(self):
+        return ',  '.join(self.generate_info())
+    
+    def __repr__(self) -> str:
+        return '\n'.join(self.generate_info())
     
 
 
-class ComputerBuilder(ABC):
+class ProcessBuilder(ABC):
     def __init__(self):
-        self.computer = Computer()
+        self.process = Process()
 
     @abstractmethod
-    def build_cpu(self):
+    def get_cmdargs(self):
         pass
 
     @abstractmethod
-    def build_ram(self):
+    def create_request(self):
         pass
 
     @abstractmethod
-    def build_storage(self):
+    def main_process(self):
         pass
 
     @abstractmethod
-    def build_graphics_card(self):
+    def record_process(self):
         pass
 
-    @abstractmethod
-    def install_operating_system(self):
-        pass
-
-    def get_computer(self):
-        return self.computer
+    def get_process(self):
+        return self.process
   
 
 
 class ComputerDirector:
-    def __init__(self, builder):
+    def __init__(self, builder: ProcessBuilder):
         self._builder = builder
 
     def construct_computer(self):
-        self._builder.build_cpu()
-        self._builder.build_ram()
-        self._builder.build_storage()
-        self._builder.build_graphics_card()
-        self._builder.install_operating_system()
+        self._builder.get_cmdargs()
+        self._builder.create_request()
+        self._builder.main_process()
+        self._builder.record_process()
 
-    def get_computer(self):
-        return self._builder.get_computer()
+    def get_process(self):
+        return self._builder.get_process()
