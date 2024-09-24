@@ -78,14 +78,15 @@ class Process:
 class ProcessBuilder(ABC):
     """
     Build interface for processes.
+    NOTE: ** marks the attributes initiated within the Concrete Builder
 
     ----- ATTRIBUTES
     process          : Process' attributes
     logger           : Logging object
-    cmd              : Function for parsing CMD arguments
-    request          : Class that consolidates and retrieves data
-    steps            : Classes that defines the process' steps
-    meta_steps       : Classes that defines the loading and recording steps
+    cmd**            : Function for parsing CMD arguments
+    request**        : Class that consolidates and retrieves data
+    steps**          : Classes that defines the process' steps
+    meta_steps**     : Classes that defines the loading and recording steps
 
     ----- MEHOTDS
     get_cmdargs()    : Parses CMD line arguments
