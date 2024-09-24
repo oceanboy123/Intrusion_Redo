@@ -4,7 +4,8 @@ from .config import (create_logger,
                      RequestInfo, 
                      ETL_method, 
                      id_method, 
-                     analysis_step)
+                     analysis_step,
+                     get_command_line_args)
 
 
 class Process:
@@ -98,6 +99,7 @@ class ProcessBuilder(ABC):
     def __init__(self) -> None:
         self.process = Process()
         self.logger = create_logger()
+        self.cmd = get_command_line_args
 
     def get_cmdargs(self) -> None:
         self.process._cmdargs = self.cmd(self.process.__defaultargs__)
