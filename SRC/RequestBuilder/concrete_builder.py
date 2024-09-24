@@ -1,17 +1,45 @@
-from .builder_interface import ComputerBuilder
+from .builder_interface import ProcessBuilder
+from .config import (RequestInfo_ETL, 
+                     data_extraction, 
+                     data_normalization, 
+                     timedepth_space, 
+                     data_transformation, 
+                     data_loading,
 
-class OfficeComputerBuilder(ComputerBuilder):
-    def build_cpu(self):
-        self.computer.cpu = "Intel Core i5"
+                     RequestInfo_Analysis,
+                     imported_identification,
+                     manual_identification, 
+                     intrusion_analysis,
+                     intrusion_data,
+                     meta)
 
-    def build_ram(self):
-        self.computer.ram = "16GB DDR4"
 
-    def build_storage(self):
-        self.computer.storage = "512GB SSD"
+class DataETL(ProcessBuilder):
+    def __init__(self) -> None:
+        super().__init__()
+        self.request = RequestInfo_ETL
+        self.steps = [data_extraction, 
+                      data_normalization, 
+                      timedepth_space, 
+                      data_transformation]
+        self.meta_steps = [data_loading]
 
-    def build_graphics_card(self):
-        self.computer.graphics_card = "Integrated Graphics"
 
-    def install_operating_system(self):
-        self.computer.operating_system = "Windows 11 Home"
+class IntrusionAnalaysis(ProcessBuilder):
+    def __init__(self, identification: int = 0) -> None:
+        super().__init__()
+        self.request = RequestInfo_Analysis
+        self.steps = [imported_identification, 
+                      manual_identification, 
+                      intrusion_analysis, 
+                      intrusion_data]
+        self.meta_steps = [meta]
+        
+        if identification == 0:
+            self.steps.pop(identification)
+        elif identification == 1:
+            self.steps.pop(identification)
+        else:
+            raise ValueError("Identification Type Unknown:"
+                             +" Please select (0) for manual,"
+                             +" or (1) for imported identification")
