@@ -69,4 +69,4 @@ class RequestInfo_ETL(RequestInfo):
         self.metadata['deep_averages'   ] = [self.deep_depth]
         self.metadata['mid_averages'    ] = str(self.mid_depth)
         self.metadata['date_format'     ] = self.date_format
-        self.metadata['target_variables'] = str(self.target_variables)
+        self.metadata['variables_used'] = str(self.target_variables)
