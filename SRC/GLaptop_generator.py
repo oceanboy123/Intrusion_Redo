@@ -1,5 +1,5 @@
-from RequestBuilder.builder_interface import ComputerDirector
-from RequestBuilder.concrete_builder import OfficeComputerBuilder
+from Process_builder.builder_interface import ComputerDirector
+from Process_builder.concrete_builder import OfficeComputerBuilder
 
 def main():
 

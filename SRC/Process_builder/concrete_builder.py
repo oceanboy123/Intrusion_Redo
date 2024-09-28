@@ -1,17 +1,21 @@
 from .builder_interface import ProcessBuilder
-from .config import (RequestInfo_ETL, 
-                     data_extraction, 
-                     data_normalization, 
-                     timedepth_space, 
-                     data_transformation, 
-                     data_loading,
+from .config import (
+    # ETL process
+    RequestInfo_ETL, 
+    data_extraction, 
+    data_normalization, 
+    timedepth_space, 
+    data_transformation, 
+    data_loading,
 
-                     RequestInfo_Analysis,
-                     imported_identification,
-                     manual_identification, 
-                     intrusion_analysis,
-                     intrusion_data,
-                     meta)
+    # Intrusion Analysis
+    RequestInfo_Analysis,
+    imported_identification,
+    manual_identification, 
+    intrusion_analysis,
+    intrusion_data,
+    meta
+)
 
 
 class DataETL(ProcessBuilder):

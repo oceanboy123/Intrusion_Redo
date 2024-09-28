@@ -113,7 +113,8 @@ class ProcessBuilder(ABC):
                                  analysis_step]]:
         objs = []
         for class_ in classes:
-            temp_obj = class_(self.process._request).GenerateLog(self.logger)
+            temp_obj = class_(self.process._request)
+            temp_obj.GenerateLog(self.logger)
             objs.append(temp_obj)
         
         return objs
