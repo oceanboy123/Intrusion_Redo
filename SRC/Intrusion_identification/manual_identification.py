@@ -15,7 +15,7 @@ mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt']
 
 @function_log
 @dataclass
-class manual_identification(id_method):
+class manual_identification(Step):
     """
     Allows you to manually identify the intrusions using time-depth temperature
     and salinity space, and a time series of the average change in salinity,

@@ -2,7 +2,7 @@ from .config import *
 
 @function_log
 @dataclass
-class imported_identification(id_method):
+class imported_identification(Step):
     """
     Allows you to import a previous manual identification of intrusions to 
     perform analysis (.pkl file format)

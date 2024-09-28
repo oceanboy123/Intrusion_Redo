@@ -8,7 +8,7 @@ from .config import *
 
 @function_log
 @dataclass
-class meta(analysis_step):
+class meta(Step):
     """
     The meta (*) class allows you to record metadata into multiple .csv files.
     This includes:
@@ -20,6 +20,7 @@ class meta(analysis_step):
     NOTE: The results are not saved in dataset
     """
     table_coefficients_error_comb : Dict[str, Any] = field(default_factory=dict)
+    intrusion_id : int = 0
     
     meta_path = './data/PROCESSED/TABLES/'
     coeff_error_table = 'coefficients_error.csv'
@@ -151,6 +152,7 @@ class meta(analysis_step):
                            dataset.identification.intrusions)
         self.record_single(self.coeff_table, 
                            dataset.analysis.table_coefficients)
+        self.intrusion_id = dataset.identification.intrusions['intrusion_ID']
     
 
     def run(self, dataset: RequestInfo_Analysis) -> None:

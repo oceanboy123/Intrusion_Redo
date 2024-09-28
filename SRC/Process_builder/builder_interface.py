@@ -1,11 +1,13 @@
 from abc import ABC
 from typing import List, Dict, Callable, Union
-from .config import (create_logger, 
-                     RequestInfo, 
-                     ETL_method, 
-                     id_method, 
-                     analysis_step,
-                     get_command_line_args)
+from .config import (
+    create_logger,
+    get_command_line_args, 
+    RequestInfo, 
+    Step
+)
+
+import time
 
 
 class Process:
@@ -30,19 +32,15 @@ class Process:
     """
     def __init__(self):
         self.input: str= None
-        self.start_at: int = None
+        self.start_at: int = time.time()
         self.duration: int = None
         self.steps: str = None
-        self.variables_used: str = None
         self.output: str = None
         self.id: int = None
-        self.process_data: List[Union[ETL_method, 
-                                      id_method, 
-                                      analysis_step]] = None
+        self.process_data: List[Step] = None
         self._cmdargs: Dict = None
         self._request: RequestInfo = None
         self._metadata: Dict = None
-        self.__defaultargs__: Dict  = None
 
     def generate_info(self) -> str:
         components = []
@@ -57,9 +55,6 @@ class Process:
                 f"Process Duration: {self.duration}")
         if self.steps:
             components.append(f"Process Steps: {self.steps}")
-        if self.variables_used:
-            components.append(
-                f"Variables Used: {self.variables_used}")
         if self.output:
             components.append(
                 f"Ouput Name: {self.output}")
@@ -88,6 +83,7 @@ class ProcessBuilder(ABC):
     request**        : Class that consolidates and retrieves data
     steps**          : Classes that defines the process' steps
     meta_steps**     : Classes that defines the loading and recording steps
+    __defaultargs__**: Default arguments for CMD parsing
 
     ----- MEHOTDS
     get_cmdargs()    : Parses CMD line arguments
@@ -102,15 +98,13 @@ class ProcessBuilder(ABC):
         self.cmd = get_command_line_args
 
     def get_cmdargs(self) -> None:
-        self.process._cmdargs = self.cmd(self.process.__defaultargs__)
+        self.process._cmdargs = self.cmd(self.__defaultargs__)
 
     def create_request(self) -> None:
         self.process._request = self.request(**self.process._cmdargs)
+        self.process.input = self.process._request.file_name
 
-    def runsteps(self, classes: List[Callable[...]]
-                 ) -> List[Union[ETL_method, 
-                                 id_method, 
-                                 analysis_step]]:
+    def runsteps(self, classes: List[Callable[...]]) -> List[Step]:
         objs = []
         for class_ in classes:
             temp_obj = class_(self.process._request)
@@ -121,11 +115,13 @@ class ProcessBuilder(ABC):
     
     def runmain(self) -> None:
         self.process.steps = self.steps
-        # TODO: This might change to record_metadata
         self.process.process_data = self.runsteps(self.steps)
 
     def record_process(self) -> None:
         self.process._metadata = self.runsteps(self.meta_steps)
+        self.process.id = self.process._metadata.intrusion_id
+        # TODO: Add this to Metadata Abstraction
+        self.process.duration = time.time() - self._builder.process.start_at
 
     def get_results(self) -> None:
         return self.process

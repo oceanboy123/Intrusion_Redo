@@ -12,7 +12,7 @@ mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt']
 
 @function_log
 @dataclass
-class intrusion_analysis(analysis_step):
+class intrusion_analysis(Step):
     """
     The intrusion_analysis class encompasses all the analysis methods that
     can be performed on the intrusion data. Where the two main methods are:

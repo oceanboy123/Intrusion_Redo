@@ -6,7 +6,7 @@ mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt']
 
 @function_log
 @dataclass
-class intrusion_data(analysis_step):
+class intrusion_data(Step):
     """
     The intrusion_data class allows you to retrieve the effects from the 
     intrusion events selected from the original data (datatset.data). This 
