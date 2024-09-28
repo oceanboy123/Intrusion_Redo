@@ -4,6 +4,19 @@ from .config import *
 @dataclass
 class Extract_Type(ABC):
     """
+    Inputs
+    - data_info::
+        - raw_data: The raw data from which to extract target variables.
+        - target_variables: List of target variable column names to extract.
+        - date_format: The format of the date strings in the date column.
+        - metadata: A dictionary to store metadata information.
+        - nested_groups: Profiles grouped by date.
+        - unique_depths: Unique depths across all profiles.
+        - target_variables: List of target variable names.
+        - deep_depth: Depth value defining 'deep' depths.
+        - mid_depth: Depth range defining 'mid' depths.
+        - lineage: Lineage information of the data processing steps.
+
     Important Class attributes
     - target_data:  DataFrame containing the target variables and 
                     additional date columns.
@@ -19,7 +32,7 @@ class Extract_Type(ABC):
 
 
 @dataclass
-class data_extraction(Extract_Type, ETL_method, metaclass=DocInheritMeta):
+class data_extraction(Extract_Type, Step, metaclass=DocInheritMeta):
     """
     Extracts data from target variables for each profile in data_info, 
     separates the profiles by day, and identifies the unique depths present in 

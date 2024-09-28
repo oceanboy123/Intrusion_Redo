@@ -27,15 +27,15 @@ class Load_Type(ABC):
     - metadata_csv: Name of the CSV file to store metadata.
     - file_path: Directory path where output files will be saved.
     """
-    normalization   : ETL_method
-    transformation  : ETL_method
-    matrices        : ETL_method
-    extraction      : ETL_method
+    normalization   : Normalize_Type
+    transformation  : Transform_Type
+    matrices        : Matrices_Type
+    extraction      : Extract_Type
     output_data     : Dict[str, Any]    = field(init=False)
 
 
 @dataclass
-class data_loading(Load_Type, ETL_method, metaclass=DocInheritMeta):
+class data_loading(Load_Type, Step, metaclass=DocInheritMeta):
     """
     Final step of the ETL process: creates an intrusion data schema, 
     records metadata, and saves data to the './data/PROCESSED/' directory.

@@ -16,14 +16,14 @@ class Normalize_Type(ABC):
     - normalized_depths:List of unique depths after normalization.
     - normalized_dates: List of profile dates (timestamps)
     """
-    data_extraction     : ETL_method
+    data_extraction     : Extract_Type
     normalized_data     : Dict[str, DataFrame]  = field(init=False)
     normalized_depths   : List[float]           = field(init=False)
     normalized_dates    : List[int]             = field(init=False)
 
 
 @dataclass
-class data_normalization(Normalize_Type, ETL_method, metaclass=DocInheritMeta):
+class data_normalization(Normalize_Type, Step, metaclass=DocInheritMeta):
     """
     Normalizes the data by ensuring all profiles have the same depths and checks
     for duplicated measurements.

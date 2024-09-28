@@ -10,13 +10,13 @@ class Transform_Type(ABC):
     Important class attributes
     - transform_data: Dictionary to store transformed data.
     """
-    data_normalization  : ETL_method
-    timedepth_space     : ETL_method
+    data_normalization  : Normalize_Type
+    timedepth_space     : Matrices_Type
     transform_data      : Dict[str, Any]    = field(default_factory=dict)
 
 
 @dataclass
-class data_transformation(Transform_Type, ETL_method, metaclass=DocInheritMeta):
+class data_transformation(Transform_Type, Step, metaclass=DocInheritMeta):
     """
     Performs data interpolation and calculates depth-averages for mid and bottom
     depths

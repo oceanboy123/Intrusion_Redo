@@ -17,12 +17,12 @@ class Matrices_Type(ABC):
         Each matrix is a 2D numpy array where rows represent depths and columns 
         represent dates.
     """
-    data_normalization  : ETL_method
+    data_normalization  : Normalize_Type
     variables_matrices  : Dict[str, ndarray]    = field(init=False)
 
 
 @dataclass
-class timedepth_space(Matrices_Type, ETL_method, metaclass=DocInheritMeta):
+class timedepth_space(Matrices_Type, Step, metaclass=DocInheritMeta):
     """
     Creates matrix for all target variables where the y-axis represents depth 
     and the x-axis represents date
