@@ -203,3 +203,9 @@ class intrusion_analysis(analysis_step):
             self.use_coefficients(dataset)
 
         self.extract(dataset)
+    
+    def GenerateLog(self, logger: Logger) -> None:
+        """
+        Logs the metadata information.
+        """
+        ...

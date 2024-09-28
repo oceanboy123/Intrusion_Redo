@@ -378,3 +378,9 @@ class manual_identification(id_method):
             self.save_identification()
         
         self.extract(dataset)
+
+    def GenerateLog(self, logger: Logger) -> None:
+        """
+        Logs the metadata information.
+        """
+        ...

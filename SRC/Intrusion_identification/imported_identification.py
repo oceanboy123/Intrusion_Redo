@@ -51,3 +51,9 @@ class imported_identification(id_method):
         """
         self.fill_request_info(dataset.dates)
         self.extract(dataset)
+
+    def GenerateLog(self, logger: Logger) -> None:
+        """
+        Logs the metadata information.
+        """
+        ...

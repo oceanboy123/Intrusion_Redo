@@ -70,3 +70,9 @@ class intrusion_data(analysis_step):
         self.get_original_indices(dataset)
         self.get_intrusion_effects(dataset)
         self.extract(dataset)
+
+    def GenerateLog(self, logger: Logger) -> None:
+        """
+        Logs the metadata information.
+        """
+        ...

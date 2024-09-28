@@ -158,4 +158,10 @@ class meta(analysis_step):
         Steps: integrate_metadata -> extract
         """
         self.integrate_metadata(dataset)
-        self.extract(dataset) 
+        self.extract(dataset)
+
+    def GenerateLog(self, logger: Logger) -> None:
+        """
+        Logs the metadata information.
+        """
+        ...
