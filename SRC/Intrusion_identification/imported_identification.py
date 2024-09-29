@@ -2,7 +2,7 @@ from .config import *
 
 @function_log
 @dataclass
-class imported_identification(Step):
+class imported_identification(Step, IntrusionID_Type):
     """
     Allows you to import a previous manual identification of intrusions to 
     perform analysis (.pkl file format)
@@ -20,37 +20,24 @@ class imported_identification(Step):
                    ('metadata_intrusions.csv')
     - effects : Class(id_method(ABC))
     """
-    manual_input : str
 
-    manualID_dates : List[int] = field(default_factory=list)
-    table_IDeffects : Dict[str, Any] = field(default_factory=dict)
-    intrusions : Dict[str, Any] = field(default_factory=dict)
-    effects : object = field(default_factory=empty)
+    def __post_init__(self) -> None:
+        self.run()
+        joblib.dump(self, self.cache_output)
 
-    save : str = 'OFF'
-
-    def fill_request_info(self, dates: list[datetime]) -> None:
+    def fill_request_info(self, dataset: RequestInfo_Analysis) -> None:
         """
         Extract required fields from Analysis request
         """
-        self.uyears  = np.unique([dt.year for dt in dates])
-        self.manualID_dates = import_joblib(self.manual_input)
+        self.uyears  = np.unique([dt.year for dt in dataset.dates])
+        self.manualID_dates = import_joblib(dataset.manual_input)
         self.manual_input_type = 'IMPORTED'
-    
-
-    def extract(self, dataset: RequestInfo_Analysis) -> None:
-        """
-        Injects class into dataset
-        """
-        dataset.identification = self
-    
 
     def run(self, dataset: RequestInfo_Analysis):
         """
-        Steps: fill_request_info -> extract
+        Steps: fill_request_info
         """
-        self.fill_request_info(dataset.dates)
-        self.extract(dataset)
+        self.fill_request_info(dataset)
 
     def GenerateLog(self, logger: Logger) -> None:
         """

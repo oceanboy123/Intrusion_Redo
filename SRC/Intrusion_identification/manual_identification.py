@@ -15,7 +15,7 @@ mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt']
 
 @function_log
 @dataclass
-class manual_identification(Step):
+class manual_identification(Step, IntrusionID_Type):
     """
     Allows you to manually identify the intrusions using time-depth temperature
     and salinity space, and a time series of the average change in salinity,
@@ -35,28 +35,28 @@ class manual_identification(Step):
                    ('metadata_intrusions.csv')
     - effects : Class(id_method(ABC))
     """
-    save : str
-
-    manualID_dates : List[int] = field(default_factory=list)
-    table_IDeffects : Dict[str, Any] = field(default_factory=dict)
-    intrusions : Dict[str, Any] = field(default_factory=dict)
-    effects : object = field(default_factory=empty)
-
-    depth_name = 'sample_depth' # Depth field name based on ETL_data_loading
-    temp_range = [0,10] # Plotting ranges
+    dates : List[datetime] =  field(init=False)
+    save : str =  field(init=False)
+    intrusion_type : str =  field(init=False)
+    manual_input : str =  'N/A'
+    depth_name = 'sample_depth'
+    temp_range = [0,10] 
     salt_range = [30.5,31.5] 
     oxy_range = [0,12]
 
-    def fill_request_info(self, dates: list[datetime]) -> None:
+    def __post_init__(self, dataset: RequestInfo_Analysis):
+        self.run(dataset)
+        joblib.dump(self, self.cache_output)
+
+    def fill_request_info(self, dataset: RequestInfo_Analysis) -> None:
         """
         Extract required fields from identification request
         """
-        self.dates = dates
-
+        self.dates = dataset.dates
         self.uyears  = np.unique([dt.year for dt in self.dates])
         self.manual_input_type = 'MANUAL'
-        self.manual_input = 'N/A'
-
+        self.save = dataset.save_manual
+        self.intrusion_type = dataset.intrusion_type
 
     @staticmethod
     def create_yearly_matrices(selected_data:dict, 
@@ -324,7 +324,7 @@ class manual_identification(Step):
         return datetime(1970, 1, 1) + timedelta(days=date)
 
 
-    def user_intrusion_selection(self,dataset: RequestInfo_Analysis) -> None:
+    def user_intrusion_selection(self, dataset: RequestInfo_Analysis) -> None:
         """
         Triggers identification stage. Plots for user to select intrusion dates 
         by year. 
@@ -358,14 +358,6 @@ class manual_identification(Step):
         save_joblib(self.manualID_dates, man_name)
         self.save = man_name
 
-
-    def extract(self, dataset: RequestInfo_Analysis) -> None:
-        """
-        Injects class into dataset
-        """
-        dataset.identification = self
-    
-
     def run(self, dataset: RequestInfo_Analysis):
         """
         Steps: fill_request_info -> user_intrusion_selection -> 
@@ -376,8 +368,6 @@ class manual_identification(Step):
 
         if self.save != 'OFF':
             self.save_identification()
-        
-        self.extract(dataset)
 
     def GenerateLog(self, logger: Logger) -> None:
         """
