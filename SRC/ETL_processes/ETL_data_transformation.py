@@ -18,6 +18,7 @@ class Transform_Type(ABC):
         '../data/CACHE/Processes/ETL/temp_matrices.pkl'
     ]
     cache_output      : str = '../data/CACHE/Processes/ETL/temp_transformed.pkl'
+    cache_request     : str = '../data/CACHE/Processes/ETL/temp_request.pkl'
 
 
 @dataclass
@@ -39,11 +40,12 @@ class data_transformation(Transform_Type, Step, metaclass=DocInheritMeta):
         ]
 
 
-    def __post_init__(self) -> None:
+    def __post_init__(self, data_info: RequestInfo_ETL) -> None:
         self.data_normalization = import_joblib(self.required_data[0])
         self.timedepth_space = import_joblib(self.required_data[1])
-        self.run()
+        self.run(data_info)
         joblib.dump(self, self.cache_output)
+        joblib.dump(data_info, self.cache_request)
 
 
     def interpolation_2D(self, pandas_matrix: DataFrame) -> list[DataFrame]:
@@ -78,7 +80,9 @@ class data_transformation(Transform_Type, Step, metaclass=DocInheritMeta):
         return [interpolated_data, interpolated_diff_data, interpolated0_data]
 
 
-    def depth_averages(self, interpolation: list[DataFrame]) -> list[pd.Series]:
+    def depth_averages(self, 
+                       interpolation: list[DataFrame],
+                       data_info: RequestInfo_ETL) -> list[pd.Series]:
         """
         Identifies the depths and calculates the depth-averages for both mid
         and bottom time-series for the actual values and the n-th order 
@@ -91,12 +95,12 @@ class data_transformation(Transform_Type, Step, metaclass=DocInheritMeta):
             - avg_below_value: Mean of values at deep depths.
             - avg_mid_value: Mean of values at mid depths.
         """
-        deep_depth = self.data_info.deep_depth
+        deep_depth = data_info.deep_depth
         normalized_depths = np.array(self.data_normalization.normalized_depth)
 
         indices_below_deep = np.where(normalized_depths > deep_depth)[0]
 
-        mid_depth_range = self.data_info.mid_depth
+        mid_depth_range = data_info.mid_depth
         indices_mid_depth = np.where(
             (normalized_depths > mid_depth_range[0]) & 
             (normalized_depths < mid_depth_range[1])
@@ -120,7 +124,7 @@ class data_transformation(Transform_Type, Step, metaclass=DocInheritMeta):
         return [avg_below_diff, avg_mid_diff, avg_below_value, avg_mid_value]
 
 
-    def run(self) -> None:
+    def run(self, data_info: RequestInfo_ETL) -> None:
         """
         Executes the data transformation process:
         -   For each variable matrix, performs 2D interpolation and calculates 
@@ -133,7 +137,7 @@ class data_transformation(Transform_Type, Step, metaclass=DocInheritMeta):
             interpolated = self.interpolation_2D(pandas_matrix)
 
             # Calculate depth averages
-            depth_avg = self.depth_averages(interpolated)
+            depth_avg = self.depth_averages(interpolated, data_info)
 
             t_names = self.transformation_names
 

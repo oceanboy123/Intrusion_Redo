@@ -23,6 +23,7 @@ class Matrices_Type(ABC):
         '../data/CACHE/Processes/ETL/temp_normalized.pkl'
     ]
     cache_output      : str = '../data/CACHE/Processes/ETL/temp_matrices.pkl'
+    cache_request     : str = '../data/CACHE/Processes/ETL/temp_request.pkl'
 
 
 @dataclass
@@ -34,13 +35,17 @@ class timedepth_space(Matrices_Type, Step, metaclass=DocInheritMeta):
     Use help() function for more information
     """
 
-    def __post_init__(self) -> None:
+    def __post_init__(self, data_info: RequestInfo_ETL) -> None:
         self.data_normalization = import_joblib(self.required_data[0])
-        self.run()
+        self.run(data_info)
         joblib.dump(self, self.cache_output)
+        joblib.dump(data_info, self.cache_request)
 
 
-    def create_variable_matrix(self, variable_name: str) -> ndarray:
+    def create_variable_matrix(self, 
+                               variable_name: str, 
+                               data_info: RequestInfo_ETL
+                            ) -> ndarray:
         """
         Creates a 2D numpy array for a given target variable.
         """
@@ -52,7 +57,7 @@ class timedepth_space(Matrices_Type, Step, metaclass=DocInheritMeta):
 
         for date in dates:
             df = data_frames[date]
-            df = df.set_index(self.data_info.target_variables[1])
+            df = df.set_index(data_info.target_variables[1])
 
             if variable_name not in df.columns:
                 raise ValueError(f"Variable '{variable_name}"+
@@ -66,19 +71,19 @@ class timedepth_space(Matrices_Type, Step, metaclass=DocInheritMeta):
 
         return variable_matrix
 
-    def run(self) -> None:
+    def run(self, data_info: RequestInfo_ETL) -> None:
         """
         Creates matrices for all target variables.
         """
         target_variables = [
-            var for var in self.data_info.target_variables
-            if var not in [self.data_info.target_variables[0], 
-                           self.data_info.target_variables[1]]
+            var for var in data_info.target_variables
+            if var not in [data_info.target_variables[0], 
+                           data_info.target_variables[1]]
         ]
 
         variables_matrices = {}
         for variable in target_variables:
-            variable_matrix = self.create_variable_matrix(variable)
+            variable_matrix = self.create_variable_matrix(variable, data_info)
             variables_matrices[variable] = variable_matrix
 
         self.variables_matrices = variables_matrices

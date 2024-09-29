@@ -42,9 +42,9 @@ class data_normalization(Normalize_Type, Step, metaclass=DocInheritMeta):
     cache_output      : str = '../data/CACHE/Processes/ETL/temp_normalized.pkl'
 
 
-    def __post_init__(self) -> None:
+    def __post_init__(self, data_info: RequestInfo_ETL) -> None:
         self.data_extraction = import_joblib(self.required_data[0])
-        self.original_pressure_name = self.data_info.target_variables[1]
+        self.original_pressure_name = data_info.target_variables[1]
         self.run()
         joblib.dump(self, self.cache_output)
 

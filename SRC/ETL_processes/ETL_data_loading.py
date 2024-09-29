@@ -39,6 +39,7 @@ class Load_Type(ABC):
         '../data/CACHE/Processes/ETL/temp_extraction.pkl'
     ]
     cache_output    : str = None
+    cache_request   : str = '../data/CACHE/Processes/ETL/temp_request.pkl'
 
 
 @dataclass
@@ -57,7 +58,7 @@ class data_loading(Load_Type, Step, metaclass=DocInheritMeta):
     file_path: str = './data/PROCESSED/'
 
     
-    def __post_init__(self) -> None:
+    def __post_init__(self, data_info: RequestInfo_ETL) -> None:
         self.output_file_path = self.file_path + self.output_file_name
         self.output_file_path2 = self.file_path + self.output_file_name2
         self.metadata_csv_path = self.file_path + self.metadata_csv
@@ -67,7 +68,8 @@ class data_loading(Load_Type, Step, metaclass=DocInheritMeta):
         self.matrices  = import_joblib(self.required_data[2])
         self.extraction = import_joblib(self.required_data[3])
 
-        self.run()
+        self.run(data_info)
+        joblib.dump(data_info, self.cache_request)
 
     
     def conform_schema(self) -> None:
@@ -107,7 +109,7 @@ class data_loading(Load_Type, Step, metaclass=DocInheritMeta):
         }
         
 
-    def conform_schemav2(self) -> None:
+    def conform_schemav2(self, data_info: RequestInfo_ETL) -> None:
         """
         Load data into predifined schema used in Intrusion_analysis.py.
         
@@ -115,7 +117,7 @@ class data_loading(Load_Type, Step, metaclass=DocInheritMeta):
         the analysis python script
         """
         etl_process = ' -> '.join([
-            type(self.data_info).__name__,
+            type(data_info).__name__,
             type(self.extraction).__name__,
             type(self.normalization).__name__,
             type(self.matrices).__name__,
@@ -142,7 +144,7 @@ class data_loading(Load_Type, Step, metaclass=DocInheritMeta):
             transformed_data.get('oxygen_interpolated_axis10', [])
         ]
 
-        self.data_info.lineage = {
+        data_info.lineage = {
             'normalized'    : self.matrices.variables_matrices,
             'interpolated'  : interpolated_list,
             'dates'         : self.normalization.normalized_dates,
@@ -152,18 +154,18 @@ class data_loading(Load_Type, Step, metaclass=DocInheritMeta):
         }
 
 
-    def record_output_metadata(self) -> None:
+    def record_output_metadata(self, data_info: RequestInfo_ETL) -> None:
         """
         Record metadata and save file for analysis
         """
 
-        self.data_info.metadata['output_dataset_path'] = self.output_file_path
+        data_info.metadata['output_dataset_path'] = self.output_file_path
         row_count = count_csv_rows(self.metadata_csv_path)
 
         # Assign a processing ID
         processing_id = row_count + 1 if row_count else 1
-        self.data_info.metadata['processing_ID'] = processing_id
-        meta_processing = pd.DataFrame([self.data_info.metadata])
+        data_info.metadata['processing_ID'] = processing_id
+        meta_processing = pd.DataFrame([data_info.metadata])
 
         # Record metadata
         meta_processing.to_csv(
@@ -178,7 +180,7 @@ class data_loading(Load_Type, Step, metaclass=DocInheritMeta):
         joblib.dump(self.data_info.lineage, self.output_file_path2)
         
 
-    def run(self) -> None:
+    def run(self, data_info: RequestInfo_ETL) -> None:
         """
         Executes the data loading process:
         - Conforms the data to the required schema.
@@ -186,8 +188,8 @@ class data_loading(Load_Type, Step, metaclass=DocInheritMeta):
         - Records metadata and saves output files.
         """
         self.conform_schema()
-        self.conform_schemav2()
-        self.record_output_metadata()
+        self.conform_schemav2(data_info)
+        self.record_output_metadata(data_info)
 
 
     def GenerateLog(self, logger: Logger) -> None:

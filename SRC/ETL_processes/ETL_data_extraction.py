@@ -31,6 +31,7 @@ class Extract_Type(ABC):
     groupby_datename: str = 'Timestamp'
     required_data   : List[str] = None
     cache_output    : str = '../data/CACHE/Processes/ETL/temp_extraction.pkl'
+    cache_request   : str = '../data/CACHE/Processes/ETL/temp_request.pkl'
 
 
 @dataclass
@@ -43,24 +44,24 @@ class data_extraction(Extract_Type, Step, metaclass=DocInheritMeta):
     Use help() function for more information
     """
 
-    def __post_init__(self) -> None:
-        self.original_datename  = self.data_info.target_variables[0]
-        self.original_depthname = self.data_info.target_variables[1]
-        self.run()
+    def __post_init__(self, data_info: RequestInfo_ETL) -> None:
+        self.original_datename  = data_info.target_variables[0]
+        self.original_depthname = data_info.target_variables[1]
+        self.run(data_info)
         joblib.dump(self, self.cache_output)
+        joblib.dump(data_info, self.cache_request)
 
 
-    def get_target_data(self)-> None:
+    def get_target_data(self, data_info: RequestInfo_ETL)-> None:
         """
         Extracts target variables from raw data and processes date columns.
         """
         
-        target_data = self.data_info.raw_data[
-                            self.data_info.target_variables].copy()
+        target_data = data_info.raw_data[data_info.target_variables].copy()
 
         dates_type_datetime = pd.to_datetime(
             target_data[self.original_datename],
-            format=self.data_info.date_format,
+            format= data_info.date_format,
             errors='coerce'
         )
         
@@ -90,7 +91,7 @@ class data_extraction(Extract_Type, Step, metaclass=DocInheritMeta):
         self.unique_depths = unique_depths.tolist()
 
 
-    def group_data(self) -> None:
+    def group_data(self, data_info: RequestInfo_ETL) -> None:
         """
         Groups data by timestamps, effectively separating data by profile/day.
 
@@ -106,19 +107,19 @@ class data_extraction(Extract_Type, Step, metaclass=DocInheritMeta):
         self.nested_groups = {group_name: group_data 
                               for group_name, group_data 
                               in grouped_by_date}
-        self.data_info.metadata['profile_count'] = len(self.nested_groups)
+        data_info.metadata['profile_count'] = len(self.nested_groups)
 
 
-    def run(self) -> None:
+    def run(self, data_info: RequestInfo_ETL) -> None:
         """
         Steps: 
         get_target_data   -> 
         get_unique_depths -> 
         group_data
         """
-        self.get_target_data()
+        self.get_target_data(data_info)
         self.get_unique_depths()
-        self.group_data()
+        self.group_data(data_info)
 
 
     def GenerateLog(self, logger: Logger) -> None:
