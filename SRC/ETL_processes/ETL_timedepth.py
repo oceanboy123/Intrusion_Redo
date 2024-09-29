@@ -17,8 +17,12 @@ class Matrices_Type(ABC):
         Each matrix is a 2D numpy array where rows represent depths and columns 
         represent dates.
     """
-    data_normalization  : Normalize_Type
-    variables_matrices  : Dict[str, ndarray]    = field(init=False)
+    data_normalization  : Normalize_Type = field(init=False)
+    variables_matrices  : Dict[str, ndarray] = field(init=False)
+    required_data     : List[str] = [
+        '../data/CACHE/Processes/ETL/temp_normalized.pkl'
+    ]
+    cache_output      : str = '../data/CACHE/Processes/ETL/temp_matrices.pkl'
 
 
 @dataclass
@@ -31,7 +35,9 @@ class timedepth_space(Matrices_Type, Step, metaclass=DocInheritMeta):
     """
 
     def __post_init__(self) -> None:
+        self.data_normalization = import_joblib(self.required_data[0])
         self.run()
+        joblib.dump(self, self.cache_output)
 
 
     def create_variable_matrix(self, variable_name: str) -> ndarray:

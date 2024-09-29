@@ -16,10 +16,12 @@ class Normalize_Type(ABC):
     - normalized_depths:List of unique depths after normalization.
     - normalized_dates: List of profile dates (timestamps)
     """
-    data_extraction     : Extract_Type
-    normalized_data     : Dict[str, DataFrame]  = field(init=False)
-    normalized_depths   : List[float]           = field(init=False)
-    normalized_dates    : List[int]             = field(init=False)
+    data_extraction   : Extract_Type
+    normalized_data   : Dict[str, DataFrame] = field(init=False)
+    normalized_depths : List[float] = field(init=False)
+    normalized_dates  : List[int] = field(init=False)
+    required_data     : List[str] = []
+    cache_output      : str = '../data/CACHE/Processes/ETL/temp_normalized.pkl'
 
 
 @dataclass
@@ -30,15 +32,21 @@ class data_normalization(Normalize_Type, Step, metaclass=DocInheritMeta):
 
     Use help() function for more information
     """
-    data_extraction     : ETL_method
-    normalized_data     : Dict[str, DataFrame]  = field(init=False)
-    normalized_depths   : List[float]           = field(init=False)
-    normalized_dates    : List[int]             = field(init=False)
+    data_extraction   : ETL_method = field(init=False)
+    normalized_data   : Dict[str, DataFrame] = field(init=False)
+    normalized_depths : List[float] = field(init=False)
+    normalized_dates  : List[int] = field(init=False)
+    required_data     : List[str] = [
+        '../data/CACHE/Processes/ETL/temp_extraction.pkl'
+    ]
+    cache_output      : str = '../data/CACHE/Processes/ETL/temp_normalized.pkl'
 
 
     def __post_init__(self) -> None:
+        self.data_extraction = import_joblib(self.required_data[0])
         self.original_pressure_name = self.data_info.target_variables[1]
         self.run()
+        joblib.dump(self, self.cache_output)
 
 
     def normalize_depth_from_list(self, upress: List[float], 

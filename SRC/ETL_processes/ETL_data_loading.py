@@ -27,11 +27,18 @@ class Load_Type(ABC):
     - metadata_csv: Name of the CSV file to store metadata.
     - file_path: Directory path where output files will be saved.
     """
-    normalization   : Normalize_Type
-    transformation  : Transform_Type
-    matrices        : Matrices_Type
-    extraction      : Extract_Type
-    output_data     : Dict[str, Any]    = field(init=False)
+    normalization   : Normalize_Type = field(init=False)
+    transformation  : Transform_Type = field(init=False)
+    matrices        : Matrices_Type = field(init=False)
+    extraction      : Extract_Type = field(init=False)
+    output_data     : Dict[str, Any] = field(init=False)
+    required_data   : List[str] = [
+        '../data/CACHE/Processes/ETL/temp_normalized.pkl',
+        '../data/CACHE/Processes/ETL/temp_transformed.pkl',
+        '../data/CACHE/Processes/ETL/temp_matrices.pkl',
+        '../data/CACHE/Processes/ETL/temp_extraction.pkl'
+    ]
+    cache_output    : str = None
 
 
 @dataclass
@@ -54,6 +61,11 @@ class data_loading(Load_Type, Step, metaclass=DocInheritMeta):
         self.output_file_path = self.file_path + self.output_file_name
         self.output_file_path2 = self.file_path + self.output_file_name2
         self.metadata_csv_path = self.file_path + self.metadata_csv
+
+        self.normalization = import_joblib(self.required_data[0])
+        self.transformation = import_joblib(self.required_data[1])
+        self.matrices  = import_joblib(self.required_data[2])
+        self.extraction = import_joblib(self.required_data[3])
 
         self.run()
 

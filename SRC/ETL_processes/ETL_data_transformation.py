@@ -10,9 +10,14 @@ class Transform_Type(ABC):
     Important class attributes
     - transform_data: Dictionary to store transformed data.
     """
-    data_normalization  : Normalize_Type
-    timedepth_space     : Matrices_Type
-    transform_data      : Dict[str, Any]    = field(default_factory=dict)
+    data_normalization : Normalize_Type = field(init=False)
+    timedepth_space    : Matrices_Type = field(init=False)
+    transform_data     : Dict[str, Any] = field(default_factory=dict)
+    required_data      : List[str] = [
+        '../data/CACHE/Processes/ETL/temp_normalized.pkl',
+        '../data/CACHE/Processes/ETL/temp_matrices.pkl'
+    ]
+    cache_output      : str = '../data/CACHE/Processes/ETL/temp_transformed.pkl'
 
 
 @dataclass
@@ -35,7 +40,10 @@ class data_transformation(Transform_Type, Step, metaclass=DocInheritMeta):
 
 
     def __post_init__(self) -> None:
+        self.data_normalization = import_joblib(self.required_data[0])
+        self.timedepth_space = import_joblib(self.required_data[1])
         self.run()
+        joblib.dump(self, self.cache_output)
 
 
     def interpolation_2D(self, pandas_matrix: DataFrame) -> list[DataFrame]:

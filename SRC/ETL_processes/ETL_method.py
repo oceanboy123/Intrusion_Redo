@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from misc.request_arguments.request_info_ETL import RequestInfo_ETL
+from misc.request_arguments.request_info import RequestInfo
 
 @dataclass
 class ETL_method(ABC):
@@ -18,7 +18,7 @@ class ETL_method(ABC):
         - mid_depth: Depth range defining 'mid' depths.
         - lineage: Lineage information of the data processing steps.
     """
-    data_info : RequestInfo_ETL
+    data_info : RequestInfo
     
     @abstractmethod
     def GenerateLog(self) -> None:

@@ -25,10 +25,12 @@ class Extract_Type(ABC):
     - nested_groups:Dictionary mapping timestamps to 
                     DataFrames of daily profiles
     """
-    target_data      : DataFrame                 = field(init=False)
-    unique_depths    : List[float]               = field(init=False)
-    nested_groups    : Dict[float, DataFrame]    = field(init=False)
-    groupby_datename : str                       = 'Timestamp'
+    target_data     : DataFrame = field(init=False)
+    unique_depths   : List[float] = field(init=False)
+    nested_groups   : Dict[float, DataFrame] = field(init=False)
+    groupby_datename: str = 'Timestamp'
+    required_data   : List[str] = None
+    cache_output    : str = '../data/CACHE/Processes/ETL/temp_extraction.pkl'
 
 
 @dataclass
@@ -45,6 +47,7 @@ class data_extraction(Extract_Type, Step, metaclass=DocInheritMeta):
         self.original_datename  = self.data_info.target_variables[0]
         self.original_depthname = self.data_info.target_variables[1]
         self.run()
+        joblib.dump(self, self.cache_output)
 
 
     def get_target_data(self)-> None:
