@@ -1,17 +1,43 @@
+from .config import (
+    # Imports
+    dataclass,
+    field,
+    joblib,
+    np,
+    datetime,
+    timedelta,
+    Logger,
+
+    # ABC classes
+    RequestInfo_Analysis,
+    IntrusionID_Type,
+    Step,
+
+    # Custom Function
+    save_joblib,
+
+    # Typing
+    List,
+
+    # Wrapper
+    function_log
+)
+
+# Imports
+import time
 import pandas as pd
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
-import time
-from misc.other.plot_interact import *
-from misc.other.date_handling import separate_yearly_dates
-from datetime import datetime, timedelta
 
-from .config import *
+# Custum Plotting Functions
+from misc.other.plot_interact import onclick, onkey, get_points
+from misc.other.date_handling import separate_yearly_dates
 
 # Transformation names based on ETL_data_loading
 bottom_avg_names = ['sample_diff_row_temp', 'sample_diff_row_salt'] 
 mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt'] 
+depth_name = 'sample_depth'
 
 @function_log
 @dataclass
@@ -22,27 +48,19 @@ class manual_identification(Step, IntrusionID_Type):
     temperature, and oxygen for every year of the available data in the provided
     dataset.
 
-    ----------------Inputs
-          intrusion_type:   Normal (Deep), 
-                            Mid (Mid-depth), 
-                            Other (Deep; e.g., Winter)
-                    save:   ON for save the results of Manual
-
-   ----------------Important class attributes
-    - manualID_dates : Dates identified
-    - table_IDeffects : Table for intrusion effects ('intrusionID+effect.csv')
-    - intrusions : Table for characteristics of the Analysis request 
-                   ('metadata_intrusions.csv')
-    - effects : Class(id_method(ABC))
+    ----------------Important class attributes
+    - dates         : All the dates avaible in the BBMP dataset
+    - save          : ON or OFF to save the identified intrusions as a .pkl file
+    - temp_range    : Range for temperature axis in plot [Celsius]
+    - salt_range    : Range for salinity axis in plot [PSU]
+    - oxy_range     : Range for oxygen axis in plot [mg/L]
     """
-    dates : List[datetime] =  field(init=False)
-    save : str =  field(init=False)
-    intrusion_type : str =  field(init=False)
-    manual_input : str =  'N/A'
-    depth_name = 'sample_depth'
-    temp_range = [0,10] 
-    salt_range = [30.5,31.5] 
-    oxy_range = [0,12]
+    dates   : List[datetime] =  field(init=False)
+    save    : str =  field(init=False)
+
+    temp_range : List[float]= [0,10] 
+    salt_range : List[float] = [30.5,31.5] 
+    oxy_range : List[float] = [0,12]
 
     def __post_init__(self, dataset: RequestInfo_Analysis):
         self.run(dataset)
@@ -52,15 +70,19 @@ class manual_identification(Step, IntrusionID_Type):
         """
         Extract required fields from identification request
         """
-        self.dates = dataset.dates
         self.uyears  = np.unique([dt.year for dt in self.dates])
         self.manual_input_type = 'MANUAL'
-        self.save = dataset.save_manual
+        self.manual_input = None
         self.intrusion_type = dataset.intrusion_type
+        
+        self.dates = dataset.dates
+        self.save = dataset.save_manual
 
     @staticmethod
-    def create_yearly_matrices(selected_data:dict, 
-                               year_indices:dict[list]) -> list[dict]:
+    def create_yearly_matrices(
+        selected_data:dict, 
+        year_indices:dict[list]
+    ) -> list[dict]:
         """
         Separates indices obtained from separate_yearly_dates() and creates 
         matrices with the data ready for plotting (Time-Depth space)
@@ -78,8 +100,10 @@ class manual_identification(Step, IntrusionID_Type):
         return [yearly_profiles_temp, yearly_profiles_salt]
 
 
-    def separate_yearly_profiles(self, 
-                                 dataset: RequestInfo_Analysis) -> dict[dict]:
+    def separate_yearly_profiles(
+        self, 
+        dataset: RequestInfo_Analysis
+    ) -> dict[dict]:
         """
         Separates the profiles by year, so that create_yearly_matrices can 
         can create the Time-Depth space of each variable for each year
@@ -118,9 +142,13 @@ class manual_identification(Step, IntrusionID_Type):
                     )
 
 
-    def format_data_plot(self, year_data: dict[dict], yr: int, 
-                         dataset: RequestInfo_Analysis, yr2: int = 0, 
-                         dtm = False) -> list[list]:
+    def format_data_plot(
+        self, 
+        year_data: dict[dict], 
+        yr: int, dataset: RequestInfo_Analysis, 
+        yr2: int = 0, 
+        dtm = False
+    ) -> list[list]:
         """
         This function allows the user to plot 1 year, multiple years, or more
         specific time windows
@@ -229,7 +257,7 @@ class manual_identification(Step, IntrusionID_Type):
         cax2 = fig.add_subplot(gs[1, 1])
 
         # Construct meshgrid and resize matrices
-        xmesh, ymesh = np.meshgrid(datetime_list, dd[self.depth_name][0:-2])
+        xmesh, ymesh = np.meshgrid(datetime_list, dd[depth_name][0:-2])
         
         error = [len(xmesh[:, 0]), len(ymesh[0, :])]
         temp_matrix = year_temp_data[:error[0], :error[1]]
@@ -373,4 +401,4 @@ class manual_identification(Step, IntrusionID_Type):
         """
         Logs the metadata information.
         """
-        ...
+        logger.info('Intrusion Identification done Manually')

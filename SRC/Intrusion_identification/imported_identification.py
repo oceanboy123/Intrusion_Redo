@@ -1,4 +1,22 @@
-from .config import *
+# TODO [Medium]: Implement intrusion type integrated in the intrusion identification save file
+from .config import (
+    # Imports
+    dataclass,
+    joblib,
+    np,
+    Logger,
+
+    # ABC classes
+    RequestInfo_Analysis,
+    IntrusionID_Type,
+    Step,
+
+    # Custum Function
+    import_joblib,
+
+    # Wrapper
+    function_log
+)
 
 @function_log
 @dataclass
@@ -7,18 +25,6 @@ class imported_identification(Step, IntrusionID_Type):
     Allows you to import a previous manual identification of intrusions to 
     perform analysis (.pkl file format)
 
-    ----------------Inputs
-          intrusion_type:   Normal (Deep), 
-                            Mid (Mid-depth), 
-                            Other (Deep; e.g., Winter)
-            manual_input:   .pkl file path for Imported
-
-   ----------------Important class attributes
-    - manualID_dates : Dates identified
-    - table_IDeffects : Table for intrusion effects ('intrusionID+effect.csv')
-    - intrusions : Table for characteristics of the Analysis request 
-                   ('metadata_intrusions.csv')
-    - effects : Class(id_method(ABC))
     """
 
     def __post_init__(self) -> None:
@@ -27,11 +33,14 @@ class imported_identification(Step, IntrusionID_Type):
 
     def fill_request_info(self, dataset: RequestInfo_Analysis) -> None:
         """
-        Extract required fields from Analysis request
+        Extract required fields from RequestInfo_Analysis object
         """
         self.uyears  = np.unique([dt.year for dt in dataset.dates])
-        self.manualID_dates = import_joblib(dataset.manual_input)
         self.manual_input_type = 'IMPORTED'
+        self.manual_input = dataset.manual_input
+        self.manualID_dates = import_joblib(self.manual_input)
+        self.intrusion_type = None
+
 
     def run(self, dataset: RequestInfo_Analysis):
         """
@@ -43,4 +52,4 @@ class imported_identification(Step, IntrusionID_Type):
         """
         Logs the metadata information.
         """
-        ...
+        logger.info('Intrusion Identification Imported')
