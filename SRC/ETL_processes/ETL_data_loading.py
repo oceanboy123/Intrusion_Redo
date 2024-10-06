@@ -5,7 +5,7 @@ from misc.other.file_handling import count_csv_rows
 from .config import *
 
 @dataclass
-class Load_Type(ABC):
+class LoadETL_Type(ABC):
     """
     Inputs
     - normalization: An instance of data_normalization class.
@@ -43,7 +43,7 @@ class Load_Type(ABC):
 
 
 @dataclass
-class data_loading(Load_Type, Step, metaclass=DocInheritMeta):
+class data_loading(LoadETL_Type, Step, metaclass=DocInheritMeta):
     """
     Final step of the ETL process: creates an intrusion data schema, 
     records metadata, and saves data to the './data/PROCESSED/' directory.
