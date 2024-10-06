@@ -1,18 +1,81 @@
+# TODO: Improve loggers for Identification and Analysis
+from .config import (
+    # Imports
+    ABC,
+    Logger,
+    datetime,
+    dataclass,
+    field,
+    joblib,
+    pd,
+    
+    # Typing
+    List,
+    Dict,
+    Any,
+    
+    # Wrapper
+    function_log,
+    
+    # ABC Class
+    Step,
+    RequestInfo_Analysis,
+    
+    # Custom Functions
+    import_joblib,
+    date_comparison,
+    
+    # Other
+    bottom_avg_names,
+    mid_avg_names
+)
 import numpy as np
-import pandas as pd
-
-from datetime import datetime
 from scipy.optimize import minimize
-from misc.other.date_handling import timestamp2datetime_lists
-from .config import *
 
-# Transformation names based on ETL_data_loading
-bottom_avg_names = ['sample_diff_row_temp', 'sample_diff_row_salt'] 
-mid_avg_names = ['sample_diff_midrow_temp', 'sample_diff_midrow_salt'] 
+from misc.other.date_handling import timestamp2datetime_lists
+
+@dataclass
+class IntrusionCoeff_Type(ABC):
+    """
+    ----------------Important fields
+    - OP_temp_coeff and 
+      OP_salt_coeff           : Optimized coefficients for temperature and 
+                                salinity. Used only for [GET_COEFFICIENTS]
+    - OP_performance          : Performance of coefficients used based on the 
+                                intrusion_id_performance() method
+    - OP_performance_spec     : More specific performance parameters including
+                                number of missed, extra, and found intrusion events
+    - table_coefficients      : Table used to record coefficient data in 
+                                'coefficients.csv'
+    - table_coefficients_error: Intermediate table used to record specific 
+                                coefficient data in .csv
+    - estimatedID_dates       : Dates identified by algorithm
+    - table_IDeffects         : Table for estimated intrusion effects 
+                                ('intrusionID+effect.csv')
+    - OF_range                : The range of values that the optimization
+                                funtion will use
+    - required_data           : Input path of temporary required object
+    - cache_output            : Output path of temporary identification object
+    - analysis_type           : [GET_COEFFICIENTS or USE_COEFFICIENTS]
+    - coefficients            : Used only for [USE_COEFFICIENTS]
+    """
+    OP_temp_coeff            : int = field(default_factory=int)
+    OP_salt_coeff            : int = field(default_factory=int)
+    OP_performance           : int = field(default_factory=int)
+    OP_performance_spec      : Dict[str, Any] = field(default_factory=dict)
+    table_coefficients       : Dict[str, Any] = field(default_factory=dict)
+    table_coefficients_error : Dict[str, Any] = field(default_factory=dict)
+    estimatedID_dates        : List[int] = field(default_factory=list)
+    table_IDeffects          : Dict[str, Any] = field(default_factory=dict)
+    OF_range                 : List[float] = [-1, 1]
+    required_data            : List[str] = [
+        '../data/CACHE/Processes/Analysis/temp_identification.pkl'
+    ]
+    cache_output : str = '../data/CACHE/Processes/Analysis/temp_coefficient.pkl'
 
 @function_log
 @dataclass
-class intrusion_analysis(Step):
+class intrusion_analysis(Step, IntrusionCoeff_Type):
     """
     The intrusion_analysis class encompasses all the analysis methods that
     can be performed on the intrusion data. Where the two main methods are:
@@ -24,41 +87,14 @@ class intrusion_analysis(Step):
         use_coefficients(): Allows you to evaluate the performance of 
                             specific coefficients [USE_COEFFICIENTS]
 
-    ----------------Inputs
-             analysis_type: [GET_COEFFICIENTS or USE_COEFFICIENTS]
-              coefficients: Used only for [USE_COEFFICIENTS]
-
-    ----------------Important fields
-         OP_temp_coeff and 
-             OP_salt_coeff: Optimized coefficients for temperature
-                            and salinity. Used only for 
-                            [GET_COEFFICIENTS]
-            OP_performance: Performance of coefficients used based on the 
-                            intrusion_id_performance() method
-       OP_performance_spec: More specific performance parameters including
-                            number of missed, extra, and found intrusion events
-        table_coefficients: Table used to record coefficient data in 
-                            'coefficients.csv'
-    table_coefficients_error: Intermediate table used to record specific 
-                              coefficient data in .csv
-
-    NOTE: The results are saved in dataset.analysis
     """
     
-    analysis_type : str
-    coefficients : List[int]
-
-    estimatedID_dates : List[int] = field(default_factory=list)
-    table_IDeffects : Dict[str, Any] = field(default_factory=dict)
-    OP_temp_coeff : int = field(default_factory=int)
-    OP_salt_coeff : int = field(default_factory=int)
-    OP_performance : int = field(default_factory=int)
-
-    OP_performance_spec : Dict[str, Any] = field(default_factory=dict)
-    table_coefficients : Dict[str, Any] = field(default_factory=dict)
-    table_coefficients_error : Dict[str, Any] = field(default_factory=dict)
-    
-    OF_range = [-1, 1]  # The range of values that the optimization funtion 
+    def __post_init__(self, dataset: RequestInfo_Analysis) -> None:
+        self.identification = import_joblib(self.required_data[0])
+        self.analysis_type = dataset.analysis_type
+        self.coefficients = dataset.coefficients
+        self.run(dataset)
+        joblib.dump(self, self.cache_output)
 
     def intrusion_identification(self,  lst: list[int], 
                             dataset: RequestInfo_Analysis) -> list[datetime]:
@@ -74,9 +110,10 @@ class intrusion_analysis(Step):
         column_avgs_temp = dataset.data[bottom_avg_names[0]]
         column_avgs_salt = dataset.data[bottom_avg_names[1]]
 
-        if dataset.identification.intrusion_type.upper() == 'MID':
+        if dataset.intrusion_type.upper() == 'MID':
             column_avgs_temp = dataset.data[mid_avg_names[0]]
             column_avgs_salt = dataset.data[mid_avg_names[1]]
+
 
         intrusion_temp_indices = list(np.where(
                                 column_avgs_temp > temp_intrusion_coeff)[0]+1)
@@ -111,7 +148,7 @@ class intrusion_analysis(Step):
         """
         estimated_intrusion_dates = self.intrusion_identification(
                                                     init_coeff, dataset)
-        real_intrusion_dates = dataset.identification.manualID_dates
+        real_intrusion_dates = self.identification.manualID_dates
         comparison_dates = date_comparison(real_intrusion_dates, 
                                            estimated_intrusion_dates)
             
@@ -143,7 +180,7 @@ class intrusion_analysis(Step):
         to self.OF_range[1] and finding the combination with the best results 
         based on a performance parameter
         """
-        real_intrusion_dates = dataset.identification.manualID_dates
+        real_intrusion_dates = self.identification.manualID_dates
         range = self.OF_range
         
         temp_range = np.arange(range[0],range[1],0.025)
@@ -182,15 +219,8 @@ class intrusion_analysis(Step):
                                                             dataset)
         
         self.OP_performance_spec = date_comparison(
-                    dataset.identification.manualID_dates, 
+                    self.identification.manualID_dates, 
                     self.intrusion_identification(self.coefficients, dataset))
-
-
-    def extract(self, dataset: RequestInfo_Analysis) -> None:
-        """
-        Injects class into dataset
-        """
-        dataset.analysis = self
 
 
     def run(self, dataset: RequestInfo_Analysis) -> None:
@@ -202,10 +232,9 @@ class intrusion_analysis(Step):
         else:
             self.use_coefficients(dataset)
 
-        self.extract(dataset)
     
     def GenerateLog(self, logger: Logger) -> None:
         """
         Logs the metadata information.
         """
-        ...
+        logger.info('Main Intrusion Analysis Completed')
