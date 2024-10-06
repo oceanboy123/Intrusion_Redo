@@ -43,8 +43,8 @@ class RequestInfo_Analysis(RequestInfo):
     manual_input        : str
 
     metadata            : Dict[str, Any]    = field(default_factory=dict)
-    identification      : object            = field(default_factory=empty)
-    analysis            : object            = field(default_factory=empty)
+    identification      : object            = field(default_factory=blank)
+    analysis            : object            = field(default_factory=blank)
 
     dir_path = './data/PROCESSED/' # Processed data path
     dates_name = 'sample_timestamps' # Date field name based on ETL_data_loading

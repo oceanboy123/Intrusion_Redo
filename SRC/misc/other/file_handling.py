@@ -32,7 +32,7 @@ def import_joblib(file_path: str) -> any:
     return joblib.load(file_path)
 
 
-def empty() -> None:
+def blank() -> None:
     """
     Placeholder function, can be used to define a class or other logic later.
     """
