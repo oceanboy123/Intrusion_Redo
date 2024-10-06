@@ -14,8 +14,9 @@ class IntrusionID_Type(ABC):
     in profile data. 
 
     ----------------Important class attributes
-    - manualID_dates    : Dates identified
-    - table_IDeffects   : Table for intrusion effects ('intrusionID+effect.csv')
+    - manualID_dates    : Dates identified manually
+    - table_IDeffects   : Table for manual intrusion effects 
+                          ('intrusionID+effect.csv')
     - intrusions        : Table for characteristics of the Analysis request 
                           ('metadata_intrusions.csv')
     - effects           : Class(id_method(ABC))
