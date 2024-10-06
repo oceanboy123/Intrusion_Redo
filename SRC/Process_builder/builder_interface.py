@@ -1,14 +1,13 @@
 from abc import ABC
+import time
+
 from typing import List, Dict, Callable, Union
-from .config import (
+from config import (
     create_logger,
     get_command_line_args, 
     RequestInfo, 
     Step
 )
-
-import time
-
 
 class Process:
     """
@@ -16,18 +15,19 @@ class Process:
     ProcessBuilder class.
 
     ----- ATTRIBUTES
-    input : File name of the input data
-    start_at : Start date and time
-    duration : Time taken for execution
-    steps : Process's steps
-    variables_used : Variable used for process
-    output : File name of the output data
-    id : Execution ID for metadata purposes
-    process_data : Step-by-step execution results
+    input           : File name of the input data
+    start_at        : Start date and time
+    duration        : Time taken for execution
+    steps           : Process's steps
+    meta_steps      : Metadata recording steps
+    variables_used  : Variable used for process
+    output          : File name of the output data
+    id              : Execution ID for metadata purposes
+    process_data    : Step-by-step execution results
 
-    _cmdargs : Inputs from CMD line
-    _request : Process request characteristics
-    _metadata : Data lineage of process. Saved locally too.
+    _cmdargs        : Inputs from CMD line
+    _request        : Process request characteristics
+    _metadata       : Data lineage of process. Saved locally too.
     __defaultargs__ : Default arguments for CMD parsing
     """
     def __init__(self):
@@ -35,7 +35,7 @@ class Process:
         self.start_at: int = time.time()
         self.duration: int = None
         self.steps: str = None
-        self.output: str = None
+        self.meta_step = None
         self.id: int = None
         self.process_data: List[Step] = None
         self._cmdargs: Dict = None

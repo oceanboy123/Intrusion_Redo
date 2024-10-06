@@ -17,7 +17,6 @@ from .config import (
     meta
 )
 
-
 class DataETL(ProcessBuilder):
     def __init__(self) -> None:
         super().__init__()
@@ -60,11 +59,11 @@ class IntrusionAnalaysis(ProcessBuilder):
             'manual_input'      : 'manualID_NORMAL1724797813.pkl'
         }
         
-        if identification == 0:
-            self.steps.pop(identification)
-        elif identification == 1:
+        if identification == 0 or identification == 1:
             self.steps.pop(identification)
         else:
-            raise ValueError("Identification Type Unknown:"
-                             +" Please select (0) for manual,"
-                             +" or (1) for imported identification")
+            raise ValueError(
+                "Identification Type Unknown:"
+                +" Please select (0) for manual,"
+                +" or (1) for imported identification"
+            )
