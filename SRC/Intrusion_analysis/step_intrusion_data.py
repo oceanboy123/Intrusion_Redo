@@ -4,7 +4,6 @@ from .config import (
     Logger,
     dataclass,
     field,
-    joblib,
     
     # Typing
     List,
@@ -24,6 +23,7 @@ from .config import (
     bottom_avg_names,
     mid_avg_names
 )
+import joblib
 
 @dataclass
 class IntrusionData_Type(ABC):
@@ -38,9 +38,10 @@ class IntrusionData_Type(ABC):
     manualID_indices      : List[int] = field(default_factory=list)
     manualID_temp_effects : List[int] = field(default_factory=list)
     manualID_salt_effects : List[int] = field(default_factory=list)
-    required_data         : List[str] = [
-        '../data/CACHE/Processes/Analysis/temp_identification.pkl'
-    ]
+    required_data     : List[str] = field(
+        default_factory=lambda: 
+        ['../data/CACHE/Processes/Analysis/temp_identification.pkl']
+    )
     cache_output : str = '../data/CACHE/Processes/Analysis/temp_effects.pkl'
 
 @function_log

@@ -58,9 +58,9 @@ class manual_identification(Step, IntrusionID_Type):
     dates   : List[datetime] =  field(init=False)
     save    : str =  field(init=False)
 
-    temp_range : List[float]= [0,10] 
-    salt_range : List[float] = [30.5,31.5] 
-    oxy_range : List[float] = [0,12]
+    temp_range : List[float]= field(default_factory=lambda: [0,10])
+    salt_range : List[float] = field(default_factory=lambda: [30.5,31.5])
+    oxy_range : List[float] = field(default_factory=lambda: [0,12])
 
     def __post_init__(self, dataset: RequestInfo_Analysis):
         self.run(dataset)

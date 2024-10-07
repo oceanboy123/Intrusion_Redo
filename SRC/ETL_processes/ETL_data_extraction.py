@@ -1,4 +1,22 @@
-from .config import *
+from .config import (
+    # Imports
+    ABC,
+    Logger,
+    dataclass,
+    field,
+    joblib,
+    pd,
+    
+    # Typing
+    List,
+    Dict,
+    DataFrame,
+    
+    # ABC Class
+    RequestInfo_ETL,
+    Step,
+    DocInheritMeta
+)
 
 
 @dataclass
@@ -30,8 +48,8 @@ class Extract_Type(ABC):
     nested_groups   : Dict[float, DataFrame] = field(init=False)
     groupby_datename: str = 'Timestamp'
     required_data   : List[str] = None
-    cache_output    : str = '../data/CACHE/Processes/ETL/temp_extraction.pkl'
-    cache_request   : str = '../data/CACHE/Processes/ETL/temp_request.pkl'
+    cache_output    : str = 'data/CACHE/Processes/ETL/temp_extraction.pkl'
+    cache_request   : str = 'data/CACHE/Processes/ETL/temp_request.pkl'
 
 
 @dataclass
@@ -43,14 +61,13 @@ class data_extraction(Extract_Type, Step, metaclass=DocInheritMeta):
 
     Use help() function for more information
     """
-
-    def __post_init__(self, data_info: RequestInfo_ETL) -> None:
+    def __init__(self, data_info: RequestInfo_ETL) -> None:
+        super().__init__()
         self.original_datename  = data_info.target_variables[0]
         self.original_depthname = data_info.target_variables[1]
         self.run(data_info)
         joblib.dump(self, self.cache_output)
         joblib.dump(data_info, self.cache_request)
-
 
     def get_target_data(self, data_info: RequestInfo_ETL)-> None:
         """
@@ -126,4 +143,6 @@ class data_extraction(Extract_Type, Step, metaclass=DocInheritMeta):
         """
         Logs the metadata information.
         """
-        logger.info(f'{self.data_info.metadata}')
+        logger.info(
+            f'Steps Completed: get_target_data-> get_unique_depths-> group_data'
+        )

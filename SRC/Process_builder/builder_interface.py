@@ -1,8 +1,9 @@
 from abc import ABC
 import time
+import joblib
 
-from typing import List, Dict, Callable, Union
-from config import (
+from typing import List, Dict, Callable, Any
+from Process_builder.config import (
     create_logger,
     get_command_line_args, 
     RequestInfo, 
@@ -55,9 +56,6 @@ class Process:
                 f"Process Duration: {self.duration}")
         if self.steps:
             components.append(f"Process Steps: {self.steps}")
-        if self.output:
-            components.append(
-                f"Ouput Name: {self.output}")
         if self.id:
             components.append(f"ID #: {self.id}")
 
@@ -104,9 +102,10 @@ class ProcessBuilder(ABC):
         self.process._request = self.request(**self.process._cmdargs)
         self.process.input = self.process._request.file_name
 
-    def runsteps(self, classes: List[Callable[...]]) -> List[Step]:
+    def runsteps(self, classes: List[Callable[[Any, Any], Any]]) -> List[Step]:
         objs = []
         for class_ in classes:
+            # TODO: Solve Issue Here
             temp_obj = class_(self.process._request)
             temp_obj.GenerateLog(self.logger)
             objs.append(temp_obj)
@@ -119,9 +118,9 @@ class ProcessBuilder(ABC):
 
     def record_process(self) -> None:
         self.process._metadata = self.runsteps(self.meta_steps)
-        self.process.id = self.process._metadata.intrusion_id
+        self.process.id = self.process._metadata[0].intrusion_id
         # TODO: Add this to Metadata Abstraction
-        self.process.duration = time.time() - self._builder.process.start_at
+        self.process.duration = time.time() - self.process.start_at
 
     def get_results(self) -> None:
         return self.process
@@ -148,5 +147,7 @@ class ProcessDirector:
         self._builder.runmain()
         self._builder.record_process()
 
-    def get_results(self: Process):
-        return self._builder.get_results()
+    def get_results(self):
+        pros = self._builder.get_results()
+        joblib.dump(pros, self._builder.cache_output)
+        return pros

@@ -5,3 +5,10 @@
 ./data/RAW/bbmp_aggregated_profiles.csv,2024-09-18 20:42:26,[60],"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,./data/PROCESSED/BBMP_selected_data0.pkl,5
 ./data/RAW/bbmp_aggregated_profiles.csv,2024-09-18 21:40:26,[60],"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,./data/PROCESSED/BBMP_selected_data0.pkl,6
 ./data/RAW/bbmp_aggregated_profiles.csv,2024-09-18 21:51:07,[60],"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,./data/PROCESSED/BBMP_selected_data0.pkl,7
+./data/RAW/bbmp_aggregated_profiles.csv,2024-10-07 15:36:32,[60],"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,data/PROCESSED/BBMP_selected_data0.pkl,8
+./data/RAW/bbmp_aggregated_profiles.csv,2024-10-07 15:40:03,[60],"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,data/PROCESSED/BBMP_selected_data0.pkl,9
+./data/RAW/bbmp_aggregated_profiles.csv,2024-10-07 15:51:06,[60],"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,data/PROCESSED/BBMP_selected_data0.pkl,10
+./data/RAW/bbmp_aggregated_profiles.csv,2024-10-07 16:03:03,[60],"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,data/PROCESSED/BBMP_selected_data0.pkl,11
+./data/RAW/bbmp_aggregated_profiles.csv,2024-10-07 16:09:06,[60],"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,data/PROCESSED/BBMP_selected_data0.pkl,12
+./data/RAW/bbmp_aggregated_profiles.csv,2024-10-07 16:11:14,[60],"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,data/PROCESSED/BBMP_selected_data0.pkl,13
+./data/RAW/bbmp_aggregated_profiles.csv,2024-10-07 16:13:00,[60],"[20, 35]",%Y-%m-%d %H:%M:%S,"['time_string', 'pressure', 'salinity', 'temperature', 'oxygen']",1353,data/PROCESSED/BBMP_selected_data0.pkl,14

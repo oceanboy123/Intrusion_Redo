@@ -3,10 +3,8 @@ from .config import (
     # Imports
     ABC,
     Logger,
-    datetime,
     dataclass,
     field,
-    joblib,
     pd,
     
     # Typing
@@ -30,6 +28,8 @@ from .config import (
     mid_avg_names
 )
 import numpy as np
+import joblib
+from datetime import datetime
 from scipy.optimize import minimize
 
 from misc.other.date_handling import timestamp2datetime_lists
@@ -67,10 +67,13 @@ class IntrusionCoeff_Type(ABC):
     table_coefficients_error : Dict[str, Any] = field(default_factory=dict)
     estimatedID_dates        : List[int] = field(default_factory=list)
     table_IDeffects          : Dict[str, Any] = field(default_factory=dict)
-    OF_range                 : List[float] = [-1, 1]
-    required_data            : List[str] = [
-        '../data/CACHE/Processes/Analysis/temp_identification.pkl'
-    ]
+    OF_range                 : List[float] = field(
+        default_factory=lambda: [-1, 1]
+    )
+    required_data     : List[str] = field(
+        default_factory=lambda: 
+        ['../data/CACHE/Processes/Analysis/temp_identification.pkl']
+    )
     cache_output : str = '../data/CACHE/Processes/Analysis/temp_coefficient.pkl'
 
 @function_log

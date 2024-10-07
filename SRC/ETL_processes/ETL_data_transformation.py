@@ -1,4 +1,5 @@
 from .config import *
+from ETL_processes import Normalize_Type, Matrices_Type
 
 @dataclass
 class Transform_Type(ABC):
@@ -13,12 +14,13 @@ class Transform_Type(ABC):
     data_normalization : Normalize_Type = field(init=False)
     timedepth_space    : Matrices_Type = field(init=False)
     transform_data     : Dict[str, Any] = field(default_factory=dict)
-    required_data      : List[str] = [
-        '../data/CACHE/Processes/ETL/temp_normalized.pkl',
-        '../data/CACHE/Processes/ETL/temp_matrices.pkl'
-    ]
-    cache_output      : str = '../data/CACHE/Processes/ETL/temp_transformed.pkl'
-    cache_request     : str = '../data/CACHE/Processes/ETL/temp_request.pkl'
+    required_data     : List[str] = field(
+        default_factory=lambda: 
+        ['data/CACHE/Processes/ETL/temp_normalized.pkl',
+        'data/CACHE/Processes/ETL/temp_matrices.pkl']
+    )
+    cache_output      : str = 'data/CACHE/Processes/ETL/temp_transformed.pkl'
+    cache_request     : str = 'data/CACHE/Processes/ETL/temp_request.pkl'
 
 
 @dataclass
@@ -29,18 +31,15 @@ class data_transformation(Transform_Type, Step, metaclass=DocInheritMeta):
 
     Use help() function for more information
     """
-
-    # Transformation names per variable
-    transformation_names = [
+    def __init__(self, data_info: RequestInfo_ETL) -> None:
+        super().__init__()
+        self.transformation_names = [
             '_interpolated_axis0',
             '_interpolated_axis10',
             '_diff_axis1_inter10',
             '_avg_diff1_inter10',
             '_avgmid_diff1_inter10'
         ]
-
-
-    def __post_init__(self, data_info: RequestInfo_ETL) -> None:
         self.data_normalization = import_joblib(self.required_data[0])
         self.timedepth_space = import_joblib(self.required_data[1])
         self.run(data_info)

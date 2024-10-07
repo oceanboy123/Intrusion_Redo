@@ -2,6 +2,12 @@ import csv
 import joblib
 
 from misc.other.file_handling import count_csv_rows
+from ETL_processes import (
+    Normalize_Type,
+    Transform_Type,
+    Matrices_Type,
+    Extract_Type
+)
 from .config import *
 
 @dataclass
@@ -32,14 +38,16 @@ class LoadETL_Type(ABC):
     matrices        : Matrices_Type = field(init=False)
     extraction      : Extract_Type = field(init=False)
     output_data     : Dict[str, Any] = field(init=False)
-    required_data   : List[str] = [
-        '../data/CACHE/Processes/ETL/temp_normalized.pkl',
-        '../data/CACHE/Processes/ETL/temp_transformed.pkl',
-        '../data/CACHE/Processes/ETL/temp_matrices.pkl',
-        '../data/CACHE/Processes/ETL/temp_extraction.pkl'
-    ]
+    intrusion_id    : int = field(init=False)
+    required_data     : List[str] = field(
+        default_factory=lambda: 
+        ['data/CACHE/Processes/ETL/temp_normalized.pkl',
+        'data/CACHE/Processes/ETL/temp_transformed.pkl',
+        'data/CACHE/Processes/ETL/temp_matrices.pkl',
+        'data/CACHE/Processes/ETL/temp_extraction.pkl']
+    )
     cache_output    : str = None
-    cache_request   : str = '../data/CACHE/Processes/ETL/temp_request.pkl'
+    cache_request   : str = 'data/CACHE/Processes/ETL/temp_request.pkl'
 
 
 @dataclass
@@ -50,15 +58,12 @@ class data_loading(LoadETL_Type, Step, metaclass=DocInheritMeta):
 
     Use help() function for more information
     """
-
-    # Default file names and paths
-    output_file_name: str = 'BBMP_selected_data0.pkl'
-    output_file_name2: str = 'Lineage0.pkl'
-    metadata_csv: str = 'metadata_processing.csv'
-    file_path: str = './data/PROCESSED/'
-
-    
-    def __post_init__(self, data_info: RequestInfo_ETL) -> None:
+    def __init__(self, data_info: RequestInfo_ETL) -> None:
+        super().__init__()
+        self.output_file_name: str = 'BBMP_selected_data0.pkl'
+        self.output_file_name2: str = 'Lineage0.pkl'
+        self.metadata_csv: str = 'metadata_processing.csv'
+        self.file_path: str = 'data/PROCESSED/'
         self.output_file_path = self.file_path + self.output_file_name
         self.output_file_path2 = self.file_path + self.output_file_name2
         self.metadata_csv_path = self.file_path + self.metadata_csv
@@ -164,6 +169,7 @@ class data_loading(LoadETL_Type, Step, metaclass=DocInheritMeta):
 
         # Assign a processing ID
         processing_id = row_count + 1 if row_count else 1
+        self.intrusion_id = processing_id
         data_info.metadata['processing_ID'] = processing_id
         meta_processing = pd.DataFrame([data_info.metadata])
 
@@ -177,7 +183,7 @@ class data_loading(LoadETL_Type, Step, metaclass=DocInheritMeta):
 
         # Save .pkl file for analysis
         joblib.dump(self.output_data, self.output_file_path)
-        joblib.dump(self.data_info.lineage, self.output_file_path2)
+        joblib.dump(data_info.lineage, self.output_file_path2)
         
 
     def run(self, data_info: RequestInfo_ETL) -> None:

@@ -1,5 +1,5 @@
 from numpy import ndarray
-
+from ETL_processes import Normalize_Type
 from .config import *
 
 @dataclass
@@ -19,11 +19,12 @@ class Matrices_Type(ABC):
     """
     data_normalization  : Normalize_Type = field(init=False)
     variables_matrices  : Dict[str, ndarray] = field(init=False)
-    required_data     : List[str] = [
-        '../data/CACHE/Processes/ETL/temp_normalized.pkl'
-    ]
-    cache_output      : str = '../data/CACHE/Processes/ETL/temp_matrices.pkl'
-    cache_request     : str = '../data/CACHE/Processes/ETL/temp_request.pkl'
+    required_data     : List[str] = field(
+        default_factory=lambda: 
+        ['data/CACHE/Processes/ETL/temp_normalized.pkl']
+    )
+    cache_output      : str = 'data/CACHE/Processes/ETL/temp_matrices.pkl'
+    cache_request     : str = 'data/CACHE/Processes/ETL/temp_request.pkl'
 
 
 @dataclass
@@ -35,7 +36,8 @@ class timedepth_space(Matrices_Type, Step, metaclass=DocInheritMeta):
     Use help() function for more information
     """
 
-    def __post_init__(self, data_info: RequestInfo_ETL) -> None:
+    def __init__(self, data_info: RequestInfo_ETL) -> None:
+        super().__init__()
         self.data_normalization = import_joblib(self.required_data[0])
         self.run(data_info)
         joblib.dump(self, self.cache_output)

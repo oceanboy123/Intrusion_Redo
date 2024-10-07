@@ -2,7 +2,6 @@ from .config import (
     # Imports
     ABC,
     Logger,
-    datetime,
     dataclass,
     field,
     pd,
@@ -26,6 +25,7 @@ from .config import (
 
 import csv
 import time
+from datetime import datetime
 
 @dataclass
 class LoadAnalysis_Type(ABC):
@@ -64,11 +64,12 @@ class LoadAnalysis_Type(ABC):
     intrusions_table     : str = 'intrusionID+effect.csv'
     est_intrusions_table : str = 'est_intrusionID+effect.csv'
     meta_table           : str = 'metadata_intrusions.csv'
-    required_data        : List[str] = [
-        '../data/CACHE/Processes/Analysis/temp_identification.pkl',
+    required_data     : List[str] = field(
+        default_factory=lambda: 
+        ['../data/CACHE/Processes/Analysis/temp_identification.pkl',
         '../data/CACHE/Processes/Analysis/temp_coefficient.pkl',
-        '../data/CACHE/Processes/Analysis/temp_effects.pkl'
-    ]
+        '../data/CACHE/Processes/Analysis/temp_effects.pkl']
+    )
     cache_output : str = None
 
 @function_log

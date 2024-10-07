@@ -1,5 +1,5 @@
-from .builder_interface import ProcessBuilder
-from .config import (
+from Process_builder.builder_interface import ProcessBuilder
+from Process_builder.config import (
     # ETL process
     RequestInfo_ETL, 
     data_extraction, 
@@ -31,10 +31,11 @@ class DataETL(ProcessBuilder):
         self.__defaultargs__ = {
             'file_name'         : 'bbmp_aggregated_profiles.csv',
             'deep_depth'        : 60,
-            'mid_depths1'       : 20,
-            'mid_depths2'       : 35,
+            'mid_depth1'       : 20,
+            'mid_depth2'       : 35,
             'date_format'       : '%Y-%m-%d %H:%M:%S',
-        } 
+        }
+        self.cache_output = 'data/CACHE/Processes/ETL/temp_process.pkl'
 
 
 class IntrusionAnalaysis(ProcessBuilder):
@@ -67,3 +68,4 @@ class IntrusionAnalaysis(ProcessBuilder):
                 +" Please select (0) for manual,"
                 +" or (1) for imported identification"
             )
+        self.cache_output = 'data/CACHE/Processes/Analysis/temp_process.pkl'
