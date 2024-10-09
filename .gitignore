@@ -26,4 +26,5 @@ ipython_config.py
 *.egg-info
 dist
 build
-TEST/
+tests/
+SRC/data/CACHE/
