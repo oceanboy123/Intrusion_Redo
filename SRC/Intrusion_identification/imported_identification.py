@@ -20,15 +20,17 @@ from .config import (
 
 @function_log
 @dataclass
-class imported_identification(Step, IntrusionID_Type):
+class ImportedID(Step, IntrusionID_Type):
     """
     Allows you to import a previous manual identification of intrusions to 
     perform analysis (.pkl file format)
 
     """
-
-    def __post_init__(self) -> None:
-        self.run()
+    def __init__(self, dataset: RequestInfo_Analysis) -> None:
+        super().__init__()
+        self.run(dataset)
+        print(repr(self.__class__))
+        print(self.__class__.__module__)
         joblib.dump(self, self.cache_output)
 
     def fill_request_info(self, dataset: RequestInfo_Analysis) -> None:

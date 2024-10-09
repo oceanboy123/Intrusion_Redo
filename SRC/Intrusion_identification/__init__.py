@@ -1,3 +1,3 @@
 from .id_method import IntrusionID_Type
-from .imported_identification import imported_identification
-from .manual_identification import manual_identification
+from Intrusion_identification.imported_identification import ImportedID
+from Intrusion_identification.manual_identification import ManualID

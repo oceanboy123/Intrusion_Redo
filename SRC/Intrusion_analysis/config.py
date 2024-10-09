@@ -12,7 +12,7 @@ from misc.other.date_handling import date_comparison
 from misc.other.file_handling import import_joblib, count_csv_rows
 
 # ABC Classes
-from Process_builder.process_step import Step
+from process_step import Step
 from misc.request_arguments.request_info_analysis import RequestInfo_Analysis
 
 # Transformation names based on ETL_data_loading

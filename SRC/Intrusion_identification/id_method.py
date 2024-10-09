@@ -36,7 +36,7 @@ class IntrusionID_Type(ABC):
     intrusion_type    : str =  field(init=False)
     manual_input      : str =  field(init=False)
     cache_output      : str = (
-        '../data/CACHE/Processes/Analysis/temp_identification.pkl'
+        'data/CACHE/Processes/Analysis/temp_identification.pkl'
     )
     
     @abstractmethod

@@ -40,9 +40,9 @@ class IntrusionData_Type(ABC):
     manualID_salt_effects : List[int] = field(default_factory=list)
     required_data     : List[str] = field(
         default_factory=lambda: 
-        ['../data/CACHE/Processes/Analysis/temp_identification.pkl']
+        ['data/CACHE/Processes/Analysis/temp_identification.pkl']
     )
-    cache_output : str = '../data/CACHE/Processes/Analysis/temp_effects.pkl'
+    cache_output : str = 'data/CACHE/Processes/Analysis/temp_effects.pkl'
 
 @function_log
 @dataclass
@@ -51,8 +51,8 @@ class intrusion_data(Step, IntrusionData_Type):
     The intrusion_data class allows you to retrieve the effects from the 
     intrusion events selected from the original data (dataset.data)
     """
-    
-    def __post_init__(self, dataset: RequestInfo_Analysis) -> None:
+    def __init__(self, dataset: RequestInfo_Analysis) -> None:
+        super().__init__()
         self.identification = import_joblib(self.required_data[0])
         self.run(dataset)
         joblib.dump(self, self.cache_output)

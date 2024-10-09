@@ -1,7 +1,7 @@
 from misc.request_arguments.request_info_analysis import RequestInfo_Analysis
 from Intrusion_analysis import intrusion_analysis, intrusion_data, meta
-from Intrusion_identification import (manual_identification, 
-                                      imported_identification)
+from Intrusion_identification import (ManualID, 
+                                      ImportedID)
 from config import create_logger, get_command_line_args
 
 def main() -> None:
@@ -64,9 +64,9 @@ def main() -> None:
     #           .table_IDeffects : Manual Effects Table
     #           .intrusions : Analysis Request Metadata
     if id_type.upper() == 'MANUAL':
-        manual_identification(intrusion_type, save_manual).run(request)
+        ManualID(intrusion_type, save_manual).run(request)
     else:
-        imported_identification(intrusion_type, path_data + manual_input
+        ImportedID(intrusion_type, path_data + manual_input
                                 ).run(request)
     logger.info(
         f'Intrusions Identified: {request.identification.manualID_dates}')

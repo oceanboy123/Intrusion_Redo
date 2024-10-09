@@ -58,7 +58,7 @@ class LoadAnalysis_Type(ABC):
     table_coefficients_error_comb : Dict[str, Any] = field(default_factory=dict)
     analysis_id                   : int = 0
     
-    meta_path            : str = './data/PROCESSED/TABLES/'
+    meta_path            : str = 'data/PROCESSED/TABLES/'
     coeff_error_table    : str = 'coefficients_error.csv'
     coeff_table          : str = 'coefficients.csv'
     intrusions_table     : str = 'intrusionID+effect.csv'
@@ -66,9 +66,9 @@ class LoadAnalysis_Type(ABC):
     meta_table           : str = 'metadata_intrusions.csv'
     required_data     : List[str] = field(
         default_factory=lambda: 
-        ['../data/CACHE/Processes/Analysis/temp_identification.pkl',
-        '../data/CACHE/Processes/Analysis/temp_coefficient.pkl',
-        '../data/CACHE/Processes/Analysis/temp_effects.pkl']
+        ['data/CACHE/Processes/Analysis/temp_identification.pkl',
+        'data/CACHE/Processes/Analysis/temp_coefficient.pkl',
+        'data/CACHE/Processes/Analysis/temp_effects.pkl']
     )
     cache_output : str = None
 
@@ -80,7 +80,8 @@ class meta(Step, LoadAnalysis_Type):
     This includes:
     """
 
-    def __post_init__(self, dataset: RequestInfo_Analysis) -> None:
+    def __init__(self, dataset: RequestInfo_Analysis) -> None:
+        super().__init__()
         self.identification = import_joblib(self.required_data[0])
         self.analysis = import_joblib(self.required_data[1])
         self.effects = import_joblib(self.required_data[2])

@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from Intrusion_identification.manual_identification import manual_identification
+from Intrusion_identification.manual_identification import ManualID
 from misc.request_arguments.request_info_analysis import RequestInfo_Analysis
 from config import get_command_line_args
 
@@ -39,7 +39,7 @@ def main() -> None:
                                 manual_input = manual_input
                                 )
 
-    XX = manual_identification('NORMAL','OFF')
+    XX = ManualID('NORMAL','OFF')
     XX.fill_request_info(request.dates)
 
     # -> Schema Formating

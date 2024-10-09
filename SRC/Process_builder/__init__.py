@@ -6,7 +6,7 @@ from .builder_interface import (
 
 from .concrete_builder import (
     DataETL, 
-    IntrusionAnalaysis
+    IntrusionAnalysis
 )
 
-from .process_step import Step
+from process_step import Step

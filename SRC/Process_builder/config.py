@@ -6,14 +6,14 @@ from ETL_processes import (data_extraction,
                            data_transformation, 
                            data_loading)
 
-from Intrusion_identification import (imported_identification, 
-                                      manual_identification)
+from Intrusion_identification import (ImportedID, 
+                                      ManualID)
 
 from Intrusion_analysis import (intrusion_analysis, 
                                 intrusion_data, 
                                 meta)
 
-from .process_step import Step
+from process_step import Step
 
 from misc.request_arguments import (RequestInfo, 
                                     RequestInfo_ETL, 

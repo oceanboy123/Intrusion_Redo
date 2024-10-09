@@ -10,8 +10,8 @@ from Process_builder.config import (
 
     # Intrusion Analysis
     RequestInfo_Analysis,
-    imported_identification,
-    manual_identification, 
+    ImportedID,
+    ManualID, 
     intrusion_analysis,
     intrusion_data,
     meta
@@ -20,6 +20,7 @@ from Process_builder.config import (
 class DataETL(ProcessBuilder):
     def __init__(self) -> None:
         super().__init__()
+        self.name = 'Intrusion ETL'
         self.request = RequestInfo_ETL
         self.steps = [
             data_extraction, 
@@ -38,13 +39,14 @@ class DataETL(ProcessBuilder):
         self.cache_output = 'data/CACHE/Processes/ETL/temp_process.pkl'
 
 
-class IntrusionAnalaysis(ProcessBuilder):
+class IntrusionAnalysis(ProcessBuilder):
     def __init__(self, identification: int = 0) -> None:
         super().__init__()
+        self.name = 'Intrusion Coefficient Analysis'
         self.request = RequestInfo_Analysis
         self.steps = [
-            imported_identification, 
-            manual_identification, 
+            ImportedID, 
+            ManualID, 
             intrusion_analysis, 
             intrusion_data
         ]
@@ -53,13 +55,13 @@ class IntrusionAnalaysis(ProcessBuilder):
             'file_name'         : 'BBMP_selected_data0.pkl',
             'intrusion_type'    : 'NORMAL',
             'id_type'           : 'MANUAL',
-            'analysis_type'     : 'GET_COEFFICIENTS',
+            'analysis_type'     : 'USE_COEFFICIENTS',
             'coefficient_temp'  : 0.5,
             'coefficient_salt'  : 0.5,
             'save_manual'       : 'OFF',
-            'manual_input'      : 'manualID_NORMAL1724797813.pkl'
+            'manual_input'      : 'data/PROCESSED/manualID_NORMAL1724797813.pkl'
         }
-        
+    
         if identification == 0 or identification == 1:
             self.steps.pop(identification)
         else:

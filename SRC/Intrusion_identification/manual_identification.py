@@ -41,7 +41,7 @@ depth_name = 'sample_depth'
 
 @function_log
 @dataclass
-class manual_identification(Step, IntrusionID_Type):
+class ManualID(Step, IntrusionID_Type):
     """
     Allows you to manually identify the intrusions using time-depth temperature
     and salinity space, and a time series of the average change in salinity,
@@ -55,14 +55,14 @@ class manual_identification(Step, IntrusionID_Type):
     - salt_range    : Range for salinity axis in plot [PSU]
     - oxy_range     : Range for oxygen axis in plot [mg/L]
     """
-    dates   : List[datetime] =  field(init=False)
-    save    : str =  field(init=False)
+    def __init__(self, dataset: RequestInfo_Analysis):
+        super().__init__()
+        self.dates : List[datetime] = dataset.dates
+        self.save : str = dataset.save_manual
 
-    temp_range : List[float]= field(default_factory=lambda: [0,10])
-    salt_range : List[float] = field(default_factory=lambda: [30.5,31.5])
-    oxy_range : List[float] = field(default_factory=lambda: [0,12])
-
-    def __post_init__(self, dataset: RequestInfo_Analysis):
+        self.temp_range : List[float]= [0,10]
+        self.salt_range : List[float] = [30.5,31.5]
+        self.oxy_range : List[float] = [0,12]
         self.run(dataset)
         joblib.dump(self, self.cache_output)
 
@@ -391,7 +391,7 @@ class manual_identification(Step, IntrusionID_Type):
         Steps: fill_request_info -> user_intrusion_selection -> 
         save_identification? -> extract
         """
-        self.fill_request_info(dataset.dates)
+        self.fill_request_info(dataset)
         self.user_intrusion_selection(dataset)
 
         if self.save != 'OFF':

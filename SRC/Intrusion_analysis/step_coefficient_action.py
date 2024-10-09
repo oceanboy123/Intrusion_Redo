@@ -72,9 +72,9 @@ class IntrusionCoeff_Type(ABC):
     )
     required_data     : List[str] = field(
         default_factory=lambda: 
-        ['../data/CACHE/Processes/Analysis/temp_identification.pkl']
+        ['data/CACHE/Processes/Analysis/temp_identification.pkl']
     )
-    cache_output : str = '../data/CACHE/Processes/Analysis/temp_coefficient.pkl'
+    cache_output : str = 'data/CACHE/Processes/Analysis/temp_coefficient.pkl'
 
 @function_log
 @dataclass
@@ -92,7 +92,8 @@ class intrusion_analysis(Step, IntrusionCoeff_Type):
 
     """
     
-    def __post_init__(self, dataset: RequestInfo_Analysis) -> None:
+    def __init__(self, dataset: RequestInfo_Analysis) -> None:
+        super().__init__()
         self.identification = import_joblib(self.required_data[0])
         self.analysis_type = dataset.analysis_type
         self.coefficients = dataset.coefficients
